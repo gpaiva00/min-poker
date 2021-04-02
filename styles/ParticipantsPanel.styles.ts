@@ -22,7 +22,7 @@ export const PanelContainer = styled.div`
 export const Panel = styled.div`
   border-width: 0.5px;
   border-style: solid;
-  border-color: ${({ theme }) => theme.colors.smoke};
+  border-color: ${({ theme }) => theme.colors.lightSmoke};
 
   height: 90%;
   overflow: hidden;

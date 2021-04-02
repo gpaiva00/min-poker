@@ -16,6 +16,7 @@ declare module 'styled-components' {
       danger: string;
       text: string;
       smoke: string;
+      lightSmoke: string;
       timer: string;
       lightText: string;
       darkText: string;

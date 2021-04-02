@@ -6,15 +6,12 @@ export default {
     text: '#252527',
     focus: '#252527',
     smoke: '#bab5ba',
+    lightSmoke: '#e1e1e1',
     primary: '#252527',
     danger: '#ff1a1a',
     timer: '#252527',
     lightText: '#fff',
     darkText: '#121214',
-    lightGreen: '#e6ffe6',
-    darkGreen: '#00cc44',
-    lightRed: '#ffcccc',
-    darkRed: '#ff1a1a',
   },
 
   fonts: {

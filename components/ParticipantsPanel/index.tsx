@@ -1,8 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
+import { motion } from 'framer-motion';
 
 import { ButtonContainer, CloseRoom, Container, List, MyName, Name, Panel, PanelContainer, Participant, StartVoting, Title, Vote } from '../../styles/ParticipantsPanel.styles'
 
 const ParticipantsPanel: FC = () => {
+  const [loading, setLoading] = useState(true)
+
   const participants = [
     {
       name: 'John',
@@ -47,18 +50,6 @@ const ParticipantsPanel: FC = () => {
     {
       name: 'Kassy',
       vote: '5',
-    },
-    {
-      name: 'Jessika',
-      vote: '34',
-    },
-    {
-      name: 'Kassy',
-      vote: '5',
-    },
-    {
-      name: 'Jessika',
-      vote: '34',
     },
   ]
 
