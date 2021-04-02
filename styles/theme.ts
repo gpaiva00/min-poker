@@ -1,0 +1,48 @@
+export default {
+  title: 'light',
+
+  colors: {
+    background: '#fff',
+    text: '#252527',
+    focus: '#252527',
+    smoke: '#bab5ba',
+    primary: '#252527',
+    danger: '#ff1a1a',
+    timer: '#252527',
+    lightText: '#fff',
+    darkText: '#121214',
+    lightGreen: '#e6ffe6',
+    darkGreen: '#00cc44',
+    lightRed: '#ffcccc',
+    darkRed: '#ff1a1a',
+  },
+
+  fonts: {
+    light: "Roboto Light, sans-serif",
+    extraLight: "Roboto Extra-light, sans-serif",
+    regular: "Roboto, sans-serif",
+    bold: "Roboto Bold, sans-serif",
+  },
+
+  fontSizes: {
+    small: "1rem",
+    regular: "1.3rem",
+    medium: "2.2rem",
+    big: "3rem",
+  },
+
+  margins: {
+    small: '10px',
+    normal: '20px',
+    medium: '40px',
+  },
+
+  paddings: {
+    normal: '10px',
+  },
+
+  sizes: {
+    inputHeight: '60px',
+  },
+}
+
