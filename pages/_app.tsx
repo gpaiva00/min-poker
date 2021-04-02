@@ -1,15 +1,14 @@
-import { FC, useCallback } from 'react'
+import { FC } from 'react'
 import { AppProps } from 'next/app'
 
 import { AnimateSharedLayout } from 'framer-motion'
 
 import GlobalStyle from '../styles/global'
-import { DefaultTheme, ThemeProvider } from 'styled-components'
+import { ThemeProvider } from 'styled-components'
 
-import usePersistedState from '../hooks/usePersistedState'
+// import usePersistedState from '../hooks/usePersistedState'
 import theme from '../styles/theme'
 import Header from '../components/Header'
-import Footer from '../components/Footer'
 
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
@@ -25,7 +24,6 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
         <GlobalStyle />
         <Header />
         <Component {...pageProps} />
-        <Footer />
       </ThemeProvider>
     </AnimateSharedLayout>
   )

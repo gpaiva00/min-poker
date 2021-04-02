@@ -5,14 +5,13 @@ import { motion } from 'framer-motion'
 
 import { useRouter } from 'next/router'
 
-import { PageContainer, LetsStartText, InputContainer } from '../styles/Home.styles'
+import { PageContainer, LetsStartText, InputContainer } from '../../styles/Home.styles'
 
-import LatestRooms from '../components/LatestRooms'
-import Button from '../components/Button'
-import Input from '../components/Input'
-import Footer from '../components/Footer'
+import Button from '../../components/Button'
+import Input from '../../components/Input'
+import Footer from '../../components/Footer'
 
-const Home: FC = () => {
+const EnterPasscode: FC = () => {
   const [inputValue, setInputValue] = useState('')
   const router = useRouter()
 
@@ -25,15 +24,13 @@ const Home: FC = () => {
   return (
     <div>
         <main>
-          <LatestRooms />
-
           <PageContainer>
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ ease: "easeInOut", duration: 1 }}
             >
-              <LetsStartText>Enter room name</LetsStartText>
+              <LetsStartText>Enter pass code</LetsStartText>
             </motion.p>
 
             <motion.div
@@ -42,15 +39,14 @@ const Home: FC = () => {
               transition={{ ease: "easeInOut", duration: 1 }}
             >
               <InputContainer>
-                <Input value={inputValue} placeholder="Room name" onInput={handleInput}/>
+                <Input value={inputValue} placeholder="Pass code" onInput={handleInput}/>
                 <Button onClick={() => router.push('/')}>Enter</Button>
               </InputContainer>
             </motion.div>
           </PageContainer>
-          <Footer />
         </main>
       </div>
     )
 }
 
-export default Home
+export default EnterPasscode
