@@ -2,12 +2,13 @@ import styled from 'styled-components'
 
 export const PageContainer = styled.div`
   display: flex;
-  height: 100%;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 
   margin-top: 15%;
+  height: 100%;
+  padding-bottom: ${({ theme }) => theme.margins.medium};
 `
 
 export const InstructionText = styled.p`

@@ -12,12 +12,14 @@ export default {
     timer: '#252527',
     lightText: '#fff',
     darkText: '#121214',
+    blue: '#8fb6f2',
   },
 
   fonts: {
     light: "Roboto Light, sans-serif",
     extraLight: "Roboto Extra-light, sans-serif",
     regular: "Roboto, sans-serif",
+    semiBold: "Roboto Medium, sans-serif",
     bold: "Roboto Bold, sans-serif",
   },
 
@@ -26,6 +28,7 @@ export default {
     regular: "1.3rem",
     medium: "2.2rem",
     big: "3rem",
+    biggest: "3.5rem",
   },
 
   margins: {

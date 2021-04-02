@@ -23,12 +23,14 @@ declare module 'styled-components' {
       lightRed: string;
       darkRed: string;
       focus: string;
+      blue: string
     }
 
     fonts: {
       light: string;
       extraLight: string;
       regular: string;
+      semiBold: string;
       bold: string;
     },
 
@@ -37,6 +39,7 @@ declare module 'styled-components' {
       regular: string;
       medium: string;
       big: string;
+      biggest: string;
     },
 
     margins: {
