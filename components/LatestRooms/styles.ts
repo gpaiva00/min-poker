@@ -7,6 +7,8 @@ export const Container = styled.div`
 export const Title = styled.h1`
   font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.small};
+
+  text-transform: uppercase;
 `
 
 export const ItemsContainer = styled.div`

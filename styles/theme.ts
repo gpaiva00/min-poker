@@ -16,19 +16,19 @@ export default {
   },
 
   fonts: {
-    light: "Roboto Light, sans-serif",
-    extraLight: "Roboto Extra-light, sans-serif",
-    regular: "Roboto, sans-serif",
-    semiBold: "Roboto Medium, sans-serif",
-    bold: "Roboto Bold, sans-serif",
+    light: 'Roboto Light, sans-serif',
+    extraLight: 'Roboto Extra-light, sans-serif',
+    regular: 'Roboto, sans-serif',
+    semiBold: 'Roboto Medium, sans-serif',
+    bold: 'Roboto Bold, sans-serif',
   },
 
   fontSizes: {
-    small: "1rem",
-    regular: "1.3rem",
-    medium: "2.2rem",
-    big: "3rem",
-    biggest: "3.5rem",
+    small: '1rem',
+    regular: '1.3rem',
+    medium: '2.2rem',
+    big: '3rem',
+    biggest: '3.5rem',
   },
 
   margins: {
@@ -45,4 +45,3 @@ export default {
     inputHeight: '60px',
   },
 }
-
