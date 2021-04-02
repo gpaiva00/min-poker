@@ -35,7 +35,7 @@ const Home: FC = () => {
               animate={{ opacity: 1 }}
               transition={{ ease: "easeInOut", duration: 1 }}
             >
-              <InstructionText>Enter room name</InstructionText>
+              <InstructionText>Enter a name for your room</InstructionText>
             </motion.p>
 
             <motion.div
@@ -45,7 +45,7 @@ const Home: FC = () => {
             >
               <InputContainer>
                 <Input value={inputValue} placeholder="Room name" onInput={handleInput}/>
-                <Button onClick={() => router.push('/')}>Enter</Button>
+                <Button onClick={() => router.push('/')}>Create room</Button>
               </InputContainer>
             </motion.div>
           </PageContainer>

@@ -25,4 +25,9 @@ export const Item = styled.a`
   color: ${({ theme }) => theme.colors.text};
 
   margin-bottom: ${({ theme }) => theme.margins.small};
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `

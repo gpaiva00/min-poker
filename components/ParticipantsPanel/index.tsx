@@ -1,57 +1,21 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
+import { ParticipantProps, ParticipantsPanelProps } from './typings'
+
 import { ButtonContainer, CloseRoom, Container, List, MyName, Name, Panel, PanelContainer, Participant, StartVoting, Title, Vote } from '../../styles/ParticipantsPanel.styles'
+import { generateName } from '../../utils';
 
-const ParticipantsPanel: FC = () => {
+const ParticipantsPanel: FC<ParticipantsPanelProps> = ({ setStartVoting, startVoting }) => {
   const [loading, setLoading] = useState(true)
+  const [participants, setParticipants] = useState<ParticipantProps[]>([])
+  const [nickname, setNickname] = useState('')
 
-  const participants = [
-    {
-      name: 'John',
-      vote: '2',
-    },
-    {
-      name: 'Buba',
-      vote: '5',
-    },
-    {
-      name: 'Mike',
-      vote: '2',
-    },
-    {
-      name: 'Jessika',
-      vote: '34',
-    },
-    {
-      name: 'Bob',
-      vote: '34',
-    },
-    {
-      name: 'Ana',
-      vote: '1',
-    },
-    {
-      name: 'Kassy',
-      vote: '5',
-    },
-    {
-      name: 'Jessika',
-      vote: '34',
-    },
-    {
-      name: 'Kassy',
-      vote: '5',
-    },
-    {
-      name: 'Jessika',
-      vote: '34',
-    },
-    {
-      name: 'Kassy',
-      vote: '5',
-    },
-  ]
+  useEffect(() => {
+    const nickname = generateName()
+    setNickname(nickname)
+  }, [])
+
 
   return (
     <Container>
@@ -61,8 +25,10 @@ const ParticipantsPanel: FC = () => {
         <Panel>
           <List>
             <Participant>
-              <MyName>Gab</MyName>
-              <Vote>13</Vote>
+              {/* get from localstorage */}
+              <MyName>{nickname}</MyName>
+              {/* get from state */}
+              <Vote></Vote>
             </Participant>
 
             { participants.map((item, key) => (
@@ -73,7 +39,7 @@ const ParticipantsPanel: FC = () => {
             ))}
           </List>
           <ButtonContainer>
-            <StartVoting>Start voting</StartVoting>
+            <StartVoting onClick={() => setStartVoting(!startVoting)}>Start voting</StartVoting>
           </ButtonContainer>
         </Panel>
 

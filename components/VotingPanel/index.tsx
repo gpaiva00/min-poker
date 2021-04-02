@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { motion } from 'framer-motion';
 
 import { FiCoffee } from 'react-icons/fi'
 import DefaultCard from '../DefaultCard';
@@ -80,21 +81,44 @@ const VotingPanel: FC<VotingPanelProps> = ({ startVoting = true }) => {
       {
         !startVoting && (
           <WaitingContainer>
-            <Waiting>waiting voting to start</Waiting>
-          </WaitingContainer>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ ease: "easeInOut", duration: 1 }}
+              >
+                <Waiting>waiting voting to start</Waiting>
+              </motion.div>
+            </WaitingContainer>
         )
       }
 
       { startVoting && (
         <>
           <TitleContainer>
-            <Title>Choose an option</Title>
+            <motion.h1
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ ease: "easeInOut", duration: 1 }}
+                >
+                  <Title>Choose an option</Title>
+            </motion.h1>
           </TitleContainer>
 
           <CardsContainer>
-            {
+            {/* {
               resultCards.map((item, key) => (
                 <ResultCard text={item.text} id={item.id} key={key} votes={item.votes} />
+              ))
+            } */}
+            {
+              cardsToVote.map((item, key) => (
+                <motion.div
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ ease: "easeInOut", duration: 0.5, delay: 0.5 }}
+                >
+                  <DefaultCard text={item.text} id={item.id} key={key} />
+                </motion.div>
               ))
             }
           </CardsContainer>

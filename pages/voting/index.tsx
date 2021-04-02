@@ -1,5 +1,5 @@
 
-import React, { FC, useCallback, useState} from 'react'
+import React, { FC, useCallback, useEffect, useState} from 'react'
 
 import { motion } from 'framer-motion'
 
@@ -10,8 +10,15 @@ import ParticipantsPanel from '../../components/ParticipantsPanel'
 import Header from '../../components/Header'
 import VotingPanel from '../../components/VotingPanel'
 
+
 const Voting: FC = () => {
   const [roomTitle, setRoomTitle] = useState('chinforinfola')
+  const [startVoting, setStartVoting] = useState(false)
+
+  // useEffect(() => {
+  //   const nickname = idGenerator()
+  //   setRoomTitle(nickname)
+  // }, [])
 
   return (
     <div>
@@ -19,8 +26,8 @@ const Voting: FC = () => {
           <Header showRoomTitle roomTitle={roomTitle} />
 
           <PageContainer>
-            <ParticipantsPanel />
-            <VotingPanel />
+            <ParticipantsPanel setStartVoting={setStartVoting} startVoting={startVoting} />
+            <VotingPanel startVoting={startVoting}/>
           </PageContainer>
         </main>
       </div>
