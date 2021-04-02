@@ -5,11 +5,11 @@ import { motion } from 'framer-motion'
 
 import { useRouter } from 'next/router'
 
-import { PageContainer, LetsStartText, InputContainer } from '../../styles/Home.styles'
+import { PageContainer, InstructionText, InputContainer } from '../../styles/EnterPasscode.styles'
 
 import Button from '../../components/Button'
 import Input from '../../components/Input'
-import Footer from '../../components/Footer'
+import Header from '../../components/Header'
 
 const EnterPasscode: FC = () => {
   const [inputValue, setInputValue] = useState('')
@@ -24,13 +24,14 @@ const EnterPasscode: FC = () => {
   return (
     <div>
         <main>
+          <Header />
           <PageContainer>
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ ease: "easeInOut", duration: 1 }}
             >
-              <LetsStartText>Enter pass code</LetsStartText>
+              <InstructionText>Enter pass code</InstructionText>
             </motion.p>
 
             <motion.div

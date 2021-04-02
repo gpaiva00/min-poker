@@ -5,12 +5,13 @@ import { motion } from 'framer-motion'
 
 import { useRouter } from 'next/router'
 
-import { PageContainer, LetsStartText, InputContainer } from '../styles/Home.styles'
+import { PageContainer, InstructionText, InputContainer } from '../styles/Home.styles'
 
 import LatestRooms from '../components/LatestRooms'
 import Button from '../components/Button'
 import Input from '../components/Input'
 import Footer from '../components/Footer'
+import Header from '../components/Header'
 
 const Home: FC = () => {
   const [inputValue, setInputValue] = useState('')
@@ -25,6 +26,7 @@ const Home: FC = () => {
   return (
     <div>
         <main>
+          <Header />
           <LatestRooms />
 
           <PageContainer>
@@ -33,7 +35,7 @@ const Home: FC = () => {
               animate={{ opacity: 1 }}
               transition={{ ease: "easeInOut", duration: 1 }}
             >
-              <LetsStartText>Enter room name</LetsStartText>
+              <InstructionText>Enter room name</InstructionText>
             </motion.p>
 
             <motion.div

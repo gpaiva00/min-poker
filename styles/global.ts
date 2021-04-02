@@ -13,6 +13,10 @@ export default createGlobalStyle`
     font-family: ${props => props.theme.fonts.regular};
   }
 
+  html, body{
+    overflow: hidden;
+}
+
   span {
     margin: 0;
     padding: 0 3px;

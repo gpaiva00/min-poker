@@ -1,49 +1,38 @@
 import React, { FC, useEffect, useState } from 'react';
 
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 
-import themeIcon from '../../assets/theme_icon.png';
+import { BsLink } from 'react-icons/bs'
 
-import { Container, Title, OptionsContainer, TitleContainer, MinText } from './styles'
+import { Container, Title, OptionsContainer, TitleContainer, MinText, RoomTitle, RoomTitleContainer } from './styles'
 
 interface HeaderProps {
-  // setToggleTheme(): void;
+  showRoomTitle?: boolean;
+  roomTitle?: string;
 }
 
-const Header: FC<HeaderProps> = () => {
-  const router = useRouter()
-
-
-
-
-
-  useEffect(() => {
-    // const languageToChange = selectedLanguage === ptCode ? enCode : ptCode
-
-    // setLanguageText(LANGUAGES[languageToChange].text)
-
-    // i18n.changeLanguage(selectedLanguage)
-  }, [])
+const Header: FC<HeaderProps> = ({ showRoomTitle, roomTitle }) => {
+  // const router = useRouter()
 
 
   return (
-    <Container>
-      <Link href="/">
-        <TitleContainer>
-          <MinText>min</MinText>
-          <Title>POKER</Title>
-        </TitleContainer>
-      </Link>
-
-      <OptionsContainer>
-        {/* <Language onClick={handleChangeLanguage}>{languageText}</Language> */}
-
-        {/* <SwitchButton onClick={setToggleTheme}>
-          <ButtonIcon src={themeIcon} />
-        </SwitchButton> */}
-      </OptionsContainer>
-    </Container>
+    <>
+      { showRoomTitle &&
+          ( <RoomTitleContainer>
+              <RoomTitle>{roomTitle}</RoomTitle>
+              <BsLink size={26}/>
+            </RoomTitleContainer>
+          )
+        }
+      <Container>
+        <Link href="/">
+          <TitleContainer>
+            <MinText>min</MinText>
+            <Title>POKER</Title>
+          </TitleContainer>
+        </Link>
+      </Container>
+    </>
   )
 }
 

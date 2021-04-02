@@ -3,7 +3,6 @@ import styled from 'styled-components'
 export const Container = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
   ${({ theme }) => `margin: ${theme.margins.normal} ${theme.margins.medium}`};
 `
 
@@ -39,9 +38,25 @@ export const Language = styled.p`
   cursor: pointer;
 `
 
-export const TitleContainer = styled.div`
- /* display: flex; */
- /* align-items: flex-end; */
+export const TitleContainer = styled.div``
+
+export const RoomTitleContainer = styled.div`
+  position:absolute;
+  top: 0;
+  padding-top: ${({ theme }) => theme.margins.medium};
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`
+
+export const RoomTitle = styled.h1`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  font-size: ${({ theme }) => theme.fontSizes.regular};
+
+  display: flex;
+  align-self: center;
+  margin-right: ${({ theme }) => theme.margins.small};
+  text-transform: uppercase;
 `
 
 export const MinText = styled.p`

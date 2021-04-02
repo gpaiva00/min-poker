@@ -8,7 +8,6 @@ import { ThemeProvider } from 'styled-components'
 
 // import usePersistedState from '../hooks/usePersistedState'
 import theme from '../styles/theme'
-import Header from '../components/Header'
 
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
@@ -22,7 +21,6 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
     <AnimateSharedLayout>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <Header />
         <Component {...pageProps} />
       </ThemeProvider>
     </AnimateSharedLayout>

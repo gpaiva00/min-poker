@@ -10,7 +10,7 @@ export const PageContainer = styled.div`
   margin-top: 15%;
 `
 
-export const LetsStartText = styled.p`
+export const InstructionText = styled.p`
   font-family: ${({ theme }) => theme.fonts.regular};
   font-size: ${({ theme }) => theme.fontSizes.regular};
 `
