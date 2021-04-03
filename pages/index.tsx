@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useEffect, useState } from 'react'
-import { useCollectionData } from 'react-firebase-hooks/firestore/'
 
 import { motion } from 'framer-motion'
 
@@ -22,17 +21,21 @@ import usePersistedState from '../hooks/usePersistedState'
 import { STORAGE_KEY_USER } from '../constants'
 import { generateName, idGenerator } from '../utils'
 
-import firebase from 'firebase/app'
+import { useCollectionData } from 'react-firebase-hooks/firestore'
+import { getDatabase } from '../services/firebase'
+import { Room } from '../typings/Room'
+import { UserInfo } from '../typings/UserInfo'
 
 const Home: FC = () => {
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
   const [inputValue, setInputValue] = useState('')
-  const [latestRooms, setLatestRooms] = useState<any>([])
 
   const router = useRouter()
+  const db = getDatabase()
+
+  const userInfo: UserInfo = storage && JSON.parse(storage)
 
   const handleCreateRoom = () => {
-    const userInfo = storage && JSON.parse(storage)
     let userName: string, hostId: string
 
     if (!userInfo) {
@@ -60,21 +63,11 @@ const Home: FC = () => {
     router.push({ pathname: 'voting', query: { roomId } })
   }
 
-  useEffect(() => {
-    const firestore = firebase.firestore()
-
-    const roomsRef = firestore.collection('rooms')
-    const query = roomsRef.orderBy('createdAt').limit(5)
-
-    const [latestRoomsData] = useCollectionData(query, { idField: 'roomId' })
-    setLatestRooms(latestRoomsData)
-  }, [])
-
   return (
     <div>
       <main>
         <Header />
-        <LatestRooms items={latestRooms} />
+        <LatestRooms userInfo={userInfo} />
 
         <PageContainer>
           <motion.p

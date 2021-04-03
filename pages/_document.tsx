@@ -9,24 +9,6 @@ import Document, {
   NextScript,
 } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
-
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-
-if (!firebase.apps.length) {
-  firebase.initializeApp({
-    apiKey: 'AIzaSyBcVS0gDDjQkks1NYgmKCfKctGtHG6ZWcY',
-    authDomain: 'minpoker-fc7fa.firebaseapp.com',
-    projectId: 'minpoker-fc7fa',
-    storageBucket: 'minpoker-fc7fa.appspot.com',
-    messagingSenderId: '672134937405',
-    appId: '1:672134937405:web:ec8a089f7d2eb254096354',
-    measurementId: 'G-7DTECLBR8J',
-  })
-  // firebase.analytics()
-} else {
-  firebase.app()
-}
 export default class MyDocument extends Document {
   static async getInitialProps(
     ctx: DocumentContext
@@ -69,8 +51,6 @@ export default class MyDocument extends Document {
           <title>minPoker</title>
         </Head>
         <body>
-          <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
-          <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-analytics.js"></script>
           <Main />
           <NextScript />
         </body>

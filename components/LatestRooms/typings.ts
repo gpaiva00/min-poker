@@ -1,8 +1,5 @@
-export interface Room {
-  name: string
-  id: string
-}
+import { UserInfo } from '../../typings/UserInfo'
 
 export interface LatestRoomsProps {
-  rooms: Room[]
+  userInfo: UserInfo
 }

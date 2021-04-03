@@ -1,11 +1,32 @@
-import { motion } from 'framer-motion'
 import React, { FC } from 'react'
 
+import { motion } from 'framer-motion'
+import { Room } from '../../typings/Room'
+
 import { Container, Item, ItemsContainer, Title } from './styles'
+
+import { useCollectionData } from 'react-firebase-hooks/firestore'
+import { getDatabase } from '../../services/firebase'
 import { LatestRoomsProps } from './typings'
 
-const LatestRooms: FC<LatestRoomsProps> = ({ rooms = [] }) => {
-  return (
+const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
+  const db = getDatabase()
+
+  const [rooms, loading, error] = useCollectionData<Room[]>(
+    db.collection('rooms'),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    }
+  )
+
+  const myRooms =
+    !rooms || !userInfo
+      ? []
+      : rooms.filter(room => room.hostId === userInfo.userId)
+
+  return !myRooms.length ? (
+    <></>
+  ) : (
     <Container>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -16,14 +37,14 @@ const LatestRooms: FC<LatestRoomsProps> = ({ rooms = [] }) => {
       </motion.div>
 
       <ItemsContainer>
-        {rooms.map((item, key) => (
+        {myRooms.map((room, key) => (
           <Item key={key}>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ease: 'easeInOut', duration: 1, delay: 0.5 }}
             >
-              {item.name}
+              {room.name}
             </motion.p>
           </Item>
         ))}
