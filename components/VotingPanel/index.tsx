@@ -87,6 +87,7 @@ const VotingPanel: FC<VotingPanelProps> = ({
 
   return (
     <Container>
+      g
       {!startVoting && (
         <WaitingContainer>
           <motion.div
@@ -98,7 +99,6 @@ const VotingPanel: FC<VotingPanelProps> = ({
           </motion.div>
         </WaitingContainer>
       )}
-
       {startVoting && (
         <>
           <TitleContainer>

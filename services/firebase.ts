@@ -3,13 +3,13 @@ import 'firebase/analytics'
 import 'firebase/firestore'
 
 const config = {
-  apiKey: 'AIzaSyBcVS0gDDjQkks1NYgmKCfKctGtHG6ZWcY',
-  authDomain: 'minpoker-fc7fa.firebaseapp.com',
-  projectId: 'minpoker-fc7fa',
-  storageBucket: 'minpoker-fc7fa.appspot.com',
-  messagingSenderId: '672134937405',
-  appId: '1:672134937405:web:ec8a089f7d2eb254096354',
-  measurementId: 'G-7DTECLBR8J',
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID,
 }
 
 export const getDatabase = () => {
