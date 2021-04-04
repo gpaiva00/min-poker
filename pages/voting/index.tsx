@@ -23,7 +23,6 @@ const defaultRoom: Room = {
 }
 
 const Voting: FC = () => {
-  const [roomTitle, setRoomTitle] = useState('chinforinfola')
   const [isVoting, setIsVoting] = useState(false)
   const [showResults, setShowResults] = useState(false)
 

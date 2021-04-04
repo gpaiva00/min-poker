@@ -17,7 +17,7 @@ import {
   Title,
   Vote,
 } from '../../styles/ParticipantsPanel.styles'
-import { generateName } from '../../utils'
+import { generateNickName } from '../../utils'
 import usePersistedState from '../../hooks/usePersistedState'
 import { STORAGE_KEY_USER } from '../../constants'
 interface UserProps {
@@ -39,7 +39,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
     const userInfo: UserProps = storage && JSON.parse(storage)
 
     if (!userInfo) {
-      const nickname = generateName()
+      const nickname = generateNickName()
       setUserName(nickname)
       return
     }
