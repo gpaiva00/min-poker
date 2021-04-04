@@ -48,6 +48,25 @@ const Voting: FC = () => {
     }
   }
 
+  const handleExitRoom = async () => {
+    try {
+      const roomPath = room.ref.path.split('/')[1]
+      const roomRef = db.collection('rooms').doc(roomPath)
+
+      const newParticipants = room.participants.filter(
+        participant => participant.id !== userInfo.userId
+      )
+
+      await roomRef.set(
+        { ...room, participants: newParticipants },
+        { merge: false }
+      )
+      router.push('/')
+    } catch (error) {
+      console.error('Error trying to exit room', error)
+    }
+  }
+
   const handleStartVoting = async () => {
     try {
       const roomPath = room.ref.path.split('/')[1]
@@ -134,6 +153,7 @@ const Voting: FC = () => {
             startVoting={isVoting}
             imHost={imHost}
             handleCloseRoom={handleCloseRoom}
+            handleExitRoom={handleExitRoom}
             room={room}
             userInfo={userInfo}
           />

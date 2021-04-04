@@ -6,6 +6,7 @@ export interface ParticipantsPanelProps {
   startVoting: boolean
   imHost: boolean
   handleCloseRoom(): void
+  handleExitRoom(): void
   userInfo: UserInfo
   room: Room
   handleChangeMyName(): void

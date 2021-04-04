@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 
 import { ParticipantProps, ParticipantsPanelProps } from './typings'
 
@@ -17,9 +17,6 @@ import {
   Title,
   Vote,
 } from '../../styles/ParticipantsPanel.styles'
-import { generateNickName } from '../../utils'
-import usePersistedState from '../../hooks/usePersistedState'
-import { STORAGE_KEY_USER } from '../../constants'
 interface UserProps {
   name: string
   userId: string
@@ -30,6 +27,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   startVoting,
   imHost,
   handleCloseRoom,
+  handleExitRoom,
   room,
   userInfo,
   handleChangeMyName,
@@ -94,7 +92,9 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
               Close room
             </CloseRoom>
           ) : (
-            <CloseRoom variant="danger">Exit room</CloseRoom>
+            <CloseRoom onClick={handleExitRoom} variant="danger">
+              Exit room
+            </CloseRoom>
           )}
         </ButtonContainer>
       </PanelContainer>
