@@ -1,11 +1,13 @@
-import { Participant } from '../../typings/Room'
+import { Room } from '../../typings/Room'
+import { UserInfo } from '../../typings/UserInfo'
 
 export interface ParticipantsPanelProps {
   setStartVoting: React.Dispatch<React.SetStateAction<boolean>>
   startVoting: boolean
   imHost: boolean
   handleCloseRoom(): void
-  participants: Participant[]
+  userInfo: UserInfo
+  room: Room
 }
 
 export interface ParticipantProps {

@@ -30,28 +30,31 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   startVoting,
   imHost,
   handleCloseRoom,
-  participants = [],
+  room,
+  userInfo,
 }) => {
-  const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
-
   const [loading, setLoading] = useState(true)
-  const [userName, setUserName] = useState('')
+  const [participantsList, setParticipantsList] = useState<ParticipantProps[]>(
+    []
+  )
+
+  const { participants, hostVote, hostName, hostId } = room
+  const { name, userId } = userInfo
 
   useEffect(() => {
-    const userInfo: UserProps = storage && JSON.parse(storage)
+    let newParticipants = participants.filter(
+      ({ id }) => id !== '' && id !== userId
+    )
 
-    if (!userInfo) {
-      const nickname = generateNickName()
-      setUserName(nickname)
-      return
+    const hostData = {
+      name: hostName,
+      id: hostId,
+      vote: hostVote,
     }
 
-    const { name } = userInfo
-    setUserName(name)
-  }, [])
+    newParticipants = [hostData, ...newParticipants]
 
-  useEffect(() => {
-    console.log('ASDFASD', participants)
+    setParticipantsList(newParticipants)
   }, [participants])
 
   return (
@@ -62,11 +65,11 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
         <Panel>
           <List>
             <Participant>
-              <MyName>{userName}</MyName>
+              <MyName>{name}</MyName>
               <Vote></Vote>
             </Participant>
 
-            {participants.map((item, key) => (
+            {participantsList.map((item, key) => (
               <Participant key={key}>
                 <Name>{item.name}</Name>
                 <Vote>{item.vote}</Vote>

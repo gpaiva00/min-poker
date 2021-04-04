@@ -11,6 +11,7 @@ export interface Room {
   name: string
   id: string
   hostId: string
+  hostName: string
   isVoting: boolean
   participants: Participant[]
   ref?: Ref

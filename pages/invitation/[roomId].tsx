@@ -8,6 +8,7 @@ import { Room } from '../../typings/Room'
 import usePersistedState from '../../hooks/usePersistedState'
 import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
 import { UserInfo } from '../../typings/UserInfo'
+import { generateNickName, idGenerator } from '../../utils'
 
 const Invitation: FC = () => {
   const router = useRouter()
@@ -15,7 +16,7 @@ const Invitation: FC = () => {
   const [message, setMessage] = useState('Loading...')
 
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
-  const { userId, name }: UserInfo = storage && JSON.parse(storage)
+  let { userId, name }: UserInfo = storage && JSON.parse(storage)
 
   const db = getDatabase()
 
@@ -36,6 +37,13 @@ const Invitation: FC = () => {
 
         if (!hostId) return
 
+        if (!userId) {
+          const userName = generateNickName()
+          userId = idGenerator()
+
+          setStorage(JSON.stringify({ name: userName, userId }))
+        }
+
         const imHost = hostId === userId
 
         if (imHost) return router.replace(`/voting/${roomId}`)
@@ -44,11 +52,14 @@ const Invitation: FC = () => {
           participants.indexOf(participant => participant.id === userId) === -1
 
         if (isNotParticipant) {
-          const newParticipant = {
-            id: userId,
-            name,
-            vote: '',
-          }
+          const newParticipant = [
+            {
+              id: userId,
+              name,
+              vote: '',
+            },
+          ]
+
           console.log({ participants, newParticipant })
 
           const roomPath = ref.path.split('/')[1]
@@ -56,9 +67,9 @@ const Invitation: FC = () => {
 
           await roomRef.set(
             {
-              participants: [...participants, newParticipant],
+              participants: newParticipant,
             },
-            { merge: false }
+            { merge: true }
           )
 
           return router.replace(`/voting/${roomId}`)

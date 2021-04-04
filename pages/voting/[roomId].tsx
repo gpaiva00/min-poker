@@ -86,7 +86,8 @@ const Voting: FC = () => {
             startVoting={isVoting}
             imHost={imHost}
             handleCloseRoom={handleCloseRoom}
-            participants={room.participants || []}
+            room={room}
+            userInfo={userInfo}
           />
           <VotingPanel startVoting={room.isVoting} showResults={showResults} />
         </PageContainer>

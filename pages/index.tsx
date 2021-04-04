@@ -36,16 +36,16 @@ const Home: FC = () => {
   const userInfo: UserInfo = storage && JSON.parse(storage)
 
   const handleCreateRoom = async () => {
-    let userName: string, hostId: string
+    let hostName: string, hostId: string
 
     if (!userInfo) {
-      userName = generateNickName()
+      hostName = generateNickName()
       hostId = idGenerator()
 
-      setStorage(JSON.stringify({ name: userName, userId: hostId }))
+      setStorage(JSON.stringify({ name: hostName, userId: hostId }))
     } else {
       const { name, userId } = userInfo
-      userName = name
+      hostName = name
       hostId = userId
     }
 
@@ -57,6 +57,7 @@ const Home: FC = () => {
       name: roomName,
       hostId,
       hostVote: '',
+      hostName,
       isVoting: false,
       participants: [DEFAULT_PARTICIPANT],
     }
