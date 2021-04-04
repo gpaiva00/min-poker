@@ -78,7 +78,7 @@ const Voting: FC = () => {
   return (
     <div>
       <main>
-        <Header showRoomTitle roomTitle={room.name} />
+        <Header showRoomTitle roomTitle={room.name} roomId={roomId} />
 
         <PageContainer>
           <ParticipantsPanel

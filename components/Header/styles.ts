@@ -12,6 +12,10 @@ export const Title = styled.h1`
   cursor: pointer;
 `
 
+export const Invite = styled.span`
+  cursor: pointer;
+`
+
 export const SwitchButton = styled.button`
   border: 0;
   background: transparent;
@@ -19,7 +23,8 @@ export const SwitchButton = styled.button`
 
 export const ButtonIcon = styled.img`
   width: 40px;
-  filter: ${({ theme }) => theme.title === 'dark' ? `invert(60%)` : `invert(0)`};
+  filter: ${({ theme }) =>
+    theme.title === 'dark' ? `invert(60%)` : `invert(0)`};
 
   cursor: pointer;
 `
@@ -41,7 +46,7 @@ export const Language = styled.p`
 export const TitleContainer = styled.div``
 
 export const RoomTitleContainer = styled.div`
-  position:absolute;
+  position: absolute;
   top: 0;
   padding-top: ${({ theme }) => theme.margins.medium};
   width: 100%;
@@ -62,5 +67,5 @@ export const RoomTitle = styled.h1`
 export const MinText = styled.p`
   font-family: ${({ theme }) => theme.fonts.bold};
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.smoke}
+  color: ${({ theme }) => theme.colors.smoke};
 `

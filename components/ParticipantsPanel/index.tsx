@@ -46,13 +46,15 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
       ({ id }) => id !== '' && id !== userId
     )
 
-    const hostData = {
-      name: hostName,
-      id: hostId,
-      vote: hostVote,
-    }
+    if (!imHost) {
+      const hostData = {
+        name: hostName,
+        id: hostId,
+        vote: hostVote,
+      }
 
-    newParticipants = [hostData, ...newParticipants]
+      newParticipants = [hostData, ...newParticipants]
+    }
 
     setParticipantsList(newParticipants)
   }, [participants])
