@@ -8,6 +8,7 @@ export interface ParticipantsPanelProps {
   handleCloseRoom(): void
   userInfo: UserInfo
   room: Room
+  handleChangeMyName(): void
 }
 
 export interface ParticipantProps {

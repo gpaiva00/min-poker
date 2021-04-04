@@ -60,8 +60,6 @@ const Invitation: FC = () => {
             },
           ]
 
-          console.log({ participants, newParticipant })
-
           const roomPath = ref.path.split('/')[1]
           const roomRef = db.collection('rooms').doc(roomPath)
 

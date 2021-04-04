@@ -68,6 +68,43 @@ const Voting: FC = () => {
     }
   }
 
+  const handleChangeMyName = async () => {
+    const newUserName = prompt('Type your name', userInfo.name)
+
+    if (!newUserName.length || newUserName === null) return
+
+    const newUserInfo = {
+      ...userInfo,
+      name: newUserName,
+    }
+
+    setStorage(JSON.stringify(newUserInfo))
+
+    const { participants } = room
+
+    const newParticipants = participants.map(participant => {
+      if (participant.id === userInfo.userId) {
+        return {
+          ...participant,
+          name: newUserName,
+        }
+      }
+
+      return participant
+    })
+
+    const roomPath = room.ref.path.split('/')[1]
+    const roomRef = db.collection('rooms').doc(roomPath)
+
+    await roomRef.set(
+      {
+        ...room,
+        participants: newParticipants,
+      },
+      { merge: false }
+    )
+  }
+
   useEffect(() => {
     if (!validateRoomId(roomId)) {
       router.push('/')
@@ -78,10 +115,16 @@ const Voting: FC = () => {
   return (
     <div>
       <main>
-        <Header showRoomTitle roomTitle={room.name} roomId={roomId} />
+        <Header
+          showRoomTitle
+          roomTitle={room.name}
+          roomId={roomId}
+          imHost={imHost}
+        />
 
         <PageContainer>
           <ParticipantsPanel
+            handleChangeMyName={handleChangeMyName}
             setStartVoting={handleStartVoting}
             startVoting={isVoting}
             imHost={imHost}

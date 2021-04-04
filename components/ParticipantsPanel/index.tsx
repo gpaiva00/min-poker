@@ -32,6 +32,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   handleCloseRoom,
   room,
   userInfo,
+  handleChangeMyName,
 }) => {
   const [loading, setLoading] = useState(true)
   const [participantsList, setParticipantsList] = useState<ParticipantProps[]>(
@@ -67,7 +68,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
         <Panel>
           <List>
             <Participant>
-              <MyName>{name}</MyName>
+              <MyName onClick={handleChangeMyName}>{name}</MyName>
               <Vote></Vote>
             </Participant>
 

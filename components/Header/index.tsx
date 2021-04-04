@@ -9,7 +9,6 @@ import { BsLink } from 'react-icons/bs'
 import {
   Container,
   Title,
-  OptionsContainer,
   TitleContainer,
   MinText,
   RoomTitle,
@@ -20,10 +19,16 @@ import {
 interface HeaderProps {
   showRoomTitle?: boolean
   roomTitle?: string
-  roomId: string
+  roomId?: string | string[]
+  imHost?: boolean
 }
 
-const Header: FC<HeaderProps> = ({ showRoomTitle, roomTitle, roomId }) => {
+const Header: FC<HeaderProps> = ({
+  showRoomTitle,
+  roomTitle,
+  roomId,
+  imHost,
+}) => {
   const minPokerURL =
     process.env.NODE_ENV !== 'production'
       ? process.env.MIN_POKER_DEV_URL
@@ -35,16 +40,18 @@ const Header: FC<HeaderProps> = ({ showRoomTitle, roomTitle, roomId }) => {
       {showRoomTitle && (
         <RoomTitleContainer>
           <RoomTitle>{roomTitle}</RoomTitle>
-          <CopyToClipboard
-            text={inviteLink}
-            onCopy={() =>
-              window.alert('Invite link was copied to your clipboard!')
-            }
-          >
-            <Invite>
-              <BsLink size={26} />
-            </Invite>
-          </CopyToClipboard>
+          {imHost && (
+            <CopyToClipboard
+              text={inviteLink}
+              onCopy={() =>
+                window.alert('Invite link was copied to your clipboard!')
+              }
+            >
+              <Invite>
+                <BsLink size={26} />
+              </Invite>
+            </CopyToClipboard>
+          )}
         </RoomTitleContainer>
       )}
       <Container>
