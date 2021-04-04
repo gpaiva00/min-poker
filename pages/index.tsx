@@ -60,8 +60,6 @@ const Home: FC = () => {
       participants: [],
     }
 
-    console.log(saveOnDB)
-
     await db.collection('rooms').add(saveOnDB)
     router.push({ pathname: 'voting', query: { roomId } })
   }
