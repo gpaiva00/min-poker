@@ -32,7 +32,7 @@ const Voting: FC = () => {
 
   const db = getDatabase()
   const [rooms, loading, error] = useCollectionData<Room[]>(
-    db.collection('rooms').where('id', '==', roomId),
+    db.collection('rooms').where('id', '==', roomId || ''),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
       refField: 'ref',
