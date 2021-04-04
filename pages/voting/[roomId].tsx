@@ -81,28 +81,33 @@ const Voting: FC = () => {
     setStorage(JSON.stringify(newUserInfo))
 
     const { participants } = room
+    let dataToChange = {
+      ...room,
+      hostName: newUserName,
+    }
 
-    const newParticipants = participants.map(participant => {
-      if (participant.id === userInfo.userId) {
-        return {
-          ...participant,
-          name: newUserName,
+    if (!imHost) {
+      const newParticipants = participants.map(participant => {
+        if (participant.id === userInfo.userId) {
+          return {
+            ...participant,
+            name: newUserName,
+          }
         }
-      }
 
-      return participant
-    })
+        return participant
+      })
+
+      dataToChange = {
+        ...room,
+        participants: newParticipants,
+      }
+    }
 
     const roomPath = room.ref.path.split('/')[1]
     const roomRef = db.collection('rooms').doc(roomPath)
 
-    await roomRef.set(
-      {
-        ...room,
-        participants: newParticipants,
-      },
-      { merge: false }
-    )
+    await roomRef.set(dataToChange, { merge: false })
   }
 
   useEffect(() => {
