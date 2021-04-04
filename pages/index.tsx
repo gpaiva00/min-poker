@@ -18,8 +18,8 @@ import Header from '../components/Header'
 
 import usePersistedState from '../hooks/usePersistedState'
 
-import { STORAGE_KEY_USER } from '../constants'
-import { generateName, idGenerator } from '../utils'
+import { DEFAULT_PARTICIPANT, STORAGE_KEY_USER } from '../constants'
+import { generateNickName, idGenerator } from '../utils'
 
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { getDatabase } from '../services/firebase'
@@ -39,7 +39,7 @@ const Home: FC = () => {
     let userName: string, hostId: string
 
     if (!userInfo) {
-      userName = generateName()
+      userName = generateNickName()
       hostId = idGenerator()
 
       setStorage(JSON.stringify({ name: userName, userId: hostId }))
@@ -56,12 +56,13 @@ const Home: FC = () => {
       id: roomId,
       name: roomName,
       hostId,
+      hostVote: '',
       isVoting: false,
-      participants: [],
+      participants: [DEFAULT_PARTICIPANT],
     }
 
     await db.collection('rooms').add(saveOnDB)
-    router.push({ pathname: 'voting', query: { roomId } })
+    router.push(`voting/${roomId}`)
   }
 
   return (

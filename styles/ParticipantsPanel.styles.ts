@@ -4,7 +4,6 @@ import Button from '../components/Button'
 export const Container = styled.div`
   margin-left: ${({ theme }) => theme.margins.medium};
   /* background: darkgray; */
-
 `
 
 export const Title = styled.h1`
@@ -22,7 +21,6 @@ export const PanelContainer = styled.div`
   height: 700px;
 
   /* background: lightgray; */
-
 `
 
 export const Panel = styled.div`
@@ -50,7 +48,6 @@ export const List = styled.div`
 export const MyName = styled.p`
   font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
-
 `
 
 export const Participant = styled.div`
@@ -68,10 +65,9 @@ export const Participant = styled.div`
 export const Name = styled.p`
   font-family: ${({ theme }) => theme.fonts.regular};
   font-size: ${({ theme }) => theme.fontSizes.regular};
-
 `
 
-export const Vote =  styled.p`
+export const Vote = styled.p`
   font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
 `
@@ -85,4 +81,6 @@ export const StartVoting = styled(Button)`
   width: 100%;
 `
 
-export const CloseRoom = styled(StartVoting)``
+export const CloseRoom = styled(StartVoting)`
+  outline: none;
+`

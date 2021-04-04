@@ -17,7 +17,7 @@ import {
   Title,
   Vote,
 } from '../../styles/ParticipantsPanel.styles'
-import { generateName } from '../../utils'
+import { generateNickName } from '../../utils'
 import usePersistedState from '../../hooks/usePersistedState'
 import { STORAGE_KEY_USER } from '../../constants'
 interface UserProps {
@@ -28,18 +28,20 @@ interface UserProps {
 const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   setStartVoting,
   startVoting,
+  imHost,
+  handleCloseRoom,
+  participants = [],
 }) => {
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
 
   const [loading, setLoading] = useState(true)
-  const [participants, setParticipants] = useState<ParticipantProps[]>([])
   const [userName, setUserName] = useState('')
 
   useEffect(() => {
     const userInfo: UserProps = storage && JSON.parse(storage)
 
     if (!userInfo) {
-      const nickname = generateName()
+      const nickname = generateNickName()
       setUserName(nickname)
       return
     }
@@ -47,6 +49,10 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
     const { name } = userInfo
     setUserName(name)
   }, [])
+
+  useEffect(() => {
+    console.log('ASDFASD', participants)
+  }, [participants])
 
   return (
     <Container>
@@ -57,26 +63,33 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
           <List>
             <Participant>
               <MyName>{userName}</MyName>
-              {/* get from state */}
               <Vote></Vote>
             </Participant>
 
             {participants.map((item, key) => (
-              <Participant>
+              <Participant key={key}>
                 <Name>{item.name}</Name>
                 <Vote>{item.vote}</Vote>
               </Participant>
             ))}
           </List>
-          <ButtonContainer>
-            <StartVoting onClick={() => setStartVoting(!startVoting)}>
-              {startVoting ? 'Finish voting' : 'Start voting'}
-            </StartVoting>
-          </ButtonContainer>
+          {imHost && (
+            <ButtonContainer>
+              <StartVoting onClick={() => setStartVoting(!startVoting)}>
+                {startVoting ? 'Finish voting' : 'Start voting'}
+              </StartVoting>
+            </ButtonContainer>
+          )}
         </Panel>
 
         <ButtonContainer>
-          <CloseRoom variant="danger">Close room</CloseRoom>
+          {imHost ? (
+            <CloseRoom onClick={handleCloseRoom} variant="danger">
+              Close room
+            </CloseRoom>
+          ) : (
+            <CloseRoom variant="danger">Exit room</CloseRoom>
+          )}
         </ButtonContainer>
       </PanelContainer>
     </Container>

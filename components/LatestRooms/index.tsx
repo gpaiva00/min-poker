@@ -39,7 +39,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
 
       <ItemsContainer>
         {myRooms.map((room, key) => (
-          <Link href={`voting?roomId=${room.id}`}>
+          <Link href={`voting/${room.id}`}>
             <Item key={key}>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}

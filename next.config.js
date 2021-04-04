@@ -9,5 +9,9 @@ module.exports = withImages({
     MESSAGING_SENDER_ID: '672134937405',
     APP_ID: '1:672134937405:web:ec8a089f7d2eb254096354',
     MEASUREMENT_ID: 'G-7DTECLBR8J',
+  },
+
+  typescript: {
+    ignoreBuildErrors: true,
   }
 })

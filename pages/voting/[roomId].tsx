@@ -13,35 +13,40 @@ import { validateRoomId } from '../../utils/validateRoomId'
 import { useCollectionData, useDocument } from 'react-firebase-hooks/firestore'
 import { Room } from '../../typings/Room'
 import { getDatabase } from '../../services/firebase'
-
-const defaultRoom: Room = {
-  id: '',
-  name: '',
-  isVoting: false,
-  participants: [],
-  hostId: '',
-}
+import usePersistedState from '../../hooks/usePersistedState'
+import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
+import { UserInfo } from '../../typings/UserInfo'
 
 const Voting: FC = () => {
-  const [roomTitle, setRoomTitle] = useState('chinforinfola')
   const [isVoting, setIsVoting] = useState(false)
   const [showResults, setShowResults] = useState(false)
+  const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
 
   const router = useRouter()
   const { roomId } = router.query
 
   const db = getDatabase()
   const [rooms, loading, error] = useCollectionData<Room[]>(
-    db.collection('rooms').where('id', '==', roomId),
+    db.collection('rooms').where('id', '==', roomId || ''),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
       refField: 'ref',
     }
   )
 
-  // console.log('SALINHA', rooms)
+  const room: Room = rooms ? rooms[0] : DEFAULT_ROOM
 
-  const room: Room = rooms ? rooms[0] : defaultRoom
+  const userInfo: UserInfo = storage && JSON.parse(storage)
+  const imHost = room.hostId === userInfo.userId
+
+  const handleCloseRoom = async () => {
+    try {
+      await db.doc(room.ref.path).delete()
+      router.push('/')
+    } catch (error) {
+      console.error('Error trying to close room', error)
+    }
+  }
 
   const handleStartVoting = async () => {
     try {
@@ -68,7 +73,7 @@ const Voting: FC = () => {
       router.push('/')
       return
     }
-  }, [])
+  }, [roomId])
 
   return (
     <div>
@@ -79,6 +84,9 @@ const Voting: FC = () => {
           <ParticipantsPanel
             setStartVoting={handleStartVoting}
             startVoting={isVoting}
+            imHost={imHost}
+            handleCloseRoom={handleCloseRoom}
+            participants={room.participants || []}
           />
           <VotingPanel startVoting={room.isVoting} showResults={showResults} />
         </PageContainer>
