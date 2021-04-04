@@ -70,7 +70,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
           </List>
           <ButtonContainer>
             <StartVoting onClick={() => setStartVoting(!startVoting)}>
-              Start voting
+              {startVoting ? 'Finish voting' : 'Start voting'}
             </StartVoting>
           </ButtonContainer>
         </Panel>

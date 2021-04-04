@@ -35,7 +35,7 @@ const Home: FC = () => {
 
   const userInfo: UserInfo = storage && JSON.parse(storage)
 
-  const handleCreateRoom = () => {
+  const handleCreateRoom = async () => {
     let userName: string, hostId: string
 
     if (!userInfo) {
@@ -53,13 +53,16 @@ const Home: FC = () => {
     const roomName = inputValue
 
     const saveOnDB = {
-      roomId,
-      roomName,
+      id: roomId,
+      name: roomName,
       hostId,
       isVoting: false,
+      participants: [],
     }
 
     console.log(saveOnDB)
+
+    await db.collection('rooms').add(saveOnDB)
     router.push({ pathname: 'voting', query: { roomId } })
   }
 

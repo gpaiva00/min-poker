@@ -1,3 +1,4 @@
 export interface VotingPanelProps {
-  startVoting?: boolean;
+  startVoting?: boolean
+  showResults?: boolean
 }

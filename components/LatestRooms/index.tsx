@@ -8,6 +8,7 @@ import { Container, Item, ItemsContainer, Title } from './styles'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { getDatabase } from '../../services/firebase'
 import { LatestRoomsProps } from './typings'
+import Link from 'next/link'
 
 const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
   const db = getDatabase()
@@ -38,15 +39,17 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
 
       <ItemsContainer>
         {myRooms.map((room, key) => (
-          <Item key={key}>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ ease: 'easeInOut', duration: 1, delay: 0.5 }}
-            >
-              {room.name}
-            </motion.p>
-          </Item>
+          <Link href={`voting?roomId=${room.id}`}>
+            <Item key={key}>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ ease: 'easeInOut', duration: 1, delay: 0.5 }}
+              >
+                {room.name}
+              </motion.p>
+            </Item>
+          </Link>
         ))}
       </ItemsContainer>
     </Container>
