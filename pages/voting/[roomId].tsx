@@ -19,8 +19,8 @@ import { UserInfo } from '../../typings/UserInfo'
 
 const Voting: FC = () => {
   const [isVoting, setIsVoting] = useState(false)
-  const [showResults, setShowResults] = useState(false)
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
+  const [myVote, setMyVote] = useState('')
 
   const router = useRouter()
   const { roomId } = router.query
@@ -71,15 +71,15 @@ const Voting: FC = () => {
   }
 
   const handleStartVoting = async () => {
-    setShowResults(false)
-
     try {
       const roomPath = room.ref.path.split('/')[1]
       const roomRef = db.collection('rooms').doc(roomPath)
+      const newIsVoting = !isVoting
 
       let dataToChange = {
         ...room,
-        isVoting: !isVoting,
+        isVoting: newIsVoting,
+        showResults: !newIsVoting,
       }
 
       if (!isVoting) {
@@ -98,8 +98,6 @@ const Voting: FC = () => {
       }
 
       await roomRef.set(dataToChange, { merge: false })
-
-      if (isVoting) setShowResults(true)
 
       setIsVoting(!isVoting)
     } catch (error) {
@@ -152,6 +150,8 @@ const Voting: FC = () => {
 
   const handleVoteClick = async (voteId: string) => {
     try {
+      setMyVote(voteId)
+
       const { participants } = room
       let dataToChange = {
         ...room,
@@ -206,18 +206,19 @@ const Voting: FC = () => {
           <ParticipantsPanel
             handleChangeMyName={handleChangeMyName}
             setStartVoting={handleStartVoting}
-            isVoting={isVoting}
+            isVoting={room.isVoting}
             imHost={imHost}
             handleDeleteRoom={handleDeleteRoom}
             handleExitRoom={handleExitRoom}
             room={room}
             userInfo={userInfo}
-            showResults={showResults}
+            myVote={myVote}
+            setMyVote={setMyVote}
           />
           <VotingPanel
             handleVoteClick={handleVoteClick}
-            isVoting={isVoting}
-            showResults={showResults}
+            isVoting={room.isVoting}
+            showResults={room.showResults}
           />
         </PageContainer>
       </main>

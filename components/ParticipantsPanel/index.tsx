@@ -18,10 +18,6 @@ import {
   Title,
   Vote,
 } from '../../styles/ParticipantsPanel.styles'
-interface UserProps {
-  name: string
-  userId: string
-}
 
 const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   setStartVoting,
@@ -32,14 +28,15 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   room,
   userInfo,
   handleChangeMyName,
-  showResults,
+  myVote,
+  setMyVote,
 }) => {
   const [loading, setLoading] = useState(true)
   const [participantsList, setParticipantsList] = useState<ParticipantProps[]>(
     []
   )
 
-  const { participants, hostVote, hostName, hostId } = room
+  const { participants, hostVote, hostName, hostId, showResults } = room
   const { name, userId } = userInfo
 
   const showParticipantVote = (vote: string) => {
@@ -52,6 +49,8 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   }
 
   useEffect(() => {
+    if (showResults) setMyVote('')
+
     let newParticipants = participants.filter(
       ({ id }) => id !== '' && id !== userId
     )
@@ -67,7 +66,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
     }
 
     setParticipantsList(newParticipants)
-  }, [participants])
+  }, [participants, showResults])
 
   return (
     <Container>
@@ -78,7 +77,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
           <List>
             <Participant>
               <MyName onClick={handleChangeMyName}>{name} (you)</MyName>
-              {showParticipantVote(hostVote)}
+              {showParticipantVote(myVote)}
             </Participant>
 
             {participantsList.map(({ name, vote }, key) => (

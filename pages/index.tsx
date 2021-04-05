@@ -59,6 +59,7 @@ const Home: FC = () => {
       hostVote: '',
       hostName,
       isVoting: false,
+      showResults: false,
       participants: [DEFAULT_PARTICIPANT],
     }
 

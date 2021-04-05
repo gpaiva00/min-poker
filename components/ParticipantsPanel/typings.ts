@@ -10,7 +10,8 @@ export interface ParticipantsPanelProps {
   userInfo: UserInfo
   room: Room
   handleChangeMyName(): void
-  showResults: boolean
+  myVote?: string
+  setMyVote: React.Dispatch<React.SetStateAction<string>>
 }
 
 export interface ParticipantProps {

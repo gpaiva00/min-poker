@@ -13,6 +13,7 @@ export interface Room {
   hostId: string
   hostName: string
   isVoting: boolean
+  showResults?: boolean
   participants: Participant[]
   ref?: Ref
   hostVote: string
