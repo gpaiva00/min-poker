@@ -66,7 +66,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
         <Panel>
           <List>
             <Participant>
-              <MyName onClick={handleChangeMyName}>{name}</MyName>
+              <MyName onClick={handleChangeMyName}>{name} (you)</MyName>
               <Vote></Vote>
             </Participant>
 

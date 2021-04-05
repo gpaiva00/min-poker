@@ -16,7 +16,7 @@ const Invitation: FC = () => {
   const [message, setMessage] = useState('Loading...')
 
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
-  let { userId, name }: UserInfo = storage && JSON.parse(storage)
+  let { userId, name: userName }: UserInfo = storage && JSON.parse(storage)
 
   const db = getDatabase()
 
@@ -37,12 +37,10 @@ const Invitation: FC = () => {
 
         if (!hostId) return
 
-        if (!userId) {
-          const userName = generateNickName()
-          userId = idGenerator()
+        if (!userId) userId = idGenerator()
+        if (!userName) userName = generateNickName()
 
-          setStorage(JSON.stringify({ name: userName, userId }))
-        }
+        setStorage(JSON.stringify({ name: userName, userId }))
 
         const imHost = hostId === userId
 
@@ -55,7 +53,7 @@ const Invitation: FC = () => {
           const newParticipant = [
             {
               id: userId,
-              name,
+              name: userName,
               vote: '',
             },
           ]
@@ -70,14 +68,14 @@ const Invitation: FC = () => {
             { merge: true }
           )
 
-          return router.replace(`/voting/${roomId}`)
+          return router.push(`/voting/${roomId}`)
         }
       } catch (error) {
         console.error('Error trying to set new participant', error)
       }
 
       console.log('ALREADY PARTICIPANT')
-      router.replace(`/voting/${roomId}`)
+      router.push(`/voting/${roomId}`)
     }
 
     verifyRoomId()
