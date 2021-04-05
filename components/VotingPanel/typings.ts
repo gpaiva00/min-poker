@@ -1,5 +1,7 @@
+import { Room } from '../../typings/Room'
+
 export interface VotingPanelProps {
-  isVoting?: boolean
+  room: Room
   handleVoteClick(id: string): void
   showResults: boolean
 }

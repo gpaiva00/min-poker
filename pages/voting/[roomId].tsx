@@ -11,16 +11,16 @@ import VotingPanel from '../../components/VotingPanel'
 
 import { validateRoomId } from '../../utils/validateRoomId'
 import { useCollectionData, useDocument } from 'react-firebase-hooks/firestore'
-import { Room } from '../../typings/Room'
+import { Room, RoomRef } from '../../typings/Room'
 import { getDatabase } from '../../services/firebase'
 import usePersistedState from '../../hooks/usePersistedState'
 import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
 import { UserInfo } from '../../typings/UserInfo'
+import { CalculateVotingProps } from '../../typings/Voting'
 
 const Voting: FC = () => {
   const [isVoting, setIsVoting] = useState(false)
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
-  const [myVote, setMyVote] = useState('')
 
   const router = useRouter()
   const { roomId } = router.query
@@ -70,16 +70,48 @@ const Voting: FC = () => {
     }
   }
 
+  const calculateVotingResult = async ({ roomRef }: CalculateVotingProps) => {
+    try {
+      const results = room.participants.reduce((acc, curr) => {
+        const item = {
+          id: curr.vote,
+          votes: 0,
+        }
+
+        item.votes = room.participants.filter(
+          ({ vote }) => vote === curr.vote
+        ).length
+
+        const itemIndex = acc.findIndex(item => item.id === curr.vote)
+
+        if (itemIndex !== -1) acc[itemIndex] = item
+        else acc.push(item)
+
+        return acc
+      }, [])
+
+      await roomRef.set(
+        {
+          results,
+        },
+        { merge: true }
+      )
+    } catch (error) {
+      console.error('Error trying to set voting results', error)
+    }
+  }
+
   const handleStartVoting = async () => {
     try {
       const roomPath = room.ref.path.split('/')[1]
       const roomRef = db.collection('rooms').doc(roomPath)
       const newIsVoting = !isVoting
+      const showResults = !newIsVoting
 
       let dataToChange = {
         ...room,
         isVoting: newIsVoting,
-        showResults: !newIsVoting,
+        showResults,
       }
 
       if (!isVoting) {
@@ -92,12 +124,13 @@ const Voting: FC = () => {
 
         dataToChange = {
           ...dataToChange,
-          hostVote: '',
           participants: newParticipants,
         }
       }
 
       await roomRef.set(dataToChange, { merge: false })
+
+      if (showResults) calculateVotingResult({ roomRef })
 
       setIsVoting(!isVoting)
     } catch (error) {
@@ -150,36 +183,29 @@ const Voting: FC = () => {
 
   const handleVoteClick = async (voteId: string) => {
     try {
-      setMyVote(voteId)
-
       const { participants } = room
-      let dataToChange = {
-        ...room,
-        hostVote: voteId,
-      }
 
-      if (!imHost) {
-        const newParticipants = participants.map(participant => {
-          if (participant.id === userInfo.userId) {
-            return {
-              ...participant,
-              vote: voteId,
-            }
+      const newParticipants = participants.map(participant => {
+        if (participant.id === userInfo.userId) {
+          return {
+            ...participant,
+            vote: voteId,
           }
-
-          return participant
-        })
-
-        dataToChange = {
-          ...room,
-          participants: newParticipants,
         }
-      }
+
+        return participant
+      })
 
       const roomPath = room.ref.path.split('/')[1]
       const roomRef = db.collection('rooms').doc(roomPath)
 
-      await roomRef.set(dataToChange, { merge: false })
+      await roomRef.set(
+        {
+          ...room,
+          participants: newParticipants,
+        },
+        { merge: false }
+      )
     } catch (error) {
       console.error('Error trying to exit room', error)
     }
@@ -206,18 +232,15 @@ const Voting: FC = () => {
           <ParticipantsPanel
             handleChangeMyName={handleChangeMyName}
             setStartVoting={handleStartVoting}
-            isVoting={room.isVoting}
             imHost={imHost}
             handleDeleteRoom={handleDeleteRoom}
             handleExitRoom={handleExitRoom}
             room={room}
             userInfo={userInfo}
-            myVote={myVote}
-            setMyVote={setMyVote}
           />
           <VotingPanel
             handleVoteClick={handleVoteClick}
-            isVoting={room.isVoting}
+            room={room}
             showResults={room.showResults}
           />
         </PageContainer>

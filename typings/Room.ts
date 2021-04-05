@@ -4,17 +4,22 @@ export interface Participant {
   vote: string
 }
 
-interface Ref {
+export interface RoomRef {
   path: string
 }
 export interface Room {
   name: string
   id: string
   hostId: string
-  hostName: string
   isVoting: boolean
   showResults?: boolean
   participants: Participant[]
-  ref?: Ref
-  hostVote: string
+  ref?: RoomRef
+  results: Result[]
+}
+
+export interface Result {
+  id: string
+  text: string
+  votes: number
 }

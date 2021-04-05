@@ -15,12 +15,10 @@ import {
 } from './styles'
 import { VotingPanelProps } from './typings'
 
-const VotingPanel: FC<VotingPanelProps> = ({
-  isVoting,
-  showResults,
-  handleVoteClick,
-}) => {
+const VotingPanel: FC<VotingPanelProps> = ({ room, handleVoteClick }) => {
   const [isCardSelected, setIsCardSelected] = useState('')
+
+  const { isVoting, showResults, results } = room
 
   const handleCardClick = (voteId: string) => {
     handleVoteClick(voteId)
@@ -71,31 +69,10 @@ const VotingPanel: FC<VotingPanelProps> = ({
     },
   ]
 
-  const resultCards = [
-    {
-      text: '1',
-      id: 'question',
-      votes: 3,
-    },
-    {
-      text: '4',
-      id: 'question',
-      votes: 2,
-    },
-    {
-      text: '1',
-      id: 'question',
-      votes: 1,
-    },
-    {
-      text: <FiCoffee size={40} />,
-      id: 'coffee',
-      votes: 1,
-    },
-  ]
-
   useEffect(() => {
-    if (showResults) setIsCardSelected('')
+    if (showResults) {
+      setIsCardSelected('')
+    }
   }, [showResults])
 
   return (
@@ -157,18 +134,13 @@ const VotingPanel: FC<VotingPanelProps> = ({
           </TitleContainer>
 
           <CardsContainer>
-            {resultCards.map((item, key) => (
+            {results.map((item, key) => (
               <motion.div
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ ease: 'easeInOut', duration: 0.5, delay: 0.5 }}
               >
-                <ResultCard
-                  text={item.text}
-                  id={item.id}
-                  key={key}
-                  votes={item.votes}
-                />
+                <ResultCard id={item.id} key={key} votes={item.votes} />
               </motion.div>
             ))}
           </CardsContainer>

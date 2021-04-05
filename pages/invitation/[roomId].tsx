@@ -33,24 +33,28 @@ const Invitation: FC = () => {
       if (rooms && !rooms.length) setMessage('Room not found.')
 
       try {
-        const { hostId, participants, ref } = rooms ? rooms[0] : DEFAULT_ROOM
+        const room: Room = rooms && rooms[0] ? rooms[0] : DEFAULT_ROOM
 
-        if (!hostId) return
+        if (!room.hostId) return
 
         if (!userId) userId = idGenerator()
         if (!userName) userName = generateNickName()
 
         setStorage(JSON.stringify({ name: userName, userId }))
 
-        const imHost = hostId === userId
+        // const imHost = hostId === userId
 
-        if (imHost) return router.replace(`/voting/${roomId}`)
+        // if (imHost) return router.replace(`/voting/${roomId}`)
 
         const isNotParticipant =
-          participants.indexOf(participant => participant.id === userId) === -1
+          room.participants.findIndex(({ id }) => id === userId) === -1
 
         if (isNotParticipant) {
-          const newParticipant = [
+          const roomPath = room.ref.path.split('/')[1]
+          const roomRef = db.collection('rooms').doc(roomPath)
+
+          const newParticipants = [
+            ...room.participants,
             {
               id: userId,
               name: userName,
@@ -58,14 +62,12 @@ const Invitation: FC = () => {
             },
           ]
 
-          const roomPath = ref.path.split('/')[1]
-          const roomRef = db.collection('rooms').doc(roomPath)
-
           await roomRef.set(
             {
-              participants: newParticipant,
+              ...room,
+              participants: newParticipants,
             },
-            { merge: true }
+            { merge: false }
           )
 
           return router.push(`/voting/${roomId}`)

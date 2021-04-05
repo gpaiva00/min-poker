@@ -18,55 +18,53 @@ import {
   Title,
   Vote,
 } from '../../styles/ParticipantsPanel.styles'
+import { FiCoffee } from 'react-icons/fi'
+import { RESULTS_TEXT } from '../../constants'
 
 const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   setStartVoting,
-  isVoting,
   imHost,
   handleDeleteRoom,
   handleExitRoom,
   room,
   userInfo,
   handleChangeMyName,
-  myVote,
-  setMyVote,
 }) => {
   const [loading, setLoading] = useState(true)
   const [participantsList, setParticipantsList] = useState<ParticipantProps[]>(
     []
   )
+  const [myVote, setMyVote] = useState('')
 
-  const { participants, hostVote, hostName, hostId, showResults } = room
+  const { participants, showResults, isVoting } = room
   const { name, userId } = userInfo
 
   const showParticipantVote = (vote: string) => {
-    if (!isVoting) return
+    if (!isVoting && !showResults) return
 
     if (!vote.length) return <BiTime size={20} />
 
     if (vote.length && !showResults) return <AiFillCheckCircle size={20} />
-    else return <Vote>{vote}</Vote>
+    else
+      return vote === 'coffee' ? (
+        <Vote>
+          <FiCoffee size={20} />
+        </Vote>
+      ) : (
+        <Vote>{RESULTS_TEXT[vote]}</Vote>
+      )
   }
 
   useEffect(() => {
-    if (showResults) setMyVote('')
+    const me = participants.find(({ id }) => id === userId)
+    setMyVote(me ? me.vote : '')
 
     let newParticipants = participants.filter(
       ({ id }) => id !== '' && id !== userId
     )
 
-    if (!imHost) {
-      const hostData = {
-        name: hostName,
-        id: hostId,
-        vote: hostVote,
-      }
-
-      newParticipants = [hostData, ...newParticipants]
-    }
-
     setParticipantsList(newParticipants)
-  }, [participants, showResults])
+  }, [participants])
 
   return (
     <Container>

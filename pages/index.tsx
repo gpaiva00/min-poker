@@ -18,12 +18,14 @@ import Header from '../components/Header'
 
 import usePersistedState from '../hooks/usePersistedState'
 
-import { DEFAULT_PARTICIPANT, STORAGE_KEY_USER } from '../constants'
+import {
+  DEFAULT_PARTICIPANT,
+  DEFAULT_RESULT,
+  STORAGE_KEY_USER,
+} from '../constants'
 import { generateNickName, idGenerator } from '../utils'
 
-import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { getDatabase } from '../services/firebase'
-import { Room } from '../typings/Room'
 import { UserInfo } from '../typings/UserInfo'
 
 const Home: FC = () => {
@@ -56,11 +58,16 @@ const Home: FC = () => {
       id: roomId,
       name: roomName,
       hostId,
-      hostVote: '',
-      hostName,
       isVoting: false,
       showResults: false,
-      participants: [DEFAULT_PARTICIPANT],
+      results: [DEFAULT_RESULT],
+      participants: [
+        {
+          id: hostId,
+          name: hostName,
+          vote: '',
+        },
+      ],
     }
 
     await db.collection('rooms').add(saveOnDB)
