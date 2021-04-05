@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
 import { FiCoffee } from 'react-icons/fi'
@@ -16,9 +16,18 @@ import {
 import { VotingPanelProps } from './typings'
 
 const VotingPanel: FC<VotingPanelProps> = ({
-  startVoting = true,
-  showResults = false,
+  isVoting,
+  showResults,
+  handleVoteClick,
 }) => {
+  const [isCardSelected, setIsCardSelected] = useState('')
+
+  const handleCardClick = (voteId: string) => {
+    handleVoteClick(voteId)
+
+    setIsCardSelected(voteId)
+  }
+
   const cardsToVote = [
     {
       text: '1',
@@ -85,9 +94,13 @@ const VotingPanel: FC<VotingPanelProps> = ({
     },
   ]
 
+  useEffect(() => {
+    if (showResults) setIsCardSelected('')
+  }, [showResults])
+
   return (
     <Container>
-      {!startVoting && (
+      {!isVoting && !showResults && (
         <WaitingContainer>
           <motion.div
             initial={{ opacity: 0 }}
@@ -98,7 +111,8 @@ const VotingPanel: FC<VotingPanelProps> = ({
           </motion.div>
         </WaitingContainer>
       )}
-      {startVoting && (
+
+      {isVoting && !showResults && (
         <>
           <TitleContainer>
             <motion.h1
@@ -111,18 +125,50 @@ const VotingPanel: FC<VotingPanelProps> = ({
           </TitleContainer>
 
           <CardsContainer>
-            {/* {
-              resultCards.map((item, key) => (
-                <ResultCard text={item.text} id={item.id} key={key} votes={item.votes} />
-              ))
-            } */}
             {cardsToVote.map((item, key) => (
               <motion.div
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ ease: 'easeInOut', duration: 0.5, delay: 0.5 }}
               >
-                <DefaultCard text={item.text} id={item.id} key={key} />
+                <DefaultCard
+                  handleVoteClick={handleCardClick}
+                  text={item.text}
+                  id={item.id}
+                  key={key}
+                  isSelected={isCardSelected}
+                />
+              </motion.div>
+            ))}
+          </CardsContainer>
+        </>
+      )}
+
+      {showResults && !isVoting && (
+        <>
+          <TitleContainer>
+            <motion.h1
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ ease: 'easeInOut', duration: 1 }}
+            >
+              <Title>Results</Title>
+            </motion.h1>
+          </TitleContainer>
+
+          <CardsContainer>
+            {resultCards.map((item, key) => (
+              <motion.div
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ ease: 'easeInOut', duration: 0.5, delay: 0.5 }}
+              >
+                <ResultCard
+                  text={item.text}
+                  id={item.id}
+                  key={key}
+                  votes={item.votes}
+                />
               </motion.div>
             ))}
           </CardsContainer>

@@ -3,13 +3,14 @@ import { UserInfo } from '../../typings/UserInfo'
 
 export interface ParticipantsPanelProps {
   setStartVoting: React.Dispatch<React.SetStateAction<boolean>>
-  startVoting: boolean
+  isVoting: boolean
   imHost: boolean
   handleDeleteRoom(): void
   handleExitRoom(): void
   userInfo: UserInfo
   room: Room
   handleChangeMyName(): void
+  showResults: boolean
 }
 
 export interface ParticipantProps {

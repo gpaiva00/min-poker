@@ -1,6 +1,10 @@
 import styled from 'styled-components'
 
-export const Card = styled.div`
+interface CardProps {
+  selected: boolean
+}
+
+export const Card = styled.div<CardProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,6 +19,12 @@ export const Card = styled.div`
 
   margin: ${({ theme }) => theme.margins.normal};
   cursor: pointer;
+  background: transparent;
+
+  background: ${({ selected, theme }) =>
+    selected ? theme.colors.blue : 'transparent'};
+  color: ${({ selected, theme }) =>
+    selected ? theme.colors.lightText : theme.colors.primary};
 
   &:hover {
     background: ${({ theme }) => theme.colors.blue};
@@ -25,7 +35,7 @@ export const Card = styled.div`
 
 export const CardIcon = styled.div``
 
-export const CardText =  styled.h1`
+export const CardText = styled.h1`
   font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.biggest};
 `

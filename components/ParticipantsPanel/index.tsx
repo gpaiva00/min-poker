@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
-// import { motion } from 'framer-motion'
+import { BiTime } from 'react-icons/bi'
+import { AiFillCheckCircle } from 'react-icons/ai'
 
 import { ParticipantProps, ParticipantsPanelProps } from './typings'
 
@@ -24,13 +25,14 @@ interface UserProps {
 
 const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   setStartVoting,
-  startVoting,
+  isVoting,
   imHost,
   handleDeleteRoom,
   handleExitRoom,
   room,
   userInfo,
   handleChangeMyName,
+  showResults,
 }) => {
   const [loading, setLoading] = useState(true)
   const [participantsList, setParticipantsList] = useState<ParticipantProps[]>(
@@ -39,6 +41,15 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
 
   const { participants, hostVote, hostName, hostId } = room
   const { name, userId } = userInfo
+
+  const showParticipantVote = (vote: string) => {
+    if (!isVoting) return
+
+    if (!vote.length) return <BiTime size={20} />
+
+    if (vote.length && !showResults) return <AiFillCheckCircle size={20} />
+    else return <Vote>{vote}</Vote>
+  }
 
   useEffect(() => {
     let newParticipants = participants.filter(
@@ -67,20 +78,20 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
           <List>
             <Participant>
               <MyName onClick={handleChangeMyName}>{name} (you)</MyName>
-              <Vote></Vote>
+              {showParticipantVote(hostVote)}
             </Participant>
 
-            {participantsList.map((item, key) => (
+            {participantsList.map(({ name, vote }, key) => (
               <Participant key={key}>
-                <Name>{item.name}</Name>
-                <Vote>{item.vote}</Vote>
+                <Name>{name}</Name>
+                {showParticipantVote(vote)}
               </Participant>
             ))}
           </List>
           {imHost && (
             <ButtonContainer>
-              <StartVoting onClick={() => setStartVoting(!startVoting)}>
-                {startVoting ? 'Finish voting' : 'Start voting'}
+              <StartVoting onClick={() => setStartVoting(!isVoting)}>
+                {isVoting ? 'Finish voting' : 'Start voting'}
               </StartVoting>
             </ButtonContainer>
           )}

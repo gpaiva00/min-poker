@@ -1,4 +1,5 @@
 export interface VotingPanelProps {
-  startVoting?: boolean
+  isVoting?: boolean
   showResults?: boolean
+  handleVoteClick(id: string): void
 }

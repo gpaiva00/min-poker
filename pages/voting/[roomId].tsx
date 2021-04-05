@@ -71,19 +71,37 @@ const Voting: FC = () => {
   }
 
   const handleStartVoting = async () => {
+    setShowResults(false)
+
     try {
       const roomPath = room.ref.path.split('/')[1]
       const roomRef = db.collection('rooms').doc(roomPath)
 
-      await roomRef.set(
-        {
-          isVoting: !isVoting,
-        },
-        { merge: true }
-      )
+      let dataToChange = {
+        ...room,
+        isVoting: !isVoting,
+      }
+
+      if (!isVoting) {
+        const newParticipants = room.participants.map(participant => {
+          return {
+            ...participant,
+            vote: '',
+          }
+        })
+
+        dataToChange = {
+          ...dataToChange,
+          hostVote: '',
+          participants: newParticipants,
+        }
+      }
+
+      await roomRef.set(dataToChange, { merge: false })
+
+      if (isVoting) setShowResults(true)
 
       setIsVoting(!isVoting)
-      setShowResults(!showResults)
     } catch (error) {
       window.alert('Error when trying to start voting. Please try later.')
       console.error('Error when trying to start voting', error)
@@ -132,6 +150,41 @@ const Voting: FC = () => {
     await roomRef.set(dataToChange, { merge: false })
   }
 
+  const handleVoteClick = async (voteId: string) => {
+    try {
+      const { participants } = room
+      let dataToChange = {
+        ...room,
+        hostVote: voteId,
+      }
+
+      if (!imHost) {
+        const newParticipants = participants.map(participant => {
+          if (participant.id === userInfo.userId) {
+            return {
+              ...participant,
+              vote: voteId,
+            }
+          }
+
+          return participant
+        })
+
+        dataToChange = {
+          ...room,
+          participants: newParticipants,
+        }
+      }
+
+      const roomPath = room.ref.path.split('/')[1]
+      const roomRef = db.collection('rooms').doc(roomPath)
+
+      await roomRef.set(dataToChange, { merge: false })
+    } catch (error) {
+      console.error('Error trying to exit room', error)
+    }
+  }
+
   useEffect(() => {
     if (!validateRoomId(roomId)) {
       router.push('/')
@@ -153,14 +206,19 @@ const Voting: FC = () => {
           <ParticipantsPanel
             handleChangeMyName={handleChangeMyName}
             setStartVoting={handleStartVoting}
-            startVoting={isVoting}
+            isVoting={isVoting}
             imHost={imHost}
             handleDeleteRoom={handleDeleteRoom}
             handleExitRoom={handleExitRoom}
             room={room}
             userInfo={userInfo}
+            showResults={showResults}
           />
-          <VotingPanel startVoting={room.isVoting} showResults={showResults} />
+          <VotingPanel
+            handleVoteClick={handleVoteClick}
+            isVoting={isVoting}
+            showResults={showResults}
+          />
         </PageContainer>
       </main>
     </div>
