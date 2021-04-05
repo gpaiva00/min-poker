@@ -34,7 +34,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ ease: 'easeInOut', duration: 1 }}
       >
-        <Title>Latest rooms</Title>
+        <Title>your latest rooms</Title>
       </motion.div>
 
       <ItemsContainer>
