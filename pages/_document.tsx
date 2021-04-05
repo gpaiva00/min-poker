@@ -48,12 +48,7 @@ export default class MyDocument extends Document {
             property="og:description"
             content="Minimalist Planning Poker Game"
           />
-          <meta
-            property="og:image"
-            content={
-              'https://github.com/gpaiva00/min-poker/blob/02244d66223c68b0cf3cf1fbc8627927d470a51f/public/screenshot.png'
-            }
-          />
+          <meta property="og:image" content={'../public/ogMinPoker.png'} />
 
           <meta charSet="utf-8" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
