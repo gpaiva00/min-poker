@@ -41,6 +41,11 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, width=device-width"
+          />
+
           <meta property="og:url" content="https://min-poker.vercel.app" />
           <meta property="og:type" content="website" />
           <meta property="og:title" content="minPOKER" />
@@ -48,7 +53,7 @@ export default class MyDocument extends Document {
             property="og:description"
             content="Minimalist Planning Poker Game"
           />
-          <meta property="og:image" content={'../public/ogMinPoker.png'} />
+          <meta property="og:image" content="../public/ogMinPoker.png" />
 
           <meta charSet="utf-8" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
