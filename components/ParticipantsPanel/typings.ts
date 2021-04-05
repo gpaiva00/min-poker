@@ -5,7 +5,7 @@ export interface ParticipantsPanelProps {
   setStartVoting: React.Dispatch<React.SetStateAction<boolean>>
   startVoting: boolean
   imHost: boolean
-  handleCloseRoom(): void
+  handleDeleteRoom(): void
   handleExitRoom(): void
   userInfo: UserInfo
   room: Room

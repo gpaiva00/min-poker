@@ -34,14 +34,17 @@ const Voting: FC = () => {
     }
   )
 
-  const room: Room = rooms ? rooms[0] : DEFAULT_ROOM
+  const room: Room = rooms && rooms[0] ? rooms[0] : DEFAULT_ROOM
 
   const userInfo: UserInfo = storage && JSON.parse(storage)
   const imHost = room.hostId === userInfo.userId
 
-  const handleCloseRoom = async () => {
+  const handleDeleteRoom = async () => {
     try {
-      await db.doc(room.ref.path).delete()
+      setTimeout(async () => {
+        await db.doc(room.ref.path).delete()
+      }, 1500)
+
       router.push('/')
     } catch (error) {
       console.error('Error trying to close room', error)
@@ -152,7 +155,7 @@ const Voting: FC = () => {
             setStartVoting={handleStartVoting}
             startVoting={isVoting}
             imHost={imHost}
-            handleCloseRoom={handleCloseRoom}
+            handleDeleteRoom={handleDeleteRoom}
             handleExitRoom={handleExitRoom}
             room={room}
             userInfo={userInfo}

@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
+  position: absolute;
   ${({ theme }) => `margin: ${theme.margins.medium} ${theme.margins.medium}`};
+  /* margin-left: ${({ theme }) => theme.margins.medium}; */
 `
 
 export const Title = styled.h1`
@@ -12,7 +14,7 @@ export const Title = styled.h1`
 `
 
 export const ItemsContainer = styled.div`
-  position: absolute;
+  /* position: absolute; */
   display: flex;
   flex-direction: column;
   align-items: flex-start;

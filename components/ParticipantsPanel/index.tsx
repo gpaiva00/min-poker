@@ -5,7 +5,7 @@ import { ParticipantProps, ParticipantsPanelProps } from './typings'
 
 import {
   ButtonContainer,
-  CloseRoom,
+  DeleteRoom,
   Container,
   List,
   MyName,
@@ -26,7 +26,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   setStartVoting,
   startVoting,
   imHost,
-  handleCloseRoom,
+  handleDeleteRoom,
   handleExitRoom,
   room,
   userInfo,
@@ -88,13 +88,13 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
 
         <ButtonContainer>
           {imHost ? (
-            <CloseRoom onClick={handleCloseRoom} variant="danger">
-              Close room
-            </CloseRoom>
+            <DeleteRoom onClick={handleDeleteRoom} variant="danger">
+              Delete room
+            </DeleteRoom>
           ) : (
-            <CloseRoom onClick={handleExitRoom} variant="danger">
+            <DeleteRoom onClick={handleExitRoom} variant="danger">
               Exit room
-            </CloseRoom>
+            </DeleteRoom>
           )}
         </ButtonContainer>
       </PanelContainer>

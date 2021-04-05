@@ -86,6 +86,6 @@ export const StartVoting = styled(Button)`
   width: 100%;
 `
 
-export const CloseRoom = styled(StartVoting)`
+export const DeleteRoom = styled(StartVoting)`
   outline: none;
 `

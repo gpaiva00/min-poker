@@ -8,6 +8,7 @@ export const DEFAULT_ROOM: Room = {
   isVoting: false,
   participants: [],
   hostId: '',
+  hostName: '',
   ref: {
     path: '',
   },
