@@ -41,6 +41,20 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+          <meta property="og:url" content="https://min-poker.vercel.app" />
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content="minPOKER" />
+          <meta
+            property="og:description"
+            content="Minimalist Planning Poker Game"
+          />
+          <meta
+            property="og:image"
+            content={
+              'https://github.com/gpaiva00/min-poker/blob/02244d66223c68b0cf3cf1fbc8627927d470a51f/public/screenshot.png'
+            }
+          />
+
           <meta charSet="utf-8" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
@@ -48,7 +62,7 @@ export default class MyDocument extends Document {
             rel="stylesheet"
           />
 
-          <title>minPoker</title>
+          <title>minPOKER</title>
         </Head>
         <body>
           <Main />
