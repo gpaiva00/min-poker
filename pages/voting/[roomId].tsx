@@ -73,6 +73,8 @@ const Voting: FC = () => {
   const calculateVotingResult = async ({ roomRef }: CalculateVotingProps) => {
     try {
       const results = room.participants.reduce((acc, curr) => {
+        if (!curr.vote.length) return acc
+
         const item = {
           id: curr.vote,
           votes: 0,

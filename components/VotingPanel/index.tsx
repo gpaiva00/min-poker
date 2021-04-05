@@ -133,6 +133,18 @@ const VotingPanel: FC<VotingPanelProps> = ({ room, handleVoteClick }) => {
             </motion.h1>
           </TitleContainer>
 
+          {!results.length && (
+            <WaitingContainer>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ ease: 'easeInOut', duration: 1 }}
+              >
+                <Waiting>Nobody voted</Waiting>
+              </motion.div>
+            </WaitingContainer>
+          )}
+
           <CardsContainer>
             {results.map((item, key) => (
               <motion.div
