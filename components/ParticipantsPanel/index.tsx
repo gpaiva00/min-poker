@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { BiTime } from 'react-icons/bi'
-import { AiFillCheckCircle } from 'react-icons/ai'
+import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai'
 
 import { ParticipantProps, ParticipantsPanelProps } from './typings'
 
@@ -41,6 +41,8 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
 
   const showParticipantVote = (vote: string) => {
     if (!isVoting && !showResults) return
+
+    if (showResults && !vote.length) return <AiFillCloseCircle size={20} />
 
     if (!vote.length) return <BiTime size={20} />
 
