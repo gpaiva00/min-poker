@@ -51,23 +51,22 @@ export const Panel = styled.div`
   overflow: hidden;
 
   /* background: red; */
-
-  @media (max-width: 768px) {
-    /* height: 100%; */
-    height: 70vh;
-  }
 `
 
 export const List = styled.div`
   display: flex;
   flex-direction: column;
 
-  height: 85%;
+  height: 530px;
   width: 100%;
 
   padding-top: ${({ theme }) => theme.paddings.normal};
 
   overflow: auto;
+
+  @media (max-width: 768px) {
+    height: 60vh;
+  }
 `
 
 export const MyName = styled.p`
@@ -103,6 +102,9 @@ export const Vote = styled.p`
 `
 
 export const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: ${({ theme }) => theme.margins.normal};
   width: 100%;
 `
