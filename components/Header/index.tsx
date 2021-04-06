@@ -36,33 +36,29 @@ const Header: FC<HeaderProps> = ({
   const inviteLink = `${minPokerURL}/invitation/${roomId}`
 
   return (
-    <>
+    <Container>
+      <Link href="/">
+        <TitleContainer>
+          <MinText>min</MinText>
+          <Title>POKER</Title>
+        </TitleContainer>
+      </Link>
       {showRoomTitle && (
-        <RoomTitleContainer>
-          <RoomTitle>{roomTitle}</RoomTitle>
-          {imHost && (
-            <CopyToClipboard
-              text={inviteLink}
-              onCopy={() =>
-                window.alert('Invite link was copied to your clipboard!')
-              }
-            >
-              <Invite>
-                <BsLink size={26} />
-              </Invite>
-            </CopyToClipboard>
-          )}
-        </RoomTitleContainer>
+        <CopyToClipboard
+          text={inviteLink}
+          onCopy={() =>
+            window.alert('Invite link was copied to your clipboard!')
+          }
+        >
+          <RoomTitleContainer>
+            <RoomTitle>{roomTitle}</RoomTitle>
+            <Invite>
+              <BsLink size={26} />
+            </Invite>
+          </RoomTitleContainer>
+        </CopyToClipboard>
       )}
-      <Container>
-        <Link href="/">
-          <TitleContainer>
-            <MinText>min</MinText>
-            <Title>POKER</Title>
-          </TitleContainer>
-        </Link>
-      </Container>
-    </>
+    </Container>
   )
 }
 

@@ -2,7 +2,11 @@ import styled from 'styled-components'
 
 export const Container = styled.div`
   position: absolute;
-  ${({ theme }) => `margin: ${theme.margins.medium} ${theme.margins.medium}`};
+  ${({ theme }) => `margin: ${theme.margins.medium} ${theme.margins.normal}`};
+
+  @media (max-width: 768px) {
+    margin-top: ${({ theme }) => theme.margins.normal};
+  }
   /* margin-left: ${({ theme }) => theme.margins.medium}; */
 `
 

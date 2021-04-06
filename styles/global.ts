@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components'
 
 export default createGlobalStyle`
   * {
@@ -11,11 +11,9 @@ export default createGlobalStyle`
     background: ${props => props.theme.colors.background};
     color: ${props => props.theme.colors.text};
     font-family: ${props => props.theme.fonts.regular};
-  }
 
-  html, body{
-    overflow: hidden;
-}
+    overflow: auto;
+  }
 
   span {
     margin: 0;

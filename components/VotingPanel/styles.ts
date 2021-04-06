@@ -10,7 +10,13 @@ export const Container = styled.div`
 
   margin-left: ${({ theme }) => theme.margins.medium};
 
-  /* background: lightgray; */
+  @media (max-width: 768px) {
+    height: 100vh;
+    margin-left: 0;
+    /* margin: 0; */
+  }
+
+  /* background: darkgray; */
 `
 
 export const WaitingContainer = styled.div`
@@ -19,12 +25,10 @@ export const WaitingContainer = styled.div`
   align-items: center;
   justify-content: center;
 
-
   width: 100%;
   margin-bottom: ${({ theme }) => theme.margins.medium};
 
   /* background: lightgray; */
-
 `
 
 export const Waiting = styled.h1`
@@ -39,16 +43,25 @@ export const Waiting = styled.h1`
 export const CardsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 
-  /* height: 80%; */
   width: 55%;
-  margin-top: ${({ theme }) => theme.margins.medium};
   /* background: lightblue; */
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `
 
 export const TitleContainer = styled.div`
   display: flex;
   width: 100%;
+
+  @media (max-width: 768px) {
+    align-items: center;
+    justify-content: center;
+  }
 `
 
 export const Title = styled.h1`
@@ -56,7 +69,6 @@ export const Title = styled.h1`
   font-size: ${({ theme }) => theme.fontSizes.small};
 
   margin-bottom: ${({ theme }) => theme.margins.normal};
-  margin-left: ${({ theme }) => theme.margins.medium};
   color: ${({ theme }) => theme.colors.text};
 
   text-transform: uppercase;

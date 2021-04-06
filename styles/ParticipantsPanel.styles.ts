@@ -2,7 +2,20 @@ import styled from 'styled-components'
 import Button from '../components/Button'
 
 export const Container = styled.div`
-  margin-left: ${({ theme }) => theme.margins.medium};
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  margin-left: ${({ theme }) => theme.margins.normal};
+
+  @media (max-width: 768px) {
+    /* height: 100vh; */
+    width: 100%;
+    margin: 0;
+    align-items: center;
+  }
+
   /* background: darkgray; */
 `
 
@@ -20,7 +33,12 @@ export const PanelContainer = styled.div`
   width: 300px;
   height: 700px;
 
-  /* background: lightgray; */
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 80vh;
+    ${({ theme }) => `padding: 0 ${theme.margins.normal}`};
+    margin-bottom: 100px;
+  }
 `
 
 export const Panel = styled.div`
@@ -31,18 +49,24 @@ export const Panel = styled.div`
 
   height: 90%;
   overflow: hidden;
+
+  /* background: red; */
 `
 
 export const List = styled.div`
   display: flex;
   flex-direction: column;
 
-  height: 85%;
+  height: 530px;
   width: 100%;
 
   padding-top: ${({ theme }) => theme.paddings.normal};
 
   overflow: auto;
+
+  @media (max-width: 768px) {
+    height: 60vh;
+  }
 `
 
 export const MyName = styled.p`
@@ -78,6 +102,9 @@ export const Vote = styled.p`
 `
 
 export const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: ${({ theme }) => theme.margins.normal};
   width: 100%;
 `
