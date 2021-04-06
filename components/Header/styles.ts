@@ -3,13 +3,19 @@ import styled from 'styled-components'
 export const Container = styled.div`
   display: flex;
   align-items: center;
-  ${({ theme }) => `margin: ${theme.margins.normal} ${theme.margins.medium}`};
+
+  padding-left: ${({ theme }) => theme.margins.normal};
+  padding-top: ${({ theme }) => theme.margins.small};
 `
 
 export const Title = styled.h1`
   font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.big};
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    font-size: ${({ theme }) => theme.fontSizes.medium};
+  }
 `
 
 export const Invite = styled.span`
