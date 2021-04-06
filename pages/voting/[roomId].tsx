@@ -156,7 +156,6 @@ const Voting: FC = () => {
     const { participants } = room
     let dataToChange = {
       ...room,
-      hostName: newUserName,
     }
 
     if (!imHost) {
@@ -172,7 +171,7 @@ const Voting: FC = () => {
       })
 
       dataToChange = {
-        ...room,
+        ...dataToChange,
         participants: newParticipants,
       }
     }
