@@ -2,7 +2,20 @@ import styled from 'styled-components'
 import Button from '../components/Button'
 
 export const Container = styled.div`
-  margin-left: ${({ theme }) => theme.margins.medium};
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  margin-left: ${({ theme }) => theme.margins.normal};
+
+  @media (max-width: 768px) {
+    /* height: 100vh; */
+    width: 100%;
+    margin: 0;
+    align-items: center;
+  }
+
   /* background: darkgray; */
 `
 
@@ -20,7 +33,12 @@ export const PanelContainer = styled.div`
   width: 300px;
   height: 700px;
 
-  /* background: lightgray; */
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 80vh;
+    ${({ theme }) => `padding: 0 ${theme.margins.normal}`};
+    margin-bottom: 100px;
+  }
 `
 
 export const Panel = styled.div`
@@ -31,6 +49,13 @@ export const Panel = styled.div`
 
   height: 90%;
   overflow: hidden;
+
+  /* background: red; */
+
+  @media (max-width: 768px) {
+    /* height: 100%; */
+    height: 70vh;
+  }
 `
 
 export const List = styled.div`
