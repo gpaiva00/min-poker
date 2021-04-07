@@ -41,6 +41,7 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+          <meta charSet="utf-8" />
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"
@@ -53,10 +54,8 @@ export default class MyDocument extends Document {
             property="og:description"
             content="Minimalist Planning Poker Game"
           />
-          <meta property="og:image" content="../public/ogMinPoker.png" />
-          <meta name="twitter:image" content="../public/ogMinPoker.png" />
+          <meta property="og:image" content="/ogMinPoker.png" key="ogimage" />
 
-          <meta charSet="utf-8" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
             href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap"
