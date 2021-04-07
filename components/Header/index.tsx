@@ -1,4 +1,5 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC } from 'react'
+import { toast } from 'react-toastify'
 
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
@@ -47,7 +48,15 @@ const Header: FC<HeaderProps> = ({
         <CopyToClipboard
           text={inviteLink}
           onCopy={() =>
-            window.alert('Invite link was copied to your clipboard!')
+            toast.dark('The link was copied to your clipboard', {
+              position: 'bottom-center',
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: false,
+              progress: undefined,
+            })
           }
         >
           <RoomTitleContainer>
