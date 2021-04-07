@@ -49,8 +49,6 @@ export const Panel = styled.div`
 
   height: 90%;
   overflow: hidden;
-
-  /* background: red; */
 `
 
 export const List = styled.div`
