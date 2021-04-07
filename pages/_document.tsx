@@ -54,6 +54,7 @@ export default class MyDocument extends Document {
             content="Minimalist Planning Poker Game"
           />
           <meta property="og:image" content="../public/ogMinPoker.png" />
+          <meta name="twitter:image" content="../public/ogMinPoker.png" />
 
           <meta charSet="utf-8" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
