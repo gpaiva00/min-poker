@@ -3,11 +3,8 @@ import { useRouter } from 'next/router'
 
 import { PageContainer } from '../../styles/Voting.styles'
 
-import ParticipantsPanel from '../../components/ParticipantsPanel'
-import Header from '../../components/Header'
-import VotingPanel from '../../components/VotingPanel'
+import { Header, ParticipantsPanel, Toast, VotingPanel } from '../../components'
 
-import { validateRoomId } from '../../utils/validateRoomId'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { Room } from '../../typings/Room'
 import { getDatabase } from '../../services/firebase'
@@ -15,7 +12,7 @@ import usePersistedState from '../../hooks/usePersistedState'
 import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
 import { UserInfo } from '../../typings/UserInfo'
 import { CalculateVotingProps } from '../../typings/Voting'
-import { toast } from 'react-toastify'
+import { validateInputValue, validateRoomId } from '../../utils'
 
 const Voting: FC = () => {
   const [isVoting, setIsVoting] = useState(false)
@@ -46,14 +43,9 @@ const Voting: FC = () => {
 
       router.push('/')
     } catch (error) {
-      toast.error('Error trying to close your room. Sorry :(', {
-        position: 'bottom-center',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
+      Toast({
+        type: 'error',
+        message: 'Error trying to close your room. Sorry :(',
       })
       console.error('Error trying to close room', error)
     }
@@ -74,15 +66,7 @@ const Voting: FC = () => {
       )
       router.push('/')
     } catch (error) {
-      toast.error('Error trying to exit room. Sorry :(', {
-        position: 'bottom-center',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-      })
+      Toast({ type: 'error', message: 'Error trying to exit room. Sorry :(' })
       console.error('Error trying to exit room', error)
     }
   }
@@ -116,14 +100,9 @@ const Voting: FC = () => {
         { merge: true }
       )
     } catch (error) {
-      toast.error('Error trying calculate voting results. Try again.', {
-        position: 'bottom-center',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
+      Toast({
+        type: 'error',
+        message: 'Error trying calculate voting results. Try again.',
       })
       console.error('Error trying to set voting results', error)
     }
@@ -162,14 +141,9 @@ const Voting: FC = () => {
 
       setIsVoting(!isVoting)
     } catch (error) {
-      toast.error('Error trying to start voting. Try again.', {
-        position: 'bottom-center',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
+      Toast({
+        type: 'error',
+        message: 'Error trying to start voting. Try again.',
       })
       console.error('Error when trying to start voting', error)
     }
@@ -179,7 +153,10 @@ const Voting: FC = () => {
     try {
       const newUserName = prompt('Type your name', userInfo.name)
 
-      if (!newUserName.length || newUserName === null) return
+      if (newUserName && !validateInputValue(newUserName))
+        return Toast({ type: 'warning', message: 'Type a valid name.' })
+
+      if (!newUserName || newUserName === null) return
 
       const newUserInfo = {
         ...userInfo,
@@ -212,15 +189,12 @@ const Voting: FC = () => {
         },
         { merge: false }
       )
+
+      Toast({ message: 'Name updated with success.' })
     } catch (error) {
-      toast.error('Error trying to change your name. Try again.', {
-        position: 'bottom-center',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
+      Toast({
+        type: 'error',
+        message: 'Error trying to change your name. Try again.',
       })
       console.error('Error trying to change name', error)
     }
@@ -252,14 +226,9 @@ const Voting: FC = () => {
         { merge: false }
       )
     } catch (error) {
-      toast.error('Error trying to set your vote. Try again.', {
-        position: 'bottom-center',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
+      Toast({
+        type: 'error',
+        message: 'Error trying to set your vote. Try again.',
       })
       console.error('Error trying to set your vote', error)
     }

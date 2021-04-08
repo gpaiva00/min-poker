@@ -1,11 +1,12 @@
 import React, { FC } from 'react'
-import { toast } from 'react-toastify'
 
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import Link from 'next/link'
 
 import { BsLink } from 'react-icons/bs'
+
+import Toast from '../Toast'
 
 import {
   Container,
@@ -21,15 +22,9 @@ interface HeaderProps {
   showRoomTitle?: boolean
   roomTitle?: string
   roomId?: string | string[]
-  imHost?: boolean
 }
 
-const Header: FC<HeaderProps> = ({
-  showRoomTitle,
-  roomTitle,
-  roomId,
-  imHost,
-}) => {
+const Header: FC<HeaderProps> = ({ showRoomTitle, roomTitle, roomId }) => {
   const minPokerURL =
     process.env.NODE_ENV !== 'production'
       ? process.env.MIN_POKER_DEV_URL
@@ -48,15 +43,7 @@ const Header: FC<HeaderProps> = ({
         <CopyToClipboard
           text={inviteLink}
           onCopy={() =>
-            toast.dark('The link was copied to your clipboard', {
-              position: 'bottom-center',
-              autoClose: 3000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: false,
-              progress: undefined,
-            })
+            Toast({ message: 'The link was copied to your clipboard' })
           }
         >
           <RoomTitleContainer>

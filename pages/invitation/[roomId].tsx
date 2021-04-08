@@ -76,7 +76,7 @@ const Invitation: FC = () => {
         console.error('Error trying to set new participant', error)
       }
 
-      console.log('ALREADY PARTICIPANT')
+      // console.log('ALREADY PARTICIPANT')
       router.push(`/voting/${roomId}`)
     }
 
