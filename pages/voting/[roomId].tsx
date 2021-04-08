@@ -153,7 +153,7 @@ const Voting: FC = () => {
     try {
       const newUserName = prompt('Type your name', userInfo.name)
 
-      if (newUserName && !validateInputValue(newUserName))
+      if (newUserName !== null && !validateInputValue(newUserName))
         return Toast({ type: 'warning', message: 'Type a valid name.' })
 
       if (!newUserName || newUserName === null) return
