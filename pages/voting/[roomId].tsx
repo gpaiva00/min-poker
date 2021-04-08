@@ -93,9 +93,17 @@ const Voting: FC = () => {
         return acc
       }, [])
 
+      const resultVotes = results.map(result => parseInt(result.id, 10))
+
+      const votesSum = resultVotes.reduce((acc, curr) => acc + curr, 0)
+      const average = votesSum / resultVotes.length || 0
+
       await roomRef.set(
         {
-          results,
+          results: {
+            average,
+            items: results,
+          },
         },
         { merge: true }
       )

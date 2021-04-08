@@ -6,6 +6,9 @@ import DefaultCard from '../DefaultCard'
 import ResultCard from '../ResultCard'
 
 import {
+  AverageContainer,
+  AverageTitle,
+  AverageValue,
   CardsContainer,
   Container,
   Title,
@@ -131,9 +134,14 @@ const VotingPanel: FC<VotingPanelProps> = ({ room, handleVoteClick }) => {
             >
               <Title>Results</Title>
             </motion.h1>
+
+            <AverageContainer>
+              <AverageTitle>Average:</AverageTitle>
+              <AverageValue>{results.average}</AverageValue>
+            </AverageContainer>
           </TitleContainer>
 
-          {!results.length && (
+          {!results.items.length && (
             <WaitingContainer>
               <motion.div
                 initial={{ opacity: 0 }}
@@ -146,7 +154,7 @@ const VotingPanel: FC<VotingPanelProps> = ({ room, handleVoteClick }) => {
           )}
 
           <CardsContainer>
-            {results.map((item, key) => (
+            {results.items.map((item, key) => (
               <motion.div
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}

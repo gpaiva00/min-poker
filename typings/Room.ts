@@ -15,11 +15,14 @@ export interface Room {
   showResults?: boolean
   participants: Participant[]
   ref?: RoomRef
-  results: Result[]
+  results: Result
 }
-
-export interface Result {
+interface ResultItems {
   id: string
   text: string
   votes: number
+}
+export interface Result {
+  average: number
+  items: ResultItems[]
 }

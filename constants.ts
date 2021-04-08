@@ -15,9 +15,14 @@ export const RESULTS_TEXT = {
 }
 
 export const DEFAULT_RESULT: Result = {
-  id: '',
-  text: '',
-  votes: 0,
+  average: 0,
+  items: [
+    {
+      id: '',
+      text: '',
+      votes: 0,
+    },
+  ],
 }
 
 export const DEFAULT_ROOM: Room = {

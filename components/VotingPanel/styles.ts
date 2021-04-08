@@ -56,14 +56,39 @@ export const CardsContainer = styled.div`
 
 export const TitleContainer = styled.div`
   display: flex;
+  flex-direction: column;
   width: 100%;
 
   /* background: lightblue; */
+  padding-left: 100px;
+  margin-bottom: ${({ theme }) => theme.margins.medium};
 
   @media (max-width: 768px) {
     align-items: center;
     justify-content: center;
+    padding-left: 0;
   }
+`
+
+export const AverageContainer = styled.div`
+  display: flex;
+  align-items: center;
+
+  /* background: lightblue; */
+`
+
+export const AverageTitle = styled.h1`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: ${({ theme }) => theme.fontSizes.small};
+
+  margin-right: ${({ theme }) => theme.margins.small};
+
+  text-transform: uppercase;
+`
+
+export const AverageValue = styled.p`
+  font-family: ${({ theme }) => theme.fonts.semiBold};
+  font-size: ${({ theme }) => theme.fontSizes.regular};
 `
 
 export const Title = styled.h1`
@@ -71,12 +96,7 @@ export const Title = styled.h1`
   font-size: ${({ theme }) => theme.fontSizes.small};
 
   margin-bottom: ${({ theme }) => theme.margins.normal};
-  margin-left: 100px;
   color: ${({ theme }) => theme.colors.text};
 
   text-transform: uppercase;
-
-  @media (max-width: 768px) {
-    margin-left: 0;
-  }
 `
