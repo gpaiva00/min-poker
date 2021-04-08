@@ -262,6 +262,7 @@ const Voting: FC = () => {
       <main>
         <ChangeNameModal
           toggle={toggleModal}
+          setToggleModal={setToggleModal}
           inputValue={userInfo.name}
           handleChangeName={handleChangeName}
         />
