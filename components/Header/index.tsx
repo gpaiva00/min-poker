@@ -43,7 +43,7 @@ const Header: FC<HeaderProps> = ({ showRoomTitle, roomTitle, roomId }) => {
         <CopyToClipboard
           text={inviteLink}
           onCopy={() =>
-            Toast({ message: 'The link was copied to your clipboard' })
+            Toast({ message: 'The invitation was copied to your clipboard.' })
           }
         >
           <RoomTitleContainer>
