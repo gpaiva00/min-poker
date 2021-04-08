@@ -29,8 +29,8 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   room,
   userInfo,
   handleChangeMyName,
+  loading,
 }) => {
-  const [loading, setLoading] = useState(true)
   const [participantsList, setParticipantsList] = useState<ParticipantProps[]>(
     []
   )
@@ -89,7 +89,10 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
           </List>
           {imHost && (
             <ButtonContainer>
-              <StartVoting onClick={() => setStartVoting(!isVoting)}>
+              <StartVoting
+                loading={loading}
+                onClick={() => setStartVoting(!isVoting)}
+              >
                 {isVoting ? 'Finish voting' : 'Start voting'}
               </StartVoting>
             </ButtonContainer>
@@ -98,11 +101,19 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
 
         <ButtonContainer>
           {imHost ? (
-            <DeleteRoom onClick={handleDeleteRoom} variant="danger">
+            <DeleteRoom
+              loading={loading}
+              onClick={handleDeleteRoom}
+              variant="danger"
+            >
               Delete room
             </DeleteRoom>
           ) : (
-            <DeleteRoom onClick={handleExitRoom} variant="danger">
+            <DeleteRoom
+              loading={loading}
+              onClick={handleExitRoom}
+              variant="danger"
+            >
               Exit room
             </DeleteRoom>
           )}

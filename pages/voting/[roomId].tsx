@@ -1,8 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { motion } from 'framer-motion'
-
 import { PageContainer } from '../../styles/Voting.styles'
 
 import ParticipantsPanel from '../../components/ParticipantsPanel'
@@ -10,13 +8,14 @@ import Header from '../../components/Header'
 import VotingPanel from '../../components/VotingPanel'
 
 import { validateRoomId } from '../../utils/validateRoomId'
-import { useCollectionData, useDocument } from 'react-firebase-hooks/firestore'
-import { Room, RoomRef } from '../../typings/Room'
+import { useCollectionData } from 'react-firebase-hooks/firestore'
+import { Room } from '../../typings/Room'
 import { getDatabase } from '../../services/firebase'
 import usePersistedState from '../../hooks/usePersistedState'
 import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
 import { UserInfo } from '../../typings/UserInfo'
 import { CalculateVotingProps } from '../../typings/Voting'
+import { toast } from 'react-toastify'
 
 const Voting: FC = () => {
   const [isVoting, setIsVoting] = useState(false)
@@ -47,6 +46,15 @@ const Voting: FC = () => {
 
       router.push('/')
     } catch (error) {
+      toast.error('Error trying to close your room. Sorry :(', {
+        position: 'bottom-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      })
       console.error('Error trying to close room', error)
     }
   }
@@ -66,6 +74,15 @@ const Voting: FC = () => {
       )
       router.push('/')
     } catch (error) {
+      toast.error('Error trying to exit room. Sorry :(', {
+        position: 'bottom-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      })
       console.error('Error trying to exit room', error)
     }
   }
@@ -99,6 +116,15 @@ const Voting: FC = () => {
         { merge: true }
       )
     } catch (error) {
+      toast.error('Error trying calculate voting results. Try again.', {
+        position: 'bottom-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      })
       console.error('Error trying to set voting results', error)
     }
   }
@@ -136,29 +162,35 @@ const Voting: FC = () => {
 
       setIsVoting(!isVoting)
     } catch (error) {
-      window.alert('Error when trying to start voting. Please try later.')
+      toast.error('Error trying to start voting. Try again.', {
+        position: 'bottom-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      })
       console.error('Error when trying to start voting', error)
     }
   }
 
   const handleChangeMyName = async () => {
-    const newUserName = prompt('Type your name', userInfo.name)
+    try {
+      const newUserName = prompt('Type your name', userInfo.name)
 
-    if (!newUserName.length || newUserName === null) return
+      if (!newUserName.length || newUserName === null) return
 
-    const newUserInfo = {
-      ...userInfo,
-      name: newUserName,
-    }
+      const newUserInfo = {
+        ...userInfo,
+        name: newUserName,
+      }
 
-    setStorage(JSON.stringify(newUserInfo))
+      setStorage(JSON.stringify(newUserInfo))
 
-    const { participants } = room
-    let dataToChange = {
-      ...room,
-    }
+      const { participants } = room
 
-    if (!imHost) {
+      // TODO abstract this into a function to modify participants passing key, value
       const newParticipants = participants.map(participant => {
         if (participant.id === userInfo.userId) {
           return {
@@ -170,16 +202,28 @@ const Voting: FC = () => {
         return participant
       })
 
-      dataToChange = {
-        ...dataToChange,
-        participants: newParticipants,
-      }
+      const roomPath = room.ref.path.split('/')[1]
+      const roomRef = db.collection('rooms').doc(roomPath)
+
+      await roomRef.set(
+        {
+          ...room,
+          participants: newParticipants,
+        },
+        { merge: false }
+      )
+    } catch (error) {
+      toast.error('Error trying to change your name. Try again.', {
+        position: 'bottom-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      })
+      console.error('Error trying to change name', error)
     }
-
-    const roomPath = room.ref.path.split('/')[1]
-    const roomRef = db.collection('rooms').doc(roomPath)
-
-    await roomRef.set(dataToChange, { merge: false })
   }
 
   const handleVoteClick = async (voteId: string) => {
@@ -208,7 +252,16 @@ const Voting: FC = () => {
         { merge: false }
       )
     } catch (error) {
-      console.error('Error trying to exit room', error)
+      toast.error('Error trying to set your vote. Try again.', {
+        position: 'bottom-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      })
+      console.error('Error trying to set your vote', error)
     }
   }
 
@@ -238,6 +291,7 @@ const Voting: FC = () => {
             handleExitRoom={handleExitRoom}
             room={room}
             userInfo={userInfo}
+            loading={loading}
           />
           <VotingPanel
             handleVoteClick={handleVoteClick}

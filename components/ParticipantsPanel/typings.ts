@@ -9,6 +9,7 @@ export interface ParticipantsPanelProps {
   userInfo: UserInfo
   room: Room
   handleChangeMyName(): void
+  loading: boolean
 }
 
 export interface ParticipantProps {
