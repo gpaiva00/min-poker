@@ -9,6 +9,7 @@ import Loading from './Loading'
 import ParticipantsPanel from './ParticipantsPanel'
 import ResultCard from './ResultCard'
 import VotingPanel from './VotingPanel'
+import Modal from './Modal'
 
 export {
   Button,
@@ -22,4 +23,5 @@ export {
   ParticipantsPanel,
   ResultCard,
   VotingPanel,
+  Modal,
 }

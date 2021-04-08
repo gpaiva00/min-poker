@@ -20,6 +20,7 @@
     "react-firebase-hooks": "^3.0.3",
     "react-icons": "^4.2.0",
     "react-toastify": "^7.0.3",
+    "rodal": "^1.8.1",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {

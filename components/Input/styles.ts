@@ -2,7 +2,8 @@ import styled from 'styled-components'
 import { ContainerProps } from './typings'
 
 export const Container = styled.div<ContainerProps>`
-  border-color: ${({ variant, theme }) => variant === 'primary' ? theme.colors.lightSmoke : theme.colors.danger};
+  border-color: ${({ variant, theme }) =>
+    variant === 'primary' ? theme.colors.lightSmoke : theme.colors.danger};
   border-width: 1px;
   border-style: solid;
   border-radius: 6px;
@@ -23,5 +24,4 @@ export const StyledInput = styled.input<ContainerProps>`
   border: 0;
   outline: none;
   outline-style: none;
-
 `

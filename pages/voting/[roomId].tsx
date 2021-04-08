@@ -3,7 +3,13 @@ import { useRouter } from 'next/router'
 
 import { PageContainer } from '../../styles/Voting.styles'
 
-import { Header, ParticipantsPanel, Toast, VotingPanel } from '../../components'
+import {
+  Header,
+  Modal,
+  ParticipantsPanel,
+  Toast,
+  VotingPanel,
+} from '../../components'
 
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { Room } from '../../typings/Room'
@@ -13,10 +19,12 @@ import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
 import { UserInfo } from '../../typings/UserInfo'
 import { CalculateVotingProps } from '../../typings/Voting'
 import { validateInputValue, validateRoomId } from '../../utils'
+import ChangeNameModal from '../../components/ChangeNameModal'
 
 const Voting: FC = () => {
   const [isVoting, setIsVoting] = useState(false)
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
+  const [toggleModal, setToggleModal] = useState(false)
 
   const router = useRouter()
   const { roomId } = router.query
@@ -157,10 +165,8 @@ const Voting: FC = () => {
     }
   }
 
-  const handleChangeMyName = async () => {
+  const handleChangeName = async (newUserName: string) => {
     try {
-      const newUserName = prompt('Type your name', userInfo.name)
-
       if (newUserName !== null && !validateInputValue(newUserName))
         return Toast({ type: 'warning', message: 'Type a valid name.' })
 
@@ -206,6 +212,8 @@ const Voting: FC = () => {
       })
       console.error('Error trying to change name', error)
     }
+
+    setToggleModal(false)
   }
 
   const handleVoteClick = async (voteId: string) => {
@@ -252,16 +260,16 @@ const Voting: FC = () => {
   return (
     <div>
       <main>
-        <Header
-          showRoomTitle
-          roomTitle={room.name}
-          roomId={roomId}
-          imHost={imHost}
+        <ChangeNameModal
+          toggle={toggleModal}
+          inputValue={userInfo.name}
+          handleChangeName={handleChangeName}
         />
+        <Header showRoomTitle roomTitle={room.name} roomId={roomId} />
 
         <PageContainer>
           <ParticipantsPanel
-            handleChangeMyName={handleChangeMyName}
+            handleChangeMyName={() => setToggleModal(true)}
             setStartVoting={handleStartVoting}
             imHost={imHost}
             handleDeleteRoom={handleDeleteRoom}
