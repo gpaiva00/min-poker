@@ -58,6 +58,8 @@ export const TitleContainer = styled.div`
   display: flex;
   width: 100%;
 
+  /* background: lightblue; */
+
   @media (max-width: 768px) {
     align-items: center;
     justify-content: center;
@@ -69,7 +71,12 @@ export const Title = styled.h1`
   font-size: ${({ theme }) => theme.fontSizes.small};
 
   margin-bottom: ${({ theme }) => theme.margins.normal};
+  margin-left: 100px;
   color: ${({ theme }) => theme.colors.text};
 
   text-transform: uppercase;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
 `
