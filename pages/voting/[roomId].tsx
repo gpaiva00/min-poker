@@ -93,7 +93,12 @@ const Voting: FC = () => {
   const calculateVotingResult = () => {
     try {
       const results = room.participants.reduce((acc, curr) => {
-        if (!curr.vote.length) return acc
+        if (
+          !curr.vote.length ||
+          curr.vote === 'question' ||
+          curr.vote === 'coffee'
+        )
+          return acc
 
         const item = {
           id: curr.vote,
@@ -170,8 +175,6 @@ const Voting: FC = () => {
   }
 
   const handleSaveRoomOptions = async ({ userName, roomName, viewerMode }) => {
-    console.log({ userName, roomName, viewerMode })
-
     try {
       const newUserInfo = {
         ...userInfo,
@@ -183,6 +186,7 @@ const Voting: FC = () => {
       const newParticipant: Participant = {
         name: userName,
         viewerMode,
+        vote: viewerMode ? '' : me.vote,
       }
 
       const newRoom = {
