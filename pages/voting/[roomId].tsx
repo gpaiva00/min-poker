@@ -161,6 +161,8 @@ const Voting: FC = () => {
   }
 
   const handleSaveRoomOptions = async ({ userName, roomName, viewerMode }) => {
+    console.log({ userName, roomName, viewerMode })
+
     try {
       const newUserInfo = {
         ...userInfo,

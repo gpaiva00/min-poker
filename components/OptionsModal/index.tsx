@@ -44,7 +44,9 @@ const OptionsModal: FC<OptionsModalProps> = ({
 
   useEffect(() => {
     setRoomName(room.name)
-    setViewerMode(me.viewerMode)
+
+    if (me) setViewerMode(me.viewerMode)
+    console.log({ me })
   }, [room, me])
 
   return (

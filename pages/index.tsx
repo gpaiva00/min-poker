@@ -21,11 +21,15 @@ import {
 
 import usePersistedState from '../hooks/usePersistedState'
 
-import { DEFAULT_RESULT, STORAGE_KEY_USER } from '../constants'
+import {
+  DEFAULT_PARTICIPANT,
+  DEFAULT_RESULT,
+  STORAGE_KEY_USER,
+} from '../constants'
 import { generateNickName, idGenerator, validateInputValue } from '../utils'
 
 import { getDatabase } from '../services/firebase'
-import { UserInfo } from '../typings/UserInfo'
+import { UserInfo } from '../typings'
 
 const Home: FC = () => {
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
@@ -71,9 +75,10 @@ const Home: FC = () => {
         results: DEFAULT_RESULT,
         participants: [
           {
-            id: hostId,
-            name: hostName,
             vote: '',
+            name: hostName,
+            id: hostId,
+            viewerMode: false,
           },
         ],
       }

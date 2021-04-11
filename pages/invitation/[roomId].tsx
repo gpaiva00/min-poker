@@ -6,7 +6,11 @@ import { getDatabase } from '../../services/firebase'
 
 import { Room } from '../../typings/Room'
 import usePersistedState from '../../hooks/usePersistedState'
-import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
+import {
+  DEFAULT_PARTICIPANT,
+  DEFAULT_ROOM,
+  STORAGE_KEY_USER,
+} from '../../constants'
 import { UserInfo } from '../../typings/UserInfo'
 import { generateNickName, idGenerator } from '../../utils'
 
@@ -42,10 +46,6 @@ const Invitation: FC = () => {
 
         setStorage(JSON.stringify({ name: userName, userId }))
 
-        // const imHost = hostId === userId
-
-        // if (imHost) return router.replace(`/voting/${roomId}`)
-
         const isNotParticipant =
           room.participants.findIndex(({ id }) => id === userId) === -1
 
@@ -53,14 +53,7 @@ const Invitation: FC = () => {
           const roomPath = room.ref.path.split('/')[1]
           const roomRef = db.collection('rooms').doc(roomPath)
 
-          const newParticipants = [
-            ...room.participants,
-            {
-              id: userId,
-              name: userName,
-              vote: '',
-            },
-          ]
+          const newParticipants = [...room.participants, ...DEFAULT_PARTICIPANT]
 
           await roomRef.set(
             {
