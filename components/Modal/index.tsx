@@ -24,6 +24,7 @@ const Modal: FC<ModalProps> = ({
     onClose={() => {}}
     showCloseButton={false}
     height={height}
+    width="340"
   >
     <Header>
       <Title>{title}</Title>
