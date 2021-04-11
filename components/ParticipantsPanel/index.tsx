@@ -84,10 +84,14 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
               )}
             </Participant>
 
-            {participantsList.map(({ name, vote }, key) => (
+            {participantsList.map(({ name, vote, viewerMode }, key) => (
               <Participant key={key}>
                 <Name>{name}</Name>
-                {showParticipantVote(vote)}
+                {viewerMode ? (
+                  <FaRegEye size={20} />
+                ) : (
+                  showParticipantVote(vote)
+                )}
               </Participant>
             ))}
           </List>
