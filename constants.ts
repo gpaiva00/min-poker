@@ -34,6 +34,7 @@ export const DEFAULT_ROOM: Room = {
       id: '',
       name: '',
       vote: '',
+      viewerMode: false,
     },
   ],
   hostId: '',
@@ -41,11 +42,12 @@ export const DEFAULT_ROOM: Room = {
     path: '',
   },
   showResults: false,
-  results: [DEFAULT_RESULT],
+  results: DEFAULT_RESULT,
 }
 
 export const DEFAULT_PARTICIPANT: Participant = {
   id: '',
   name: '',
   vote: '',
+  viewerMode: false,
 }

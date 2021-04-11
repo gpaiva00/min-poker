@@ -1,7 +1,8 @@
 export interface Participant {
-  name: string
-  id: string
-  vote: string
+  name?: string
+  id?: string
+  vote?: string
+  viewerMode?: boolean
 }
 
 export interface RoomRef {

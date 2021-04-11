@@ -1,5 +1,9 @@
 import styled from 'styled-components'
 
+import { lighten } from 'polished'
+import { FaCog } from 'react-icons/fa'
+import { BsLink } from 'react-icons/bs'
+
 export const Container = styled.div`
   display: flex;
   align-items: center;
@@ -19,21 +23,8 @@ export const Title = styled.h1`
   }
 `
 
-export const Invite = styled.span`
-  cursor: pointer;
-`
-
-export const SwitchButton = styled.button`
-  border: 0;
-  background: transparent;
-`
-
-export const ButtonIcon = styled.img`
-  width: 40px;
-  filter: ${({ theme }) =>
-    theme.title === 'dark' ? `invert(60%)` : `invert(0)`};
-
-  cursor: pointer;
+export const LinkIcon = styled(BsLink)`
+  margin-left: 5px;
 `
 
 export const OptionsContainer = styled.div`
@@ -42,13 +33,16 @@ export const OptionsContainer = styled.div`
   justify-content: center;
 `
 
-export const Language = styled.p`
-  font-family: ${({ theme }) => theme.fonts.regular};
-  color: ${({ theme }) => theme.colors.focus};
-
-  margin-right: 36px;
+export const Options = styled.div`
+  margin-left: ${({ theme }) => theme.margins.medium};
   cursor: pointer;
+
+  &:hover {
+    color: ${({ theme }) => lighten(0.2, theme.colors.text)};
+  }
 `
+
+export const CogIcon = styled(FaCog)``
 
 export const TitleContainer = styled.div`
   cursor: pointer;
@@ -59,15 +53,20 @@ export const RoomTitleContainer = styled.div`
   justify-content: center;
 
   cursor: pointer;
+
+  &:hover {
+    ${LinkIcon} {
+      color: ${({ theme }) => lighten(0.4, theme.colors.text)};
+    }
+  }
 `
 
 export const RoomTitle = styled.h1`
   font-family: ${({ theme }) => theme.fonts.bold};
-  font-size: ${({ theme }) => theme.fontSizes.medium};
+  font-size: ${({ theme }) => theme.fontSizes.regular};
 
   display: flex;
   align-self: center;
-  margin-right: ${({ theme }) => theme.margins.small};
   text-transform: uppercase;
 
   @media (max-width: 768px) {

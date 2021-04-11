@@ -70,11 +70,10 @@ export const List = styled.div`
 export const MyName = styled.p`
   font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
-  cursor: pointer;
 
-  &:hover {
+  /* &:hover {
     text-decoration: underline;
-  }
+  } */
 `
 
 export const Participant = styled.div`

@@ -12,16 +12,24 @@ import {
 } from '../../components'
 
 import { useCollectionData } from 'react-firebase-hooks/firestore'
-import { Room } from '../../typings/Room'
+import {
+  Participant,
+  Room,
+  UserInfo,
+  CalculateVotingProps,
+} from '../../typings'
 import { getDatabase } from '../../services/firebase'
 import usePersistedState from '../../hooks/usePersistedState'
-import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
-import { UserInfo } from '../../typings/UserInfo'
-import { CalculateVotingProps } from '../../typings/Voting'
-import { validateInputValue, validateRoomId } from '../../utils'
-import ChangeNameModal from '../../components/ChangeNameModal'
+import {
+  DEFAULT_PARTICIPANT,
+  DEFAULT_ROOM,
+  STORAGE_KEY_USER,
+} from '../../constants'
+import { updateRoom, validateRoomId } from '../../utils'
+import OptionsModal from '../../components/OptionsModal'
 
 const Voting: FC = () => {
+  const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
   const [isVoting, setIsVoting] = useState(false)
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
   const [toggleModal, setToggleModal] = useState(false)
@@ -61,17 +69,11 @@ const Voting: FC = () => {
 
   const handleExitRoom = async () => {
     try {
-      const roomPath = room.ref.path.split('/')[1]
-      const roomRef = db.collection('rooms').doc(roomPath)
-
-      const newParticipants = room.participants.filter(
+      const newParticipant = room.participants.filter(
         participant => participant.id !== userInfo.userId
       )
 
-      await roomRef.set(
-        { ...room, participants: newParticipants },
-        { merge: false }
-      )
+      await updateRoom({ room, newParticipant })
       router.push('/')
     } catch (error) {
       Toast({ type: 'error', message: 'Error trying to exit room. Sorry :(' })
@@ -79,7 +81,7 @@ const Voting: FC = () => {
     }
   }
 
-  const calculateVotingResult = async ({ roomRef }: CalculateVotingProps) => {
+  const calculateVotingResult = () => {
     try {
       const results = room.participants.reduce((acc, curr) => {
         if (!curr.vote.length) return acc
@@ -106,15 +108,7 @@ const Voting: FC = () => {
       const votesSum = resultVotes.reduce((acc, curr) => acc + curr, 0)
       const average = votesSum / resultVotes.length || 0
 
-      await roomRef.set(
-        {
-          results: {
-            average,
-            items: results,
-          },
-        },
-        { merge: true }
-      )
+      return { average, results }
     } catch (error) {
       Toast({
         type: 'error',
@@ -126,35 +120,36 @@ const Voting: FC = () => {
 
   const handleStartVoting = async () => {
     try {
-      const roomPath = room.ref.path.split('/')[1]
-      const roomRef = db.collection('rooms').doc(roomPath)
       const newIsVoting = !isVoting
       const showResults = !newIsVoting
 
-      let dataToChange = {
+      const newRoom = {
         ...room,
         isVoting: newIsVoting,
         showResults,
       }
 
-      if (!isVoting) {
-        const newParticipants = room.participants.map(participant => {
-          return {
-            ...participant,
-            vote: '',
-          }
-        })
+      let newParticipant = null
 
-        dataToChange = {
-          ...dataToChange,
-          participants: newParticipants,
+      if (!isVoting) {
+        newParticipant = {
+          vote: '',
         }
       }
 
-      await roomRef.set(dataToChange, { merge: false })
+      if (showResults) {
+        const { average, results } = calculateVotingResult()
+        newRoom.results = {
+          average,
+          items: results,
+        }
+      }
 
-      if (showResults) calculateVotingResult({ roomRef })
-
+      await updateRoom({
+        room,
+        newParticipant,
+        newRoom,
+      })
       setIsVoting(!isVoting)
     } catch (error) {
       Toast({
@@ -165,46 +160,33 @@ const Voting: FC = () => {
     }
   }
 
-  const handleChangeName = async (newUserName: string) => {
+  const handleSaveRoomOptions = async ({ userName, roomName, viewerMode }) => {
     try {
-      if (newUserName !== null && !validateInputValue(newUserName))
-        return Toast({ type: 'warning', message: 'Type a valid name.' })
-
-      if (!newUserName || newUserName === null) return
-
       const newUserInfo = {
         ...userInfo,
-        name: newUserName,
+        name: userName,
       }
 
       setStorage(JSON.stringify(newUserInfo))
 
-      const { participants } = room
+      const newParticipant: Participant = {
+        name: userName,
+        viewerMode,
+      }
 
-      // TODO abstract this into a function to modify participants passing key, value
-      const newParticipants = participants.map(participant => {
-        if (participant.id === userInfo.userId) {
-          return {
-            ...participant,
-            name: newUserName,
-          }
-        }
+      const newRoom = {
+        ...room,
+        name: roomName,
+      }
 
-        return participant
+      await updateRoom({
+        room,
+        userId: userInfo.userId,
+        newRoom,
+        newParticipant,
       })
 
-      const roomPath = room.ref.path.split('/')[1]
-      const roomRef = db.collection('rooms').doc(roomPath)
-
-      await roomRef.set(
-        {
-          ...room,
-          participants: newParticipants,
-        },
-        { merge: false }
-      )
-
-      Toast({ message: 'Name updated with success.' })
+      Toast({ message: 'Options updated with success.' })
     } catch (error) {
       Toast({
         type: 'error',
@@ -218,29 +200,15 @@ const Voting: FC = () => {
 
   const handleVoteClick = async (voteId: string) => {
     try {
-      const { participants } = room
+      const newParticipant = {
+        vote: voteId,
+      }
 
-      const newParticipants = participants.map(participant => {
-        if (participant.id === userInfo.userId) {
-          return {
-            ...participant,
-            vote: voteId,
-          }
-        }
-
-        return participant
+      await updateRoom({
+        room,
+        newParticipant,
+        userId: userInfo.userId,
       })
-
-      const roomPath = room.ref.path.split('/')[1]
-      const roomRef = db.collection('rooms').doc(roomPath)
-
-      await roomRef.set(
-        {
-          ...room,
-          participants: newParticipants,
-        },
-        { merge: false }
-      )
     } catch (error) {
       Toast({
         type: 'error',
@@ -257,31 +225,46 @@ const Voting: FC = () => {
     }
   }, [roomId])
 
+  useEffect(() => {
+    const me = room.participants.find(({ id }) => id === userInfo.userId)
+    setMe(me ? me : DEFAULT_PARTICIPANT)
+  }, [room])
+
   return (
     <div>
       <main>
-        <ChangeNameModal
+        <OptionsModal
+          room={room}
+          me={me}
+          userInfo={userInfo}
+          handleSaveRoomOptions={handleSaveRoomOptions}
+          loading={loading}
           toggle={toggleModal}
           setToggleModal={setToggleModal}
-          inputValue={userInfo.name}
-          handleChangeName={handleChangeName}
+          imHost={imHost}
         />
-        <Header showRoomTitle roomTitle={room.name} roomId={roomId} />
+        <Header
+          showRoomTitle
+          roomTitle={room.name}
+          roomId={roomId}
+          setToggleModal={setToggleModal}
+        />
 
         <PageContainer>
           <ParticipantsPanel
-            handleChangeMyName={() => setToggleModal(true)}
             setStartVoting={handleStartVoting}
             imHost={imHost}
             handleDeleteRoom={handleDeleteRoom}
             handleExitRoom={handleExitRoom}
             room={room}
+            me={me}
             userInfo={userInfo}
             loading={loading}
           />
           <VotingPanel
             handleVoteClick={handleVoteClick}
             room={room}
+            me={me}
             showResults={room.showResults}
           />
         </PageContainer>

@@ -1,5 +1,4 @@
-import { Room } from '../../typings/Room'
-import { UserInfo } from '../../typings/UserInfo'
+import { Participant, Room, UserInfo } from '../../typings'
 
 export interface ParticipantsPanelProps {
   setStartVoting: React.Dispatch<React.SetStateAction<boolean>>
@@ -8,8 +7,8 @@ export interface ParticipantsPanelProps {
   handleExitRoom(): void
   userInfo: UserInfo
   room: Room
-  handleChangeMyName(): void
   loading: boolean
+  me: Participant
 }
 
 export interface ParticipantProps {

@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { FiCoffee } from 'react-icons/fi'
-import { RESULTS_TEXT } from '../../constants'
+import { RESULTS_TEXT } from '../../../../constants'
 
 import { Card, CardIcon, CardText, TextContainer, Votes } from './styles'
 

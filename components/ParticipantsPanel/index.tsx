@@ -1,8 +1,11 @@
 import React, { FC, useEffect, useState } from 'react'
 import { BiTime } from 'react-icons/bi'
-import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai'
 
-import { ParticipantProps, ParticipantsPanelProps } from './typings'
+import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai'
+import { FaRegEye } from 'react-icons/fa'
+
+import { ParticipantsPanelProps } from './typings'
+import { Participant as ParticipantProps } from '../../typings'
 
 import {
   ButtonContainer,
@@ -18,6 +21,7 @@ import {
   Title,
   Vote,
 } from '../../styles/ParticipantsPanel.styles'
+
 import { FiCoffee } from 'react-icons/fi'
 import { RESULTS_TEXT } from '../../constants'
 
@@ -28,13 +32,12 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   handleExitRoom,
   room,
   userInfo,
-  handleChangeMyName,
   loading,
+  me,
 }) => {
   const [participantsList, setParticipantsList] = useState<ParticipantProps[]>(
     []
   )
-  const [myVote, setMyVote] = useState('')
 
   const { participants, showResults, isVoting } = room
   const { name, userId } = userInfo
@@ -58,9 +61,6 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   }
 
   useEffect(() => {
-    const me = participants.find(({ id }) => id === userId)
-    setMyVote(me ? me.vote : '')
-
     let newParticipants = participants.filter(
       ({ id }) => id !== '' && id !== userId
     )
@@ -76,8 +76,12 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
         <Panel>
           <List>
             <Participant>
-              <MyName onClick={handleChangeMyName}>{name} (you)</MyName>
-              {showParticipantVote(myVote)}
+              <MyName>{name} (you)</MyName>
+              {me.viewerMode ? (
+                <FaRegEye size={20} />
+              ) : (
+                showParticipantVote(me.vote)
+              )}
             </Participant>
 
             {participantsList.map(({ name, vote }, key) => (

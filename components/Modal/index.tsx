@@ -1,5 +1,4 @@
 import React, { FC } from 'react'
-import { IoCloseOutline } from 'react-icons/io5/'
 import Rodal from 'rodal'
 import 'rodal/lib/rodal.css'
 
@@ -9,14 +8,22 @@ interface ModalProps {
   toggle: boolean
   title: string
   setToggleModal: React.Dispatch<React.SetStateAction<boolean>>
+  height?: '380' | '480'
 }
 
-const Modal: FC<ModalProps> = ({ toggle, title, children, setToggleModal }) => (
+const Modal: FC<ModalProps> = ({
+  toggle,
+  title,
+  children,
+  setToggleModal,
+  height = '300',
+}) => (
   <Rodal
     animation="slideUp"
     visible={toggle}
     onClose={() => {}}
     showCloseButton={false}
+    height={height}
   >
     <Header>
       <Title>{title}</Title>

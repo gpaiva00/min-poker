@@ -1,7 +1,8 @@
-import { Room } from '../../typings/Room'
+import { Participant, Room } from '../../typings'
 
 export interface VotingPanelProps {
   room: Room
   handleVoteClick(id: string): void
   showResults: boolean
+  me: Participant
 }
