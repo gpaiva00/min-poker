@@ -55,7 +55,7 @@ const Voting: FC = () => {
     try {
       setTimeout(async () => {
         await db.doc(room.ref.path).delete()
-      }, 1500)
+      }, 500)
 
       router.push('/')
     } catch (error) {
@@ -69,11 +69,20 @@ const Voting: FC = () => {
 
   const handleExitRoom = async () => {
     try {
-      const newParticipant = room.participants.filter(
+      const roomPath = room.ref.path.split('/')[1]
+      const roomRef = db.collection('rooms').doc(roomPath)
+
+      const newParticipants = room.participants.filter(
         participant => participant.id !== userInfo.userId
       )
 
-      await updateRoom({ room, newParticipant })
+      await roomRef.set(
+        {
+          ...room,
+          participants: newParticipants,
+        },
+        { merge: false }
+      )
       router.push('/')
     } catch (error) {
       Toast({ type: 'error', message: 'Error trying to exit room. Sorry :(' })

@@ -42,10 +42,6 @@ const Invitation: FC = () => {
 
         setStorage(JSON.stringify({ name: userName, userId }))
 
-        // const imHost = hostId === userId
-
-        // if (imHost) return router.replace(`/voting/${roomId}`)
-
         const isNotParticipant =
           room.participants.findIndex(({ id }) => id === userId) === -1
 
