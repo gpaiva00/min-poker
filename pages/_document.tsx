@@ -1,4 +1,6 @@
 // collects page's style becoming from server and applies it just before the page be rendered
+import 'regenerator-runtime'
+import 'regenerator-runtime/runtime.js'
 import React from 'react'
 import Document, {
   DocumentContext,

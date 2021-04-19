@@ -1,7 +1,6 @@
 import React, { FC } from 'react'
 
 import { AppProps } from 'next/app'
-// import { useCollectionData } from 'react-firebase-hooks/firestore'
 
 import { AnimateSharedLayout } from 'framer-motion'
 
