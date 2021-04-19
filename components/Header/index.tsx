@@ -8,12 +8,9 @@ import Toast from '../Toast'
 
 import {
   Container,
-  Title,
   TitleContainer,
-  MinText,
   RoomTitle,
   RoomTitleContainer,
-  Invite,
   HeaderImage,
   OptionsContainer,
   Options,
