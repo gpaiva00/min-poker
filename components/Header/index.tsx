@@ -14,6 +14,7 @@ import {
   RoomTitle,
   RoomTitleContainer,
   Invite,
+  HeaderImage,
   OptionsContainer,
   Options,
   CogIcon,
@@ -43,8 +44,9 @@ const Header: FC<HeaderProps> = ({
     <Container>
       <Link href="/">
         <TitleContainer>
-          <MinText>min</MinText>
-          <Title>POKER</Title>
+          {/* <MinText>min</MinText>
+          <Title>POKER</Title> */}
+          <HeaderImage src="/minPoker3.png" />
         </TitleContainer>
       </Link>
       {showRoomTitle && (

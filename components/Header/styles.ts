@@ -9,8 +9,9 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  ${({ theme }) => `padding: 0 ${theme.margins.normal}`};
-  padding-top: ${({ theme }) => theme.margins.small};
+  /* ${({ theme }) => `padding: 0 ${theme.margins.normal}`}; */
+  padding: ${({ theme }) => theme.margins.normal};
+  padding-bottom: ${({ theme }) => theme.margins.medium};
 `
 
 export const Title = styled.h1`
@@ -46,6 +47,17 @@ export const CogIcon = styled(FaCog)``
 
 export const TitleContainer = styled.div`
   cursor: pointer;
+`
+export const HeaderImage = styled.img`
+  position: absolute;
+  top: 0;
+
+  width: 200px;
+  margin-top: ${({ theme }) => theme.margins.small};
+
+  @media (max-width: 768px) {
+    width: 150px;
+  }
 `
 
 export const RoomTitleContainer = styled.div`
