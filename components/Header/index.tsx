@@ -14,7 +14,7 @@ import {
   HeaderImage,
   OptionsContainer,
   Options,
-  CogIcon,
+  OptionsIcon,
   LinkIcon,
 } from './styles'
 
@@ -60,7 +60,7 @@ const Header: FC<HeaderProps> = ({
             </RoomTitleContainer>
           </CopyToClipboard>
           <Options onClick={() => setToggleModal(true)}>
-            <CogIcon size={26} />
+            <OptionsIcon size={26} />
           </Options>
         </OptionsContainer>
       )}

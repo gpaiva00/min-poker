@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 import { lighten } from 'polished'
-import { FaCog } from 'react-icons/fa'
+import { ImSpades } from 'react-icons/im'
 import { BsLink } from 'react-icons/bs'
 
 export const Container = styled.div`
@@ -43,7 +43,7 @@ export const Options = styled.div`
   }
 `
 
-export const CogIcon = styled(FaCog)``
+export const OptionsIcon = styled(ImSpades)``
 
 export const TitleContainer = styled.div`
   cursor: pointer;

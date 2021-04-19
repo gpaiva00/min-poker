@@ -20,7 +20,7 @@ export interface Room {
 }
 interface ResultItems {
   id: string
-  text: string
+  text?: string
   votes: number
 }
 export interface Result {

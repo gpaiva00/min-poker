@@ -25,7 +25,7 @@ import {
   DEFAULT_ROOM,
   STORAGE_KEY_USER,
 } from '../../constants'
-import { updateRoom, validateRoomId } from '../../utils'
+import { calculateVotingResult, updateRoom, validateRoomId } from '../../utils'
 import OptionsModal from '../../components/OptionsModal'
 
 const Voting: FC = () => {
@@ -90,48 +90,6 @@ const Voting: FC = () => {
     }
   }
 
-  const calculateVotingResult = () => {
-    try {
-      const results = room.participants.reduce((acc, curr) => {
-        if (
-          !curr.vote.length ||
-          curr.vote === 'question' ||
-          curr.vote === 'coffee'
-        )
-          return acc
-
-        const item = {
-          id: curr.vote,
-          votes: 0,
-        }
-
-        item.votes = room.participants.filter(
-          ({ vote }) => vote === curr.vote
-        ).length
-
-        const itemIndex = acc.findIndex(item => item.id === curr.vote)
-
-        if (itemIndex !== -1) acc[itemIndex] = item
-        else acc.push(item)
-
-        return acc
-      }, [])
-
-      const resultVotes = results.map(result => parseInt(result.id, 10))
-
-      const votesSum = resultVotes.reduce((acc, curr) => acc + curr, 0)
-      const average = votesSum / resultVotes.length || 0
-
-      return { average, results }
-    } catch (error) {
-      Toast({
-        type: 'error',
-        message: 'Error trying calculate voting results. Try again.',
-      })
-      console.error('Error trying to set voting results', error)
-    }
-  }
-
   const handleStartVoting = async () => {
     try {
       const newIsVoting = !isVoting
@@ -152,10 +110,19 @@ const Voting: FC = () => {
       }
 
       if (showResults) {
-        const { average, results } = calculateVotingResult()
+        const calculateResult = calculateVotingResult(room.participants)
+
+        if (!calculateResult)
+          return Toast({
+            type: 'error',
+            message: 'Error trying calculate voting results. Try again.',
+          })
+
+        const { average, results: items } = calculateResult
+
         newRoom.results = {
           average,
-          items: results,
+          items,
         }
       }
 
