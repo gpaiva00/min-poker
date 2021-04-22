@@ -20,6 +20,10 @@ import {
   StartVoting,
   Title,
   Vote,
+  TitleContainer,
+  EditIcon,
+  DoneIcon,
+  RemoveIcon,
 } from '../../styles/ParticipantsPanel.styles'
 
 import { FiCoffee } from 'react-icons/fi'
@@ -30,6 +34,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   imHost,
   handleDeleteRoom,
   handleExitRoom,
+  handleRemoveParticipant,
   room,
   userInfo,
   loading,
@@ -38,6 +43,8 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   const [participantsList, setParticipantsList] = useState<ParticipantProps[]>(
     []
   )
+
+  const [isEditing, setIsEditing] = useState(false)
 
   const { participants, showResults, isVoting } = room
   const { name, userId } = userInfo
@@ -60,6 +67,24 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
       )
   }
 
+  const showEditOptions = () => {
+    if (isEditing)
+      return <DoneIcon onClick={() => setIsEditing(false)} size={20} />
+
+    return <EditIcon onClick={() => setIsEditing(true)} size={20} />
+  }
+
+  const showParticipantsOptions = ({ vote, viewerMode, id }) => {
+    if (isEditing)
+      return (
+        <RemoveIcon onClick={() => handleRemoveParticipant(id)} size={20} />
+      )
+
+    if (viewerMode) return <FaRegEye size={20} />
+
+    return showParticipantVote(vote)
+  }
+
   useEffect(() => {
     let newParticipants = participants.filter(
       ({ id }) => id !== '' && id !== userId
@@ -70,7 +95,10 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
 
   return (
     <Container>
-      <Title>Participants</Title>
+      <TitleContainer>
+        <Title>Participants</Title>
+        {imHost && showEditOptions()}
+      </TitleContainer>
 
       <PanelContainer>
         <Panel>
@@ -84,17 +112,14 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
               )}
             </Participant>
 
-            {participantsList.map(({ name, vote, viewerMode }, key) => (
+            {participantsList.map(({ name, vote, viewerMode, id }, key) => (
               <Participant key={key}>
                 <Name>{name}</Name>
-                {viewerMode ? (
-                  <FaRegEye size={20} />
-                ) : (
-                  showParticipantVote(vote)
-                )}
+                {showParticipantsOptions({ vote, viewerMode, id })}
               </Participant>
             ))}
           </List>
+
           {imHost && (
             <ButtonContainer>
               <StartVoting

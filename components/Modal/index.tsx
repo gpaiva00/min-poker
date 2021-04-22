@@ -8,7 +8,7 @@ interface ModalProps {
   toggle: boolean
   title: string
   setToggleModal: React.Dispatch<React.SetStateAction<boolean>>
-  height?: '380' | '480'
+  height?: '250' | '380' | '480'
 }
 
 const Modal: FC<ModalProps> = ({

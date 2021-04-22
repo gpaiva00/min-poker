@@ -6,7 +6,7 @@ interface ToastComponentProps {
 }
 
 const toastConfig: ToastProps = {
-  position: 'bottom-center',
+  position: 'bottom-right',
   autoClose: 3000,
   hideProgressBar: true,
   closeOnClick: true,

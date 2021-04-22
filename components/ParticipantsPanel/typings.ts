@@ -5,6 +5,7 @@ export interface ParticipantsPanelProps {
   imHost: boolean
   handleDeleteRoom(): void
   handleExitRoom(): void
+  handleRemoveParticipant(id: string): void
   userInfo: UserInfo
   room: Room
   loading: boolean
