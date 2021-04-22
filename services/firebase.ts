@@ -18,7 +18,6 @@ export const getDatabase = () => {
   if (!firebase.apps.length) {
     const app = firebase.initializeApp(config)
     db = firebase.firestore(app)
-    // firebase.analytics()
   } else {
     const app = firebase.app()
     db = firebase.firestore(app)
