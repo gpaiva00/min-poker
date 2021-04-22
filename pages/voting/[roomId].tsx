@@ -3,21 +3,10 @@ import { useRouter } from 'next/router'
 
 import { PageContainer } from '../../styles/Voting.styles'
 
-import {
-  Header,
-  Modal,
-  ParticipantsPanel,
-  Toast,
-  VotingPanel,
-} from '../../components'
+import { Header, ParticipantsPanel, Toast, VotingPanel } from '../../components'
 
 import { useCollectionData } from 'react-firebase-hooks/firestore'
-import {
-  Participant,
-  Room,
-  UserInfo,
-  CalculateVotingProps,
-} from '../../typings'
+import { Participant, Room, UserInfo } from '../../typings'
 import { getDatabase } from '../../services/firebase'
 import usePersistedState from '../../hooks/usePersistedState'
 import {
@@ -27,12 +16,15 @@ import {
 } from '../../constants'
 import { calculateVotingResult, updateRoom, validateRoomId } from '../../utils'
 import OptionsModal from '../../components/OptionsModal'
+import RemoveParticipantModal from '../../components/RemoveParticipantModal'
 
 const Voting: FC = () => {
   const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
   const [isVoting, setIsVoting] = useState(false)
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
-  const [toggleModal, setToggleModal] = useState(false)
+  const [toggleOptionsModal, setToggleOptionsModal] = useState(false)
+  const [toggleConfirmModal, setToggleConfirmModal] = useState(false)
+  const [participantIdToRemove, setParticipantIdToRemove] = useState('')
 
   const router = useRouter()
   const { roomId } = router.query
@@ -177,7 +169,7 @@ const Voting: FC = () => {
       console.error('Error trying to change name', error)
     }
 
-    setToggleModal(false)
+    setToggleOptionsModal(false)
   }
 
   const handleVoteClick = async (voteId: string) => {
@@ -200,6 +192,41 @@ const Voting: FC = () => {
     }
   }
 
+  const handleRemoveParticipant = async () => {
+    try {
+      const roomPath = room.ref.path.split('/')[1]
+      const roomRef = db.collection('rooms').doc(roomPath)
+
+      const newParticipants = room.participants.filter(
+        participant => participant.id !== participantIdToRemove
+      )
+
+      await roomRef.set(
+        {
+          ...room,
+          participants: newParticipants,
+        },
+        { merge: false }
+      )
+
+      setToggleConfirmModal(false)
+      Toast({
+        message: 'Participant removed from your room',
+      })
+    } catch (error) {
+      Toast({
+        type: 'error',
+        message: 'Error trying to remove participant. Try again.',
+      })
+      console.error('Error trying to remove participant room', error)
+    }
+  }
+
+  const handleShowConfirmModal = (participantId: string) => {
+    setToggleConfirmModal(true)
+    setParticipantIdToRemove(participantId)
+  }
+
   useEffect(() => {
     if (!validateRoomId(roomId)) {
       router.push('/')
@@ -216,20 +243,26 @@ const Voting: FC = () => {
     <div>
       <main>
         <OptionsModal
+          toggle={toggleOptionsModal}
+          setToggleModal={setToggleOptionsModal}
           room={room}
           me={me}
           userInfo={userInfo}
           handleSaveRoomOptions={handleSaveRoomOptions}
           loading={loading}
-          toggle={toggleModal}
-          setToggleModal={setToggleModal}
           imHost={imHost}
+        />
+        <RemoveParticipantModal
+          toggle={toggleConfirmModal}
+          setToggleModal={setToggleConfirmModal}
+          handlePressConfirm={handleRemoveParticipant}
+          loading={loading}
         />
         <Header
           showRoomTitle
           roomTitle={room.name}
           roomId={roomId}
-          setToggleModal={setToggleModal}
+          setToggleModal={setToggleOptionsModal}
         />
 
         <PageContainer>
@@ -238,6 +271,7 @@ const Voting: FC = () => {
             imHost={imHost}
             handleDeleteRoom={handleDeleteRoom}
             handleExitRoom={handleExitRoom}
+            handleRemoveParticipant={handleShowConfirmModal}
             room={room}
             me={me}
             userInfo={userInfo}

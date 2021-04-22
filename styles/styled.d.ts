@@ -20,8 +20,7 @@ declare module 'styled-components' {
       timer: string
       lightText: string
       darkText: string
-      lightRed: string
-      darkRed: string
+      danger: string
       focus: string
       blue: string
     }

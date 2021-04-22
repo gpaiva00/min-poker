@@ -1,6 +1,12 @@
 import styled from 'styled-components'
 import Button from '../components/Button'
 
+import { MdEdit } from 'react-icons/md'
+import { FaCheck } from 'react-icons/fa'
+import { AiFillMinusCircle } from 'react-icons/ai'
+
+import { lighten } from 'polished'
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -17,6 +23,40 @@ export const Container = styled.div`
   }
 
   /* background: darkgray; */
+`
+
+export const TitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  width: 100%;
+`
+
+export const EditIcon = styled(MdEdit)`
+  cursor: pointer;
+  margin-right: ${({ theme }) => theme.margins.small};
+
+  &:hover {
+    color: ${({ theme }) => lighten(0.2, theme.colors.text)};
+  }
+`
+
+export const DoneIcon = styled(FaCheck)`
+  cursor: pointer;
+  margin-right: ${({ theme }) => theme.margins.small};
+
+  &:hover {
+    color: ${({ theme }) => lighten(0.2, theme.colors.text)};
+  }
+`
+
+export const RemoveIcon = styled(AiFillMinusCircle)`
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.danger};
+
+  &:hover {
+    color: ${({ theme }) => lighten(0.1, theme.colors.danger)};
+  }
 `
 
 export const Title = styled.h1`
