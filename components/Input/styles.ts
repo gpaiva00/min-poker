@@ -16,7 +16,7 @@ export const Container = styled.div<ContainerProps>`
 
 export const StyledInput = styled.input<ContainerProps>`
   font-size: ${({ theme }) => theme.fontSizes.regular};
-  font-family: ${({ theme }) => theme.fonts.regular};
+  font-family: ${({ theme }) => theme.fonts.light};
   color: ${({ theme }) => theme.colors.text};
 
   width: 100%;

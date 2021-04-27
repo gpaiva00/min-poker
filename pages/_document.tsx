@@ -58,11 +58,11 @@ export default class MyDocument extends Document {
           />
           <meta property="og:image" content="/ogMinPoker.png" key="ogimage" />
 
-          <link rel="preconnect" href="https://fonts.gstatic.com" />
+          {/* <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
             href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap"
             rel="stylesheet"
-          />
+          /> */}
 
           <title>minPOKER</title>
         </Head>

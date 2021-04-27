@@ -13,7 +13,7 @@ export const WaitingContainer = styled.div`
 `
 
 export const Description = styled.h1`
-  font-family: ${({ theme }) => theme.fonts.regular};
+  font-family: ${({ theme }) => theme.fonts.lightItalic};
   font-size: ${({ theme }) => theme.fontSizes.regular};
 
   color: ${({ theme }) => theme.colors.smoke};

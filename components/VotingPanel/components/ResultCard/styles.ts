@@ -8,14 +8,15 @@ export const Card = styled.div`
 
   border-width: 0.5px;
   border-style: solid;
-  border-color: ${({ theme }) => theme.colors.lightSmoke};
+  border-color: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.lightText};
   border-radius: 6px;
 
   width: 100px;
   height: 100px;
 
   margin: ${({ theme }) => theme.margins.normal};
-
 `
 
 export const CardIcon = styled.div`
@@ -33,7 +34,7 @@ export const TextContainer = styled.div`
   /* background: lightgray; */
 `
 
-export const CardText =  styled.h1`
+export const CardText = styled.h1`
   font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.big};
 `

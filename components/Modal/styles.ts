@@ -2,9 +2,10 @@ import styled from 'styled-components'
 import { lighten } from 'polished'
 
 import { IoCloseOutline } from 'react-icons/io5/'
+import { LIGHTEN_AMOUNT_HIGH } from '../../constants'
 
 export const Title = styled.h1`
-  font-family: ${({ theme }) => theme.fonts.regular};
+  font-family: ${({ theme }) => theme.fonts.semiBold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
 
   text-transform: uppercase;
@@ -23,6 +24,6 @@ export const CloseIcon = styled(IoCloseOutline)`
   cursor: pointer;
 
   &:hover {
-    color: ${({ theme }) => lighten(0.2, theme.colors.text)};
+    color: ${({ theme }) => lighten(LIGHTEN_AMOUNT_HIGH, theme.colors.text)};
   }
 `

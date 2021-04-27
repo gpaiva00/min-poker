@@ -27,10 +27,12 @@ declare module 'styled-components' {
 
     fonts: {
       light: string
-      extraLight: string
+      lightItalic: string
       regular: string
       semiBold: string
       bold: string
+      boldItalic: string
+      medium: string
     }
 
     fontSizes: {
