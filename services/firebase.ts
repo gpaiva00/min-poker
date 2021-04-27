@@ -2,6 +2,8 @@ import firebase from 'firebase/app'
 import 'firebase/analytics'
 import 'firebase/firestore'
 
+console.log('project', process.env.NEXT_PUBLIC_PROJECT_ID)
+
 const config = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
