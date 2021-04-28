@@ -1,4 +1,5 @@
 import firebase from 'firebase/app'
+import 'firebase/auth'
 import 'firebase/analytics'
 import 'firebase/firestore'
 
@@ -16,17 +17,18 @@ export const getDatabase = () => {
   let db: firebase.firestore.Firestore = null
 
   if (!firebase.apps.length) {
-    const app = firebase.initializeApp(config)
-    db = firebase.firestore(app)
+    try {
+      const app = firebase.initializeApp(config)
+      firebase
+        .auth(app)
+        .signInAnonymously()
+        .then(() => (db = firebase.firestore(app)))
+    } catch (error) {
+      console.error(error.code, error.message)
+    }
   } else {
     const app = firebase.app()
-    firebase
-      .auth(app)
-      .signInAnonymously()
-      .then(() => {
-        db = firebase.firestore(app)
-      })
-      .catch(error => console.error(error.code, error.message))
+    db = firebase.firestore(app)
   }
 
   return db
