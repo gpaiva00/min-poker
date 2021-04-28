@@ -19,8 +19,14 @@ export const getDatabase = () => {
     const app = firebase.initializeApp(config)
     db = firebase.firestore(app)
   } else {
-    const app = firebase.app()
-    db = firebase.firestore(app)
+    firebase
+      .auth()
+      .signInAnonymously()
+      .then(() => {
+        const app = firebase.app()
+        db = firebase.firestore(app)
+      })
+      .catch(error => console.error(error.code, error.message))
   }
 
   return db
