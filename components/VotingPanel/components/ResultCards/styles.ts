@@ -30,7 +30,7 @@ export const TitleContainer = styled.div`
 
 export const Title = styled.h1`
   font-family: ${({ theme }) => theme.fonts.semiBold};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.regular};
 
   margin-bottom: ${({ theme }) => theme.margins.normal};
   color: ${({ theme }) => theme.colors.text};
@@ -44,7 +44,7 @@ export const AverageContainer = styled.div`
 `
 
 export const AverageTitle = styled.h1`
-  font-family: ${({ theme }) => theme.fonts.regular};
+  font-family: ${({ theme }) => theme.fonts.lightItalic};
   font-size: ${({ theme }) => theme.fontSizes.small};
 
   margin-right: ${({ theme }) => theme.margins.small};
@@ -53,6 +53,6 @@ export const AverageTitle = styled.h1`
 `
 
 export const AverageValue = styled.p`
-  font-family: ${({ theme }) => theme.fonts.semiBold};
+  font-family: ${({ theme }) => theme.fonts.boldItalic};
   font-size: ${({ theme }) => theme.fontSizes.regular};
 `

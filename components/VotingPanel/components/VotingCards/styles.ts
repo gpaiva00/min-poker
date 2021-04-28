@@ -30,7 +30,7 @@ export const TitleContainer = styled.div`
 
 export const Title = styled.h1`
   font-family: ${({ theme }) => theme.fonts.semiBold};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.regular};
 
   margin-bottom: ${({ theme }) => theme.margins.normal};
   color: ${({ theme }) => theme.colors.text};

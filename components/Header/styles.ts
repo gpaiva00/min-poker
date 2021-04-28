@@ -1,8 +1,9 @@
 import styled from 'styled-components'
 
 import { lighten } from 'polished'
-import { ImSpades } from 'react-icons/im'
+import { ImCog } from 'react-icons/im'
 import { BsLink } from 'react-icons/bs'
+import { LIGHTEN_AMOUNT_HIGH, LIGHTEN_AMOUNT_LOW } from '../../constants'
 
 export const Container = styled.div`
   display: flex;
@@ -39,11 +40,11 @@ export const Options = styled.div`
   cursor: pointer;
 
   &:hover {
-    color: ${({ theme }) => lighten(0.2, theme.colors.text)};
+    color: ${({ theme }) => lighten(LIGHTEN_AMOUNT_LOW, theme.colors.text)};
   }
 `
 
-export const OptionsIcon = styled(ImSpades)``
+export const OptionsIcon = styled(ImCog)``
 
 export const TitleContainer = styled.div`
   cursor: pointer;
@@ -52,7 +53,7 @@ export const HeaderImage = styled.img`
   position: absolute;
   top: 0;
 
-  width: 200px;
+  width: 190px;
   margin-top: ${({ theme }) => theme.margins.small};
 
   @media (max-width: 768px) {
@@ -68,7 +69,7 @@ export const RoomTitleContainer = styled.div`
 
   &:hover {
     ${LinkIcon} {
-      color: ${({ theme }) => lighten(0.4, theme.colors.text)};
+      color: ${({ theme }) => lighten(LIGHTEN_AMOUNT_HIGH, theme.colors.text)};
     }
   }
 `

@@ -6,6 +6,7 @@ import { FaCheck } from 'react-icons/fa'
 import { AiFillMinusCircle } from 'react-icons/ai'
 
 import { lighten } from 'polished'
+import { LIGHTEN_AMOUNT_NORMAL } from '../constants'
 
 export const Container = styled.div`
   display: flex;
@@ -16,7 +17,6 @@ export const Container = styled.div`
   margin-left: ${({ theme }) => theme.margins.normal};
 
   @media (max-width: 768px) {
-    /* height: 100vh; */
     width: 100%;
     margin: 0;
     align-items: center;
@@ -34,19 +34,17 @@ export const TitleContainer = styled.div`
 
 export const EditIcon = styled(MdEdit)`
   cursor: pointer;
-  margin-right: ${({ theme }) => theme.margins.small};
 
   &:hover {
-    color: ${({ theme }) => lighten(0.2, theme.colors.text)};
+    color: ${({ theme }) => lighten(LIGHTEN_AMOUNT_NORMAL, theme.colors.text)};
   }
 `
 
 export const DoneIcon = styled(FaCheck)`
   cursor: pointer;
-  margin-right: ${({ theme }) => theme.margins.small};
 
   &:hover {
-    color: ${({ theme }) => lighten(0.2, theme.colors.text)};
+    color: ${({ theme }) => lighten(LIGHTEN_AMOUNT_NORMAL, theme.colors.text)};
   }
 `
 
@@ -55,13 +53,14 @@ export const RemoveIcon = styled(AiFillMinusCircle)`
   color: ${({ theme }) => theme.colors.danger};
 
   &:hover {
-    color: ${({ theme }) => lighten(0.1, theme.colors.danger)};
+    color: ${({ theme }) =>
+      lighten(LIGHTEN_AMOUNT_NORMAL, theme.colors.danger)};
   }
 `
 
 export const Title = styled.h1`
   font-family: ${({ theme }) => theme.fonts.semiBold};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.regular};
 
   margin-bottom: ${({ theme }) => theme.margins.normal};
   color: ${({ theme }) => theme.colors.text};
@@ -108,12 +107,8 @@ export const List = styled.div`
 `
 
 export const MyName = styled.p`
-  font-family: ${({ theme }) => theme.fonts.bold};
+  font-family: ${({ theme }) => theme.fonts.semiBold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
-
-  /* &:hover {
-    text-decoration: underline;
-  } */
 `
 
 export const Participant = styled.div`
@@ -129,7 +124,7 @@ export const Participant = styled.div`
 `
 
 export const Name = styled.p`
-  font-family: ${({ theme }) => theme.fonts.regular};
+  font-family: ${({ theme }) => theme.fonts.light};
   font-size: ${({ theme }) => theme.fontSizes.regular};
 `
 

@@ -46,7 +46,6 @@ const OptionsModal: FC<OptionsModalProps> = ({
     setRoomName(room.name)
 
     if (me) setViewerMode(me.viewerMode)
-    console.log({ me })
   }, [room, me])
 
   return (

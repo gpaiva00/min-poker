@@ -16,11 +16,12 @@ export default {
   },
 
   fonts: {
-    light: 'Roboto Light, sans-serif',
-    extraLight: 'Roboto Extra-light, sans-serif',
-    regular: 'Roboto, sans-serif',
-    semiBold: 'Roboto Medium, sans-serif',
-    bold: 'Roboto Bold, sans-serif',
+    light: 'light, sans-serif',
+    lightItalic: 'light-italic, sans-serif',
+    regular: 'regular, sans-serif',
+    semiBold: 'medium, sans-serif',
+    boldItalic: 'bold-italic, sans-serif',
+    bold: 'bold, sans-serif',
   },
 
   fontSizes: {

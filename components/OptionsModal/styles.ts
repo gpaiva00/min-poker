@@ -21,6 +21,7 @@ export const InputContainer = styled.div`
   align-items: flex-start;
   justify-content: center;
 
+  margin-top: ${({ theme }) => theme.margins.small};
   width: 100%;
 `
 

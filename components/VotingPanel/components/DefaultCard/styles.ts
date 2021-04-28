@@ -22,14 +22,14 @@ export const Card = styled.div<CardProps>`
   background: transparent;
 
   background: ${({ selected, theme }) =>
-    selected ? theme.colors.blue : 'transparent'};
+    selected ? theme.colors.primary : 'transparent'};
   color: ${({ selected, theme }) =>
     selected ? theme.colors.lightText : theme.colors.primary};
 
   &:hover {
-    background: ${({ theme }) => theme.colors.blue};
+    background: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.lightText};
-    border-color: ${({ theme }) => theme.colors.blue};
+    border-color: ${({ theme }) => theme.colors.primary};
   }
 `
 

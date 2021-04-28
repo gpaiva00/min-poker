@@ -7,12 +7,11 @@ export const Container = styled.div`
   @media (max-width: 768px) {
     margin-top: ${({ theme }) => theme.margins.normal};
   }
-  /* margin-left: ${({ theme }) => theme.margins.medium}; */
 `
 
 export const Title = styled.h1`
-  font-family: ${({ theme }) => theme.fonts.bold};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-family: ${({ theme }) => theme.fonts.semiBold};
+  font-size: ${({ theme }) => theme.fontSizes.regular};
 
   text-transform: uppercase;
 `
@@ -28,7 +27,7 @@ export const ItemsContainer = styled.div`
 `
 
 export const Item = styled.a`
-  font-family: ${({ theme }) => theme.fonts.regular};
+  font-family: ${({ theme }) => theme.fonts.lightItalic};
   font-size: ${({ theme }) => theme.fontSizes.small};
   color: ${({ theme }) => theme.colors.text};
 
