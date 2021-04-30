@@ -160,7 +160,7 @@ const Voting: FC = () => {
         newParticipant,
       })
 
-      Toast({ message: 'Options updated with success.' })
+      Toast({ message: 'Options updated successfully.' })
     } catch (error) {
       Toast({
         type: 'error',
