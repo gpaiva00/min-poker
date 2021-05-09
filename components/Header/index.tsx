@@ -17,6 +17,7 @@ import {
   OptionsIcon,
   LinkIcon,
 } from './styles'
+import { returnInviteLink } from '../../utils'
 
 interface HeaderProps {
   showRoomTitle?: boolean
@@ -31,11 +32,7 @@ const Header: FC<HeaderProps> = ({
   roomId,
   setToggleModal,
 }) => {
-  const minPokerURL =
-    process.env.NODE_ENV !== 'production'
-      ? process.env.NEXT_PUBLIC_MIN_POKER_DEV_URL
-      : process.env.NEXT_PUBLIC_MIN_PRD_URL
-  const inviteLink = `${minPokerURL}/invitation/${roomId}`
+  const inviteLink = returnInviteLink(roomId)
 
   return (
     <Container>
