@@ -8,33 +8,37 @@ import { Room } from '../../typings/Room'
 import usePersistedState from '../../hooks/usePersistedState'
 import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
 import { UserInfo } from '../../typings/UserInfo'
-import { generateNickName, idGenerator } from '../../utils'
+import { generateNickName, idGenerator, validateRoomId } from '../../utils'
+import { useGetRoomById } from '../../hooks'
 
 const Invitation: FC = () => {
-  const router = useRouter()
-  const { roomId } = router.query
   const [message, setMessage] = useState('Loading...')
-
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
   let { userId, name: userName }: UserInfo = storage && JSON.parse(storage)
 
+  const router = useRouter()
+  const { roomId } = router.query
+
   const db = getDatabase()
 
-  const [rooms, loading, error] = useCollectionData<Room[]>(
-    db.collection('rooms').where('id', '==', roomId || ''),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-      refField: 'ref',
-    }
-  )
+  const { room, loading } = useGetRoomById(db, roomId)
+
+  // useEffect(() => {
+  //   if (!validateRoomId(roomId)) {
+  //     router.push('/')
+  //     return
+  //   }
+  // }, [roomId])
+
+  // useEffect(() => {
+  //   console.log('useEffect', room)
+  // }, [room])
 
   useEffect(() => {
     const verifyRoomId = async () => {
-      if (rooms && !rooms.length) setMessage('Room not found.')
+      if (!room) setMessage('Room not found.')
 
       try {
-        const room: Room = rooms && rooms[0] ? rooms[0] : DEFAULT_ROOM
-
         if (!room.hostId) return
 
         if (!userId) userId = idGenerator()
@@ -77,7 +81,7 @@ const Invitation: FC = () => {
     }
 
     verifyRoomId()
-  }, [rooms])
+  }, [room])
 
   return <p>{message}</p>
 }

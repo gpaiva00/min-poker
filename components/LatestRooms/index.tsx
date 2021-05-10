@@ -1,24 +1,14 @@
 import React, { FC } from 'react'
-
 import { motion } from 'framer-motion'
-import { Room } from '../../typings/Room'
-
 import { Container, Item, ItemsContainer, Title } from './styles'
-
-import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { getDatabase } from '../../services/firebase'
 import { LatestRoomsProps } from './typings'
 import Link from 'next/link'
+import { useGetRooms } from '../../hooks'
 
 const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
   const db = getDatabase()
-
-  const [rooms, loading, error] = useCollectionData<Room[]>(
-    db.collection('rooms'),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
-  )
+  const { rooms } = useGetRooms(db)
 
   const myRooms =
     !rooms || !userInfo
@@ -32,7 +22,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ ease: 'easeInOut', duration: 1 }}
+        transition={{ ease: 'easeInOut', duration: 0.5 }}
       >
         <Title>your latest rooms</Title>
       </motion.div>
@@ -44,7 +34,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ ease: 'easeInOut', duration: 1, delay: 0.5 }}
+                transition={{ ease: 'easeInOut', duration: 0.5, delay: 0.5 }}
               >
                 {room.name}
               </motion.p>

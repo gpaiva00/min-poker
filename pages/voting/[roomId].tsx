@@ -17,6 +17,7 @@ import {
 import { calculateVotingResult, updateRoom, validateRoomId } from '../../utils'
 import OptionsModal from '../../components/OptionsModal'
 import RemoveParticipantModal from '../../components/RemoveParticipantModal'
+import { useGetRoomById } from '../../hooks'
 
 const Voting: FC = () => {
   const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
@@ -30,15 +31,8 @@ const Voting: FC = () => {
   const { roomId } = router.query
 
   const db = getDatabase()
-  const [rooms, loading, error] = useCollectionData<Room[]>(
-    db.collection('rooms').where('id', '==', roomId || ''),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-      refField: 'ref',
-    }
-  )
 
-  const room: Room = rooms && rooms[0] ? rooms[0] : DEFAULT_ROOM
+  const { room, loading } = useGetRoomById(db, roomId)
 
   const userInfo: UserInfo = storage && JSON.parse(storage)
   const imHost = room.hostId === userInfo.userId
