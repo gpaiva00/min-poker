@@ -12,6 +12,7 @@ import {
 } from './styles'
 import { ResultCard, Waiting } from '../'
 import { Result } from '../../../../typings'
+import { ANIMATION_DURATION, DELAY_DURATION } from '../../../../constants'
 
 interface ResultCardsProps {
   results: Result
@@ -23,7 +24,7 @@ const ResultCards: FC<ResultCardsProps> = ({ results }) => (
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ ease: 'easeInOut', duration: 1 }}
+        transition={{ ease: 'easeInOut', duration: ANIMATION_DURATION }}
       >
         <Title>Results</Title>
       </motion.h1>
@@ -41,7 +42,11 @@ const ResultCards: FC<ResultCardsProps> = ({ results }) => (
         <motion.div
           initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ ease: 'easeInOut', duration: 0.5, delay: 0.5 }}
+          transition={{
+            ease: 'easeInOut',
+            duration: ANIMATION_DURATION,
+            delay: DELAY_DURATION,
+          }}
         >
           <ResultCard id={item.id} key={key} votes={item.votes} />
         </motion.div>

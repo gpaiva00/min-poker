@@ -6,6 +6,9 @@ export const LIGHTEN_AMOUNT_LOW = 0.05
 export const LIGHTEN_AMOUNT_NORMAL = 0.2
 export const LIGHTEN_AMOUNT_HIGH = 0.5
 
+export const ANIMATION_DURATION = 0.5
+export const DELAY_DURATION = 0.5
+
 export const RESULTS_TEXT = {
   1: '1',
   2: '2',

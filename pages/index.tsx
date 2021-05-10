@@ -22,6 +22,7 @@ import {
 import usePersistedState from '../hooks/usePersistedState'
 
 import {
+  ANIMATION_DURATION,
   DEFAULT_PARTICIPANT,
   DEFAULT_RESULT,
   STORAGE_KEY_USER,
@@ -106,7 +107,7 @@ const Home: FC = () => {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ ease: 'easeInOut', duration: 1 }}
+            transition={{ ease: 'easeInOut', duration: ANIMATION_DURATION }}
           >
             <InstructionText>Enter a name for your room</InstructionText>
           </motion.p>
@@ -114,7 +115,7 @@ const Home: FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ ease: 'easeInOut', duration: 1 }}
+            transition={{ ease: 'easeInOut', duration: ANIMATION_DURATION }}
           >
             <InputContainer>
               <Input
