@@ -2,8 +2,11 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/analytics'
 import 'firebase/firestore'
+import { DEFAULT_RESULT } from '../constants'
+import { ROOM_COLLECTION } from './constants'
+import { Room } from '../typings'
 
-const config = {
+const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
@@ -13,23 +16,129 @@ const config = {
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 }
 
-export const getDatabase = () => {
-  let db: firebase.firestore.Firestore = null
+let db: firebase.firestore.Firestore = null
+let app = null
 
-  if (!firebase.apps.length) {
-    try {
-      const app = firebase.initializeApp(config)
-      firebase
-        .auth(app)
-        .signInAnonymously()
-        .then(() => (db = firebase.firestore(app)))
-    } catch (error) {
-      console.error(error.code, error.message)
-    }
-  } else {
-    const app = firebase.app()
-    db = firebase.firestore(app)
+if (!firebase.apps.length) {
+  try {
+    app = firebase.initializeApp(firebaseConfig)
+    db = firebase.firestore()
+    // firebase
+    //   .auth(app)
+    //   .signInAnonymously()
+    //   .then(() => (db = firebase.firestore(app)))
+  } catch (error) {
+    console.error(error.code, error.message)
   }
+} else {
+  app = firebase.app()
+  db = firebase.firestore(app)
+}
 
+export const authenticateAnonymously = () => {
+  return firebase.auth().signInAnonymously()
+}
+
+export const createRoom = async ({ roomId, roomName, hostId, hostName }) => {
+  try {
+    const saveOnDB = {
+      created: firebase.firestore.FieldValue.serverTimestamp(),
+      id: roomId,
+      name: roomName,
+      hostId,
+      isVoting: false,
+      showResults: false,
+      results: DEFAULT_RESULT,
+      participants: [
+        {
+          vote: '',
+          name: hostName,
+          id: hostId,
+          viewerMode: false,
+        },
+      ],
+    }
+
+    await db.collection(ROOM_COLLECTION).add(saveOnDB)
+  } catch (error) {}
+}
+
+export const updateRoom = async ({ room, userId, newRoom, newParticipant }) => {
+  try {
+    const roomRef = await db
+      .collection(ROOM_COLLECTION)
+      .where('id', '==', room.id)
+      .get()
+
+    const roomPath = roomRef.docs[0].ref.path
+
+    // console.log({ roomPath, roomRef })
+
+    const { participants } = room
+
+    let newParticipants = participants
+    let updateRoom = room
+
+    if (newParticipant) {
+      newParticipants = participants.map(participant => {
+        if (!userId) {
+          return {
+            ...participant,
+            ...newParticipant,
+          }
+        }
+
+        if (participant.id === userId) {
+          return {
+            ...participant,
+            ...newParticipant,
+          }
+        }
+
+        return participant
+      })
+    }
+
+    if (newRoom) updateRoom = newRoom
+
+    await db.doc(roomPath).update(
+      {
+        ...updateRoom,
+        // ref: roomRef1,
+        participants: newParticipants,
+      }
+      // { merge: false }
+    )
+  } catch (error) {
+    console.error('Cannot update room', error)
+  }
+}
+
+export const deleteRoom = async (roomId: string) => {
+  try {
+    const roomRef = await db
+      .collection(ROOM_COLLECTION)
+      .where('id', '==', roomId)
+      .get()
+
+    const roomPath = roomRef.docs[0].ref.path
+
+    await db.doc(roomPath).delete()
+  } catch (error) {
+    console.error('Cannot delete room', error)
+  }
+}
+
+export const streamMyRooms = (userId: string | string[], observer) => {
   return db
+    .collection(ROOM_COLLECTION)
+    .where('hostId', '==', userId)
+    .onSnapshot(observer)
+}
+
+export const streamRoomById = (roomId: string | string[], observer) => {
+  return db
+    .collection(ROOM_COLLECTION)
+    .where('id', '==', roomId)
+    .onSnapshot(observer)
 }

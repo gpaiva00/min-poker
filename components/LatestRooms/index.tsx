@@ -1,22 +1,30 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Container, Item, ItemsContainer, Title } from './styles'
-import { getDatabase } from '../../services/firebase'
+import { streamMyRooms } from '../../services/firebase'
 import { LatestRoomsProps } from './typings'
 import Link from 'next/link'
-import { useGetRooms } from '../../hooks'
 import { ANIMATION_DURATION, DELAY_DURATION } from '../../constants'
+import { Room } from '../../typings'
 
 const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
-  const db = getDatabase()
-  const { rooms } = useGetRooms(db)
+  const [myLatestRooms, setMyLatestRooms] = useState<Room[]>([])
 
-  const myRooms =
-    !rooms || !userInfo
-      ? []
-      : rooms.filter(room => room.hostId === userInfo.userId)
+  useEffect(() => {
+    const unsubscribe = streamMyRooms(userInfo.userId, {
+      next: querySnapshot => {
+        const updatedRooms: Room[] = querySnapshot.docs.map(docSnapshot =>
+          docSnapshot.data()
+        )
 
-  return !myRooms.length ? (
+        setMyLatestRooms(updatedRooms)
+      },
+      error: () => console.error('Cannot find my rooms'),
+    })
+    return unsubscribe
+  }, [userInfo, setMyLatestRooms])
+
+  return !myLatestRooms?.length ? (
     <></>
   ) : (
     <Container>
@@ -29,7 +37,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
       </motion.div>
 
       <ItemsContainer>
-        {myRooms.map((room, key) => (
+        {myLatestRooms.map((room, key) => (
           <Link key={key} href={`voting/${room.id}`}>
             <Item>
               <motion.p

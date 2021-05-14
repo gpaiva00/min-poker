@@ -1,4 +1,4 @@
-import { getDatabase } from '../services/firebase'
+// import { getDatabase } from '../services/firebase'
 import { Room, Participant } from '../typings'
 
 export interface updateRoomProps {
@@ -14,12 +14,12 @@ export const updateRoom = async ({
   newRoom,
   newParticipant,
 }: updateRoomProps) => {
-  const db = getDatabase()
+  // const db = getDatabase()
 
   const { participants } = room
 
   const roomPath = room.ref.path.split('/')[1]
-  const roomRef = db.collection('rooms').doc(roomPath)
+  // const roomRef = db.collection('rooms').doc(roomPath)
 
   let newParticipants = participants
   let updateRoom = room
@@ -46,11 +46,11 @@ export const updateRoom = async ({
 
   if (newRoom) updateRoom = newRoom
 
-  await roomRef.set(
-    {
-      ...updateRoom,
-      participants: newParticipants,
-    },
-    { merge: false }
-  )
+  // await roomRef.set(
+  //   {
+  //     ...updateRoom,
+  //     participants: newParticipants,
+  //   },
+  //   { merge: false }
+  // )
 }

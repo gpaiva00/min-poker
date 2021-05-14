@@ -21,16 +21,11 @@ import {
 
 import usePersistedState from '../hooks/usePersistedState'
 
-import {
-  ANIMATION_DURATION,
-  DEFAULT_PARTICIPANT,
-  DEFAULT_RESULT,
-  STORAGE_KEY_USER,
-} from '../constants'
+import { ANIMATION_DURATION, STORAGE_KEY_USER } from '../constants'
 import { generateNickName, idGenerator, validateInputValue } from '../utils'
 
-import { getDatabase } from '../services/firebase'
 import { UserInfo } from '../typings'
+import { createRoom } from '../services/firebase'
 
 const Home: FC = () => {
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
@@ -38,7 +33,6 @@ const Home: FC = () => {
   const [loading, setLoading] = useState(false)
 
   const router = useRouter()
-  const db = getDatabase()
 
   const userInfo: UserInfo = storage && JSON.parse(storage)
 
@@ -67,24 +61,7 @@ const Home: FC = () => {
       const roomId = idGenerator()
       const roomName = inputValue
 
-      const saveOnDB = {
-        id: roomId,
-        name: roomName,
-        hostId,
-        isVoting: false,
-        showResults: false,
-        results: DEFAULT_RESULT,
-        participants: [
-          {
-            vote: '',
-            name: hostName,
-            id: hostId,
-            viewerMode: false,
-          },
-        ],
-      }
-
-      await db.collection('rooms').add(saveOnDB)
+      await createRoom({ roomId, roomName, hostId, hostName })
       setLoading(false)
       router.push(`voting/${roomId}`)
     } catch (error) {
@@ -93,7 +70,6 @@ const Home: FC = () => {
         type: 'error',
         message: 'There was an error to create your room. Try later.',
       })
-      console.error('Error trying to create room', error)
     }
   }
 

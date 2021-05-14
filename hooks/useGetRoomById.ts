@@ -3,7 +3,9 @@ import { DEFAULT_ROOM } from '../constants'
 import { Room } from '../typings'
 
 export const useGetRoomById = (db: any, roomId: string | string[]) => {
-  if (!db) return
+  console.log('inside functino', { db, roomId })
+
+  if (!db || !roomId) return { room: DEFAULT_ROOM, loading: false, error: null }
 
   try {
     const [rooms, loading, error] = useCollectionData<Room[]>(
@@ -13,7 +15,6 @@ export const useGetRoomById = (db: any, roomId: string | string[]) => {
         refField: 'ref',
       }
     )
-    console.log({ rooms })
 
     const room: Room = rooms && rooms[0] ? rooms[0] : DEFAULT_ROOM
 

@@ -5,22 +5,21 @@ import { PageContainer } from '../../styles/Voting.styles'
 
 import { Header, ParticipantsPanel, Toast, VotingPanel } from '../../components'
 
-import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { Participant, Room, UserInfo } from '../../typings'
-import { getDatabase } from '../../services/firebase'
 import usePersistedState from '../../hooks/usePersistedState'
 import {
   DEFAULT_PARTICIPANT,
   DEFAULT_ROOM,
   STORAGE_KEY_USER,
 } from '../../constants'
-import { calculateVotingResult, updateRoom, validateRoomId } from '../../utils'
+import { calculateVotingResult, validateRoomId } from '../../utils'
 import OptionsModal from '../../components/OptionsModal'
 import RemoveParticipantModal from '../../components/RemoveParticipantModal'
-import { useGetRoomById } from '../../hooks'
+import { deleteRoom, streamRoomById, updateRoom } from '../../services/firebase'
 
 const Voting: FC = () => {
   const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
+  const [room, setRoom] = useState<Room>(DEFAULT_ROOM)
   const [isVoting, setIsVoting] = useState(false)
   const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
   const [toggleOptionsModal, setToggleOptionsModal] = useState(false)
@@ -30,18 +29,16 @@ const Voting: FC = () => {
   const router = useRouter()
   const { roomId } = router.query
 
-  const db = getDatabase()
-
-  const { room, loading } = useGetRoomById(db, roomId)
+  const loading = false
 
   const userInfo: UserInfo = storage && JSON.parse(storage)
   const imHost = room.hostId === userInfo.userId
 
   const handleDeleteRoom = async () => {
     try {
-      setTimeout(async () => {
-        await db.doc(room.ref.path).delete()
-      }, 500)
+      setTimeout(() => {
+        deleteRoom(room.id)
+      }, 200)
 
       router.push('/')
     } catch (error) {
@@ -49,7 +46,6 @@ const Voting: FC = () => {
         type: 'error',
         message: 'Error trying to close your room. Sorry :(',
       })
-      console.error('Error trying to close room', error)
     }
   }
 
@@ -221,17 +217,34 @@ const Voting: FC = () => {
     setParticipantIdToRemove(participantId)
   }
 
-  useEffect(() => {
-    if (!validateRoomId(roomId)) {
-      router.push('/')
-      return
-    }
-  }, [roomId])
+  // useEffect(() => {
+  //   if (!validateRoomId(roomId)) {
+  //     router.push('/')
+  //     return
+  //   }
+  // }, [roomId])
+
+  // console.warn({ room: room.name, me })
 
   useEffect(() => {
-    const me = room.participants.find(({ id }) => id === userInfo.userId)
-    setMe(me ? me : DEFAULT_PARTICIPANT)
-  }, [room])
+    // console.warn({ roomId })
+
+    const unsubscribe = streamRoomById(roomId, {
+      next: querySnapshot => {
+        const updatedRoom: Room = querySnapshot.docs
+          .map(docSnapshot => docSnapshot.data())
+          .shift()
+
+        setRoom(updatedRoom)
+        const me = updatedRoom.participants.find(
+          ({ id }) => id === userInfo.userId
+        )
+        setMe(me ? me : DEFAULT_PARTICIPANT)
+      },
+      error: () => console.error('Cannot find room'),
+    })
+    return unsubscribe
+  }, [roomId, setRoom])
 
   return (
     <div>

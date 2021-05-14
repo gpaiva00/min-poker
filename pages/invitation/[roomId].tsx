@@ -1,15 +1,13 @@
 import React, { FC, useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
-import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { getDatabase } from '../../services/firebase'
 
-import { Room } from '../../typings/Room'
 import usePersistedState from '../../hooks/usePersistedState'
-import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
+import { STORAGE_KEY_USER } from '../../constants'
 import { UserInfo } from '../../typings/UserInfo'
-import { generateNickName, idGenerator, validateRoomId } from '../../utils'
-import { useGetRoomById } from '../../hooks'
+import { generateNickName, idGenerator } from '../../utils'
+import { useGetRoomById, useGetRooms } from '../../hooks'
 
 const Invitation: FC = () => {
   const [message, setMessage] = useState('Loading...')
@@ -20,19 +18,11 @@ const Invitation: FC = () => {
   const { roomId } = router.query
 
   const db = getDatabase()
-
-  const { room, loading } = useGetRoomById(db, roomId)
+  const room = useGetRoomById(db, roomId)
 
   // useEffect(() => {
-  //   if (!validateRoomId(roomId)) {
-  //     router.push('/')
-  //     return
-  //   }
+  //   console.log({ roomId, room })
   // }, [roomId])
-
-  // useEffect(() => {
-  //   console.log('useEffect', room)
-  // }, [room])
 
   useEffect(() => {
     const verifyRoomId = async () => {
