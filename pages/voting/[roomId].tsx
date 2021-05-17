@@ -15,7 +15,12 @@ import {
 import { calculateVotingResult, validateRoomId } from '../../utils'
 import OptionsModal from '../../components/OptionsModal'
 import RemoveParticipantModal from '../../components/RemoveParticipantModal'
-import { deleteRoom, streamRoomById, updateRoom } from '../../services/firebase'
+import {
+  deleteRoom,
+  exitRoom,
+  streamRoomById,
+  updateRoom,
+} from '../../services/firebase'
 
 const Voting: FC = () => {
   const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
@@ -51,24 +56,11 @@ const Voting: FC = () => {
 
   const handleExitRoom = async () => {
     try {
-      const roomPath = room.ref.path.split('/')[1]
-      const roomRef = db.collection('rooms').doc(roomPath)
+      await exitRoom(room, userInfo.userId)
 
-      const newParticipants = room.participants.filter(
-        participant => participant.id !== userInfo.userId
-      )
-
-      await roomRef.set(
-        {
-          ...room,
-          participants: newParticipants,
-        },
-        { merge: false }
-      )
       router.push('/')
     } catch (error) {
       Toast({ type: 'error', message: 'Error trying to exit room. Sorry :(' })
-      console.error('Error trying to exit room', error)
     }
   }
 
@@ -227,8 +219,6 @@ const Voting: FC = () => {
   // console.warn({ room: room.name, me })
 
   useEffect(() => {
-    // console.warn({ roomId })
-
     const unsubscribe = streamRoomById(roomId, {
       next: querySnapshot => {
         const updatedRoom: Room = querySnapshot.docs

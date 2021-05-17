@@ -65,14 +65,7 @@ export const createRoom = async ({ roomId, roomName, hostId, hostName }) => {
 
 export const updateRoom = async ({ room, userId, newRoom, newParticipant }) => {
   try {
-    const roomRef = await db
-      .collection(ROOM_COLLECTION)
-      .where('id', '==', room.id)
-      .get()
-
-    const roomPath = roomRef.docs[0].ref.path
-
-    // console.log({ roomPath, roomRef })
+    const { roomPath } = await getRoomFromId(room.id)
 
     const { participants } = room
 
@@ -101,27 +94,83 @@ export const updateRoom = async ({ room, userId, newRoom, newParticipant }) => {
 
     if (newRoom) updateRoom = newRoom
 
-    await db.doc(roomPath).update(
-      {
-        ...updateRoom,
-        // ref: roomRef1,
-        participants: newParticipants,
-      }
-      // { merge: false }
-    )
+    await db.doc(roomPath).update({
+      ...updateRoom,
+      participants: newParticipants,
+    })
   } catch (error) {
     console.error('Cannot update room', error)
   }
 }
 
-export const deleteRoom = async (roomId: string) => {
+export const getRoomFromId = async (roomId: string | string[]) => {
+  await authenticateAnonymously()
+
   try {
     const roomRef = await db
       .collection(ROOM_COLLECTION)
       .where('id', '==', roomId)
       .get()
 
+    const room = roomRef.docs.shift().data()
     const roomPath = roomRef.docs[0].ref.path
+
+    return { room, roomRef, roomPath }
+  } catch (error) {
+    console.error('Cannot find room', error)
+    throw new Error('Cannot find room.')
+  }
+}
+
+export const enterRoom = async ({ roomId, userName, userId }) => {
+  try {
+    const { room, roomPath } = await getRoomFromId(roomId)
+
+    const isNotParticipant =
+      room.participants.findIndex(({ id }) => id === userId) === -1
+
+    if (isNotParticipant) {
+      const newParticipants = [
+        ...room.participants,
+        {
+          id: userId,
+          name: userName,
+          vote: '',
+          viewerMode: false,
+        },
+      ]
+
+      await db.doc(roomPath).update({
+        ...room,
+        participants: newParticipants,
+      })
+    }
+  } catch (error) {
+    console.error('Cannot enter room', error)
+    throw new Error('Cannot enter room. Try later.')
+  }
+}
+
+export const exitRoom = async (room: Room, userId: string) => {
+  try {
+    const { roomPath } = await getRoomFromId(room.id)
+
+    const newParticipants = room.participants.filter(
+      participant => participant.id !== userId
+    )
+
+    await db.doc(roomPath).update({
+      ...room,
+      participants: newParticipants,
+    })
+  } catch (error) {
+    console.error('Cannot exit from room', error)
+  }
+}
+
+export const deleteRoom = async (roomId: string) => {
+  try {
+    const { roomPath } = await getRoomFromId(roomId)
 
     await db.doc(roomPath).delete()
   } catch (error) {
