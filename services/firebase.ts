@@ -198,7 +198,7 @@ export const streamMyRooms = (userId: string | string[], observer) => {
       .where('hostId', '==', userId)
       .onSnapshot(observer)
   } catch (error) {
-    console.error('Cannot stream my rooms', error)
+    console.error('Cannot stream my rooms', error.message)
   }
 }
 
@@ -209,6 +209,6 @@ export const streamRoomById = (roomId: string | string[], observer) => {
       .where('id', '==', roomId)
       .onSnapshot(observer)
   } catch (error) {
-    console.error('Cannot stream room', error)
+    console.error('Cannot stream room', error.message)
   }
 }
