@@ -10,7 +10,6 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  /* ${({ theme }) => `padding: 0 ${theme.margins.normal}`}; */
   padding: ${({ theme }) => theme.margins.normal};
   padding-bottom: ${({ theme }) => theme.margins.medium};
 `
@@ -42,6 +41,10 @@ export const Options = styled.div`
   &:hover {
     color: ${({ theme }) => lighten(LIGHTEN_AMOUNT_LOW, theme.colors.text)};
   }
+
+  @media (max-width: 768px) {
+    margin-left: ${({ theme }) => theme.margins.normal};
+  }
 `
 
 export const OptionsIcon = styled(ImCog)``
@@ -57,7 +60,7 @@ export const HeaderImage = styled.img`
   margin-top: ${({ theme }) => theme.margins.small};
 
   @media (max-width: 768px) {
-    width: 150px;
+    width: 120px;
   }
 `
 
