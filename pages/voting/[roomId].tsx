@@ -18,6 +18,7 @@ import RemoveParticipantModal from '../../components/RemoveParticipantModal'
 import {
   deleteRoom,
   exitRoom,
+  removeParticipant,
   streamRoomById,
   updateRoom,
 } from '../../services/firebase'
@@ -56,7 +57,7 @@ const Voting: FC = () => {
 
   const handleExitRoom = async () => {
     try {
-      await exitRoom(room, userInfo.userId)
+      await exitRoom(room.id, userInfo.userId)
 
       router.push('/')
     } catch (error) {
@@ -104,7 +105,9 @@ const Voting: FC = () => {
         room,
         newParticipant,
         newRoom,
+        userId: userInfo.userId,
       })
+
       setIsVoting(!isVoting)
     } catch (error) {
       Toast({
@@ -120,6 +123,7 @@ const Voting: FC = () => {
       const newUserInfo = {
         ...userInfo,
         name: userName,
+        viewerMode,
       }
 
       setStorage(JSON.stringify(newUserInfo))
@@ -176,22 +180,10 @@ const Voting: FC = () => {
 
   const handleRemoveParticipant = async () => {
     try {
-      const roomPath = room.ref.path.split('/')[1]
-      const roomRef = db.collection('rooms').doc(roomPath)
-
-      const newParticipants = room.participants.filter(
-        participant => participant.id !== participantIdToRemove
-      )
-
-      await roomRef.set(
-        {
-          ...room,
-          participants: newParticipants,
-        },
-        { merge: false }
-      )
+      await removeParticipant(room.id, participantIdToRemove)
 
       setToggleConfirmModal(false)
+
       Toast({
         message: 'Participant removed from your room',
       })
@@ -209,12 +201,12 @@ const Voting: FC = () => {
     setParticipantIdToRemove(participantId)
   }
 
-  // useEffect(() => {
-  //   if (!validateRoomId(roomId)) {
-  //     router.push('/')
-  //     return
-  //   }
-  // }, [roomId])
+  useEffect(() => {
+    if (!validateRoomId(roomId)) {
+      router.push('/')
+      return
+    }
+  }, [roomId])
 
   // console.warn({ room: room.name, me })
 
@@ -258,7 +250,7 @@ const Voting: FC = () => {
         <Header
           showRoomTitle
           roomTitle={room.name}
-          roomId={roomId}
+          roomId={room.id}
           setToggleModal={setToggleOptionsModal}
         />
 

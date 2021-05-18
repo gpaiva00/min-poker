@@ -63,7 +63,12 @@ export const createRoom = async ({ roomId, roomName, hostId, hostName }) => {
   } catch (error) {}
 }
 
-export const updateRoom = async ({ room, userId, newRoom, newParticipant }) => {
+export const updateRoom = async ({
+  room,
+  userId,
+  newRoom = null,
+  newParticipant,
+}) => {
   try {
     const { roomPath } = await getRoomFromId(room.id)
 
@@ -151,9 +156,9 @@ export const enterRoom = async ({ roomId, userName, userId }) => {
   }
 }
 
-export const exitRoom = async (room: Room, userId: string) => {
+export const exitRoom = async (roomId: string, userId: string) => {
   try {
-    const { roomPath } = await getRoomFromId(room.id)
+    const { room, roomPath } = await getRoomFromId(roomId)
 
     const newParticipants = room.participants.filter(
       participant => participant.id !== userId
@@ -175,6 +180,14 @@ export const deleteRoom = async (roomId: string) => {
     await db.doc(roomPath).delete()
   } catch (error) {
     console.error('Cannot delete room', error)
+  }
+}
+
+export const removeParticipant = async (roomId: string, participantId) => {
+  try {
+    await exitRoom(roomId, participantId)
+  } catch (error) {
+    console.error('Cannot remove participant', error)
   }
 }
 

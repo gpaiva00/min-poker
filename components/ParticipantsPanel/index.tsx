@@ -2,7 +2,6 @@ import React, { FC, useEffect, useState } from 'react'
 import { BiTime } from 'react-icons/bi'
 
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai'
-import { FaRegEye } from 'react-icons/fa'
 
 import { ParticipantsPanelProps } from './typings'
 import { Participant as ParticipantProps } from '../../typings'
@@ -24,6 +23,7 @@ import {
   EditIcon,
   DoneIcon,
   RemoveIcon,
+  ViewerModeIcon,
 } from '../../styles/ParticipantsPanel.styles'
 
 import { FiCoffee } from 'react-icons/fi'
@@ -80,7 +80,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
         <RemoveIcon onClick={() => handleRemoveParticipant(id)} size={20} />
       )
 
-    if (viewerMode) return <FaRegEye size={20} />
+    if (viewerMode) return <ViewerModeIcon size={20} />
 
     return showParticipantVote(vote)
   }
@@ -104,9 +104,9 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
         <Panel>
           <List>
             <Participant>
-              <MyName>{name} (you)</MyName>
+              <MyName viewerMode={me.viewerMode}>{name} (you)</MyName>
               {me.viewerMode ? (
-                <FaRegEye size={20} />
+                <ViewerModeIcon size={20} />
               ) : (
                 showParticipantVote(me.vote)
               )}
@@ -114,7 +114,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
 
             {participantsList.map(({ name, vote, viewerMode, id }, key) => (
               <Participant key={key}>
-                <Name>{name}</Name>
+                <Name viewerMode={viewerMode}>{name}</Name>
                 {showParticipantsOptions({ vote, viewerMode, id })}
               </Participant>
             ))}

@@ -36,15 +36,17 @@ const OptionsModal: FC<OptionsModalProps> = ({
   me,
 }) => {
   const { name: originalRoomName } = room
-  const { name: originalUserName } = userInfo
+  const {
+    name: originalUserName,
+    viewerMode: originalViewerMode = false,
+  } = userInfo
 
   const [userName, setUserName] = useState(originalUserName)
   const [roomName, setRoomName] = useState(originalRoomName)
-  const [viewerMode, setViewerMode] = useState(me.viewerMode)
+  const [viewerMode, setViewerMode] = useState(originalViewerMode)
 
   useEffect(() => {
     setRoomName(originalRoomName)
-    // setViewerMode(me.viewerMode)
   }, [room])
 
   return (

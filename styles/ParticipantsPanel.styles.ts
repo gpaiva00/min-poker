@@ -3,10 +3,15 @@ import Button from '../components/Button'
 
 import { MdEdit } from 'react-icons/md'
 import { FaCheck } from 'react-icons/fa'
+import { FaRegEye } from 'react-icons/fa'
 import { AiFillMinusCircle } from 'react-icons/ai'
 
 import { lighten } from 'polished'
 import { LIGHTEN_AMOUNT_NORMAL } from '../constants'
+
+interface NameProps {
+  viewerMode: boolean
+}
 
 export const Container = styled.div`
   display: flex;
@@ -46,6 +51,10 @@ export const DoneIcon = styled(FaCheck)`
   &:hover {
     color: ${({ theme }) => lighten(LIGHTEN_AMOUNT_NORMAL, theme.colors.text)};
   }
+`
+
+export const ViewerModeIcon = styled(FaRegEye)`
+  color: ${({ theme }) => theme.colors.smoke};
 `
 
 export const RemoveIcon = styled(AiFillMinusCircle)`
@@ -106,9 +115,12 @@ export const List = styled.div`
   }
 `
 
-export const MyName = styled.p`
+export const MyName = styled.p<NameProps>`
   font-family: ${({ theme }) => theme.fonts.semiBold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
+
+  color: ${({ theme, viewerMode }) =>
+    viewerMode ? theme.colors.smoke : theme.colors.primary};
 `
 
 export const Participant = styled.div`
@@ -123,9 +135,12 @@ export const Participant = styled.div`
   }
 `
 
-export const Name = styled.p`
+export const Name = styled.p<NameProps>`
   font-family: ${({ theme }) => theme.fonts.light};
   font-size: ${({ theme }) => theme.fontSizes.regular};
+
+  color: ${({ theme, viewerMode }) =>
+    viewerMode ? theme.colors.smoke : theme.colors.primary};
 `
 
 export const Vote = styled.p`
