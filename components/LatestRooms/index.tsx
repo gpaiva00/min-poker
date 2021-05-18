@@ -19,7 +19,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
 
         setMyLatestRooms(updatedRooms)
       },
-      error: () => console.error('Cannot find my rooms'),
+      error: error => console.error('Cannot find my rooms', error),
     })
     return unsubscribe
   }, [userInfo, setMyLatestRooms])

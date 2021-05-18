@@ -203,8 +203,12 @@ export const streamMyRooms = (userId: string | string[], observer) => {
 }
 
 export const streamRoomById = (roomId: string | string[], observer) => {
-  return db
-    .collection(ROOM_COLLECTION)
-    .where('id', '==', roomId)
-    .onSnapshot(observer)
+  try {
+    return db
+      .collection(ROOM_COLLECTION)
+      .where('id', '==', roomId)
+      .onSnapshot(observer)
+  } catch (error) {
+    console.error('Cannot stream room', error)
+  }
 }
