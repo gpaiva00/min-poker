@@ -40,6 +40,8 @@ export const authenticateAnonymously = () => {
 }
 
 export const createRoom = async ({ roomId, roomName, hostId, hostName }) => {
+  await authenticateAnonymously()
+
   try {
     const saveOnDB = {
       created: firebase.firestore.FieldValue.serverTimestamp(),
