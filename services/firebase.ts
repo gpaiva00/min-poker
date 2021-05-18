@@ -192,10 +192,14 @@ export const removeParticipant = async (roomId: string, participantId) => {
 }
 
 export const streamMyRooms = (userId: string | string[], observer) => {
-  return db
-    .collection(ROOM_COLLECTION)
-    .where('hostId', '==', userId)
-    .onSnapshot(observer)
+  try {
+    return db
+      .collection(ROOM_COLLECTION)
+      .where('hostId', '==', userId)
+      .onSnapshot(observer)
+  } catch (error) {
+    console.error('Cannot stream my rooms', error)
+  }
 }
 
 export const streamRoomById = (roomId: string | string[], observer) => {
