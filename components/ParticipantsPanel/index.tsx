@@ -1,8 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { BiTime } from 'react-icons/bi'
 
-import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai'
-
 import { ParticipantsPanelProps } from './typings'
 import { Participant as ParticipantProps } from '../../typings'
 
@@ -24,6 +22,8 @@ import {
   DoneIcon,
   RemoveIcon,
   ViewerModeIcon,
+  NoVoteIcon,
+  VotedIcon,
 } from '../../styles/ParticipantsPanel.styles'
 
 import { FiCoffee } from 'react-icons/fi'
@@ -52,11 +52,11 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   const showParticipantVote = (vote: string) => {
     if (!isVoting && !showResults) return
 
-    if (showResults && !vote.length) return <AiFillCloseCircle size={20} />
+    if (showResults && !vote.length) return <NoVoteIcon size={20} />
 
     if (!vote.length) return <BiTime size={20} />
 
-    if (vote.length && !showResults) return <AiFillCheckCircle size={20} />
+    if (vote.length && !showResults) return <VotedIcon size={20} />
     else
       return vote === 'coffee' ? (
         <Vote>

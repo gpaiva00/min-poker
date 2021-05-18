@@ -19,6 +19,8 @@ const Invitation: FC = () => {
   useEffect(() => {
     const verifyRoomId = async () => {
       try {
+        if (!roomId) return
+
         if (!userId) userId = idGenerator()
         if (!userName) userName = generateNickName()
 

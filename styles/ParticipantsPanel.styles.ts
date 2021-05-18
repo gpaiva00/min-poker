@@ -4,7 +4,11 @@ import Button from '../components/Button'
 import { MdEdit } from 'react-icons/md'
 import { FaCheck } from 'react-icons/fa'
 import { FaRegEye } from 'react-icons/fa'
-import { AiFillMinusCircle } from 'react-icons/ai'
+import {
+  AiFillMinusCircle,
+  AiFillCheckCircle,
+  AiFillCloseCircle,
+} from 'react-icons/ai'
 
 import { lighten } from 'polished'
 import { LIGHTEN_AMOUNT_NORMAL } from '../constants'
@@ -56,6 +60,12 @@ export const DoneIcon = styled(FaCheck)`
 export const ViewerModeIcon = styled(FaRegEye)`
   color: ${({ theme }) => theme.colors.smoke};
 `
+
+export const NoVoteIcon = styled(AiFillCloseCircle)`
+  color: ${({ theme }) => theme.colors.danger};
+`
+
+export const VotedIcon = styled(AiFillCheckCircle)``
 
 export const RemoveIcon = styled(AiFillMinusCircle)`
   cursor: pointer;
