@@ -67,7 +67,7 @@ export const createRoom = async ({ roomId, roomName, hostId, hostName }) => {
 
 export const updateRoom = async ({
   room,
-  userId,
+  userId = null,
   newRoom = null,
   newParticipant,
 }) => {

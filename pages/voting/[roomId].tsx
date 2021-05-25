@@ -105,7 +105,6 @@ const Voting: FC = () => {
         room,
         newParticipant,
         newRoom,
-        userId: userInfo.userId,
       })
 
       setIsVoting(!isVoting)
