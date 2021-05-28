@@ -21,6 +21,7 @@ import {
   removeParticipant,
   streamRoomById,
   updateRoom,
+  updateVote,
 } from '../../services/firebase'
 
 const Voting: FC = () => {
@@ -159,13 +160,9 @@ const Voting: FC = () => {
 
   const handleVoteClick = async (voteId: string) => {
     try {
-      const newParticipant = {
-        vote: voteId,
-      }
-
-      await updateRoom({
-        room,
-        newParticipant,
+      await updateVote({
+        roomId: room.id,
+        voteId,
         userId: userInfo.userId,
       })
     } catch (error) {
@@ -234,7 +231,6 @@ const Voting: FC = () => {
           toggle={toggleOptionsModal}
           setToggleModal={setToggleOptionsModal}
           room={room}
-          me={me}
           userInfo={userInfo}
           handleSaveRoomOptions={handleSaveRoomOptions}
           loading={loading}

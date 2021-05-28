@@ -22,7 +22,6 @@ interface OptionsModalProps {
   setToggleModal: React.Dispatch<React.SetStateAction<boolean>>
   imHost: boolean
   loading: boolean
-  me: Participant
 }
 
 const OptionsModal: FC<OptionsModalProps> = ({
@@ -33,7 +32,6 @@ const OptionsModal: FC<OptionsModalProps> = ({
   setToggleModal,
   imHost,
   loading,
-  me,
 }) => {
   const { name: originalRoomName } = room
   const {
@@ -71,7 +69,7 @@ const OptionsModal: FC<OptionsModalProps> = ({
         <InputContainer>
           <Label>Your name</Label>
           <Input
-            placeholder={userName}
+            placeholder={originalUserName}
             value={userName}
             onInput={event => setUserName(event.target.value)}
           />

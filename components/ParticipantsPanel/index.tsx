@@ -68,6 +68,8 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   }
 
   const showEditOptions = () => {
+    if (!participantsList.length) return
+
     if (isEditing)
       return <DoneIcon onClick={() => setIsEditing(false)} size={20} />
 

@@ -110,6 +110,32 @@ export const updateRoom = async ({
   }
 }
 
+export const updateVote = async ({ voteId, userId, roomId }) => {
+  const { roomPath } = await getRoomFromId(roomId)
+
+  try {
+    const sfDocRef = db.doc(roomPath)
+    await db.runTransaction(async transaction => {
+      const sfDoc = await transaction.get(sfDocRef)
+      if (!sfDoc.exists) {
+        throw 'Cannot find document'
+      }
+
+      const participants = sfDoc.data().participants
+      const userIndex = participants.findIndex(
+        participant => participant.id === userId
+      )
+      participants[userIndex] = {
+        ...participants[userIndex],
+        vote: voteId,
+      }
+      transaction.update(sfDocRef, { participants })
+    })
+  } catch (error) {
+    console.error('Cannot set vote: ', error)
+  }
+}
+
 export const getRoomFromId = async (roomId: string | string[]) => {
   await authenticateAnonymously()
 
