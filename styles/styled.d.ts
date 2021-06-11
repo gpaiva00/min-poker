@@ -1,6 +1,6 @@
 import 'styled-components'
 
-import theme from './theme'
+import theme from './themes/light'
 
 export type Theme = typeof theme
 
@@ -9,20 +9,16 @@ declare module 'styled-components' {
     title: string
 
     colors: {
-      lightGreen: string
-      darkGreen: string
       background: string
       primary: string
       danger: string
       text: string
+      inputText: string
       smoke: string
       lightSmoke: string
-      timer: string
       lightText: string
       darkText: string
-      danger: string
       focus: string
-      blue: string
     }
 
     fonts: {
@@ -32,7 +28,6 @@ declare module 'styled-components' {
       semiBold: string
       bold: string
       boldItalic: string
-      medium: string
     }
 
     fontSizes: {

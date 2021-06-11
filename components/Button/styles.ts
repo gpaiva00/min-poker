@@ -28,7 +28,7 @@ export const Text = styled.p<ButtonProps>`
     variant !== 'danger' ? theme.fonts.light : theme.fonts.semiBold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
   color: ${({ theme, variant }) =>
-    variant === 'primary' ? theme.colors.lightText : theme.colors[variant]};
+    variant === 'primary' ? theme.colors.inputText : theme.colors[variant]};
 
   &:hover {
     text-decoration: ${({ variant }) => variant === 'danger' && 'underline'};

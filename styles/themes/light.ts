@@ -4,15 +4,14 @@ export default {
   colors: {
     background: '#fff',
     text: '#252527',
+    inputText: '#252527',
     focus: '#252527',
     smoke: '#bab5ba',
     lightSmoke: '#e1e1e1',
     primary: '#121214',
     danger: '#ff1a1a',
-    timer: '#252527',
     lightText: '#fff',
     darkText: '#121214',
-    blue: '#8fb6f2',
   },
 
   fonts: {

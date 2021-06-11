@@ -1,17 +1,25 @@
-import React, { FC } from 'react'
+import React, { FC, useCallback } from 'react'
 
 import { AppProps } from 'next/app'
 
 import { AnimateSharedLayout } from 'framer-motion'
 
 import GlobalStyle from '../styles/global'
-import { ThemeProvider } from 'styled-components'
+import { DefaultTheme, ThemeProvider } from 'styled-components'
 
-import theme from '../styles/theme'
+import lightTheme from '../styles/themes/light'
+import darkTheme from '../styles/themes/dark'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.min.css'
+import { usePersistedState } from '../hooks'
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
+  const [theme, setTheme] = usePersistedState<DefaultTheme>('theme', darkTheme)
+
+  const toggleTheme = useCallback(() => {
+    setTheme(theme.title === 'light' ? darkTheme : lightTheme)
+  }, [setTheme, theme.title])
+
   return (
     <AnimateSharedLayout>
       <ThemeProvider theme={theme}>

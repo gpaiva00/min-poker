@@ -11,7 +11,7 @@ import {
   Label,
   SwitchContainer,
 } from './styles'
-import theme from '../../styles/theme'
+import theme from '../../styles/themes/light'
 import { Participant, Room, UserInfo } from '../../typings'
 
 interface OptionsModalProps {
