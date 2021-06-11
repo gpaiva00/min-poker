@@ -92,6 +92,8 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
       ({ id }) => id !== '' && id !== userId
     )
 
+    if (!newParticipants.length) setIsEditing(false)
+
     setParticipantsList(newParticipants)
   }, [participants])
 
@@ -106,7 +108,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
         <Panel>
           <List>
             <Participant>
-              <MyName viewerMode={me.viewerMode}>{name} (you)</MyName>
+              <MyName viewerMode={me.viewerMode}>{name}</MyName>
               {me.viewerMode ? (
                 <ViewerModeIcon size={20} />
               ) : (

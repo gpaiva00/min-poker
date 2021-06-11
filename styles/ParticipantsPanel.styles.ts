@@ -100,12 +100,12 @@ export const PanelContainer = styled.div`
 `
 
 export const Panel = styled.div`
-  border-width: 0.5px;
+  border-width: 1.5px;
   border-style: solid;
   border-color: ${({ theme }) => theme.colors.lightSmoke};
   border-radius: 6px;
 
-  height: 90%;
+  height: 85%;
   overflow: hidden;
 `
 
@@ -113,7 +113,7 @@ export const List = styled.div`
   display: flex;
   flex-direction: column;
 
-  height: 530px;
+  height: 500px;
   width: 100%;
 
   padding-top: ${({ theme }) => theme.paddings.normal};
@@ -121,12 +121,12 @@ export const List = styled.div`
   overflow: auto;
 
   @media (max-width: 768px) {
-    height: 60vh;
+    height: 57vh;
   }
 `
 
 export const MyName = styled.p<NameProps>`
-  font-family: ${({ theme }) => theme.fonts.semiBold};
+  font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
 
   color: ${({ theme, viewerMode }) =>
@@ -143,6 +143,8 @@ export const Participant = styled.div`
   &:last-child {
     padding-bottom: 0;
   }
+
+  /* background: lightgray; */
 `
 
 export const Name = styled.p<NameProps>`

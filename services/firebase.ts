@@ -4,7 +4,6 @@ import 'firebase/analytics'
 import 'firebase/firestore'
 import { DEFAULT_RESULT } from '../constants'
 import { ROOM_COLLECTION } from './constants'
-import { Room } from '../typings'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,

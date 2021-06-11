@@ -11,7 +11,7 @@ export const Container = styled.div`
   justify-content: space-between;
 
   padding: ${({ theme }) => theme.margins.normal};
-  padding-bottom: ${({ theme }) => theme.margins.medium};
+  padding-bottom: ${({ theme }) => theme.margins.normal};
 `
 
 export const Title = styled.h1`

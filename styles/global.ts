@@ -42,6 +42,10 @@ export default createGlobalStyle`
     box-sizing: border-box;
   }
 
+  p,h1 {
+    user-select: none;
+  }
+
   body {
     background: ${props => props.theme.colors.background};
     color: ${props => props.theme.colors.text};

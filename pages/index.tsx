@@ -73,6 +73,8 @@ const Home: FC = () => {
     }
   }
 
+  const handleKeyDown = event => event.key === 'Enter' && handleCreateRoom()
+
   return (
     <div>
       <main>
@@ -98,6 +100,7 @@ const Home: FC = () => {
                 value={inputValue}
                 placeholder="Room name"
                 onInput={event => setInputValue(event.target.value)}
+                onKeyDown={handleKeyDown}
               />
               <Button loading={loading} onClick={handleCreateRoom}>
                 Create room
