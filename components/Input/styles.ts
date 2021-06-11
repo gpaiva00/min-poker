@@ -11,7 +11,6 @@ export const StyledInput = styled.input<ContainerProps>`
   border: 0;
   outline: none;
   outline-style: none;
-  /* background-color: transparent; */
 `
 
 export const Container = styled.div<ContainerProps>`
