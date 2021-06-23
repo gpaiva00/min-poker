@@ -1,4 +1,5 @@
 import { toast, ToastProps } from 'react-toastify'
+import { usePersistedState } from '../../hooks'
 
 interface ToastComponentProps {
   type?: 'error' | 'warning'
@@ -13,9 +14,12 @@ const toastConfig: ToastProps = {
   pauseOnHover: true,
   draggable: false,
   progress: undefined,
+  // styles: {}
 }
 
 const Toast = ({ type, message }: ToastComponentProps) => {
+  // TODO dinamizar a cor de fundo da Toast
+
   switch (type) {
     case 'warning':
       return toast.warning(message, {})

@@ -17,10 +17,10 @@ export const Container = styled.button<ButtonProps>`
 
   cursor: pointer;
 
-  &:hover {
+  /* &:hover {
     background: ${({ theme, variant }) =>
-      variant !== 'danger' && lighten(LIGHTEN_AMOUNT_LOW, theme.colors.text)};
-  }
+    variant !== 'danger' && lighten(LIGHTEN_AMOUNT_LOW, theme.colors.text)};
+  } */
 `
 
 export const Text = styled.p<ButtonProps>`
@@ -28,7 +28,7 @@ export const Text = styled.p<ButtonProps>`
     variant !== 'danger' ? theme.fonts.light : theme.fonts.semiBold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
   color: ${({ theme, variant }) =>
-    variant === 'primary' ? theme.colors.inputText : theme.colors[variant]};
+    variant === 'primary' ? theme.colors.buttonText : theme.colors[variant]};
 
   &:hover {
     text-decoration: ${({ variant }) => variant === 'danger' && 'underline'};

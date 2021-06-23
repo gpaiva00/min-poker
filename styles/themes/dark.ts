@@ -9,9 +9,14 @@ export default {
     smoke: '#bab5ba',
     lightSmoke: '#e1e1e7',
     primary: '#fff',
-    danger: '#fa6161',
+    danger: '#f04343',
     lightText: '#121214',
     darkText: '#fff',
+    white: '#fff',
+    buttonText: '#121214',
+    modalLabel: '#121214',
+    inputBorder: '#252527',
+    modalButtonBackground: '#121214',
   },
 
   fonts: {

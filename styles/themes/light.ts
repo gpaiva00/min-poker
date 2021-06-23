@@ -12,6 +12,11 @@ export default {
     danger: '#ff1a1a',
     lightText: '#fff',
     darkText: '#121214',
+    white: '#fff',
+    buttonText: '#fff',
+    modalLabel: '#fff',
+    inputBorder: '#252527',
+    modalButtonBackground: '#121214',
   },
 
   fonts: {

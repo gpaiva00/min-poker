@@ -9,6 +9,7 @@ export const Title = styled.h1`
   font-size: ${({ theme }) => theme.fontSizes.regular};
 
   text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.modalLabel};
 `
 
 export const Header = styled.div`
@@ -24,6 +25,6 @@ export const CloseIcon = styled(IoCloseOutline)`
   cursor: pointer;
 
   &:hover {
-    color: ${({ theme }) => lighten(LIGHTEN_AMOUNT_HIGH, theme.colors.text)};
+    color: ${({ theme }) => theme.colors.modalLabel};
   }
 `

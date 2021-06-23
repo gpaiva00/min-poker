@@ -58,4 +58,6 @@ export default createGlobalStyle`
     margin: 0;
     padding: 0 3px;
   }
+
+  transition: all 0.25s linear;
 `

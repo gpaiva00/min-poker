@@ -19,6 +19,11 @@ declare module 'styled-components' {
       lightText: string
       darkText: string
       focus: string
+      white: string
+      buttonText: string
+      modalLabel: string
+      inputBorder: string
+      modalButtonBackground: string
     }
 
     fonts: {
