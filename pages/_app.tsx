@@ -12,17 +12,23 @@ import darkTheme from '../styles/themes/dark'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.min.css'
 import { usePersistedState } from '../hooks'
+import { STORAGE_THEME_KEY } from '../constants'
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
-  const [theme, setTheme] = usePersistedState<DefaultTheme>('theme', darkTheme)
+  const { storeItem, getStoredItem } = usePersistedState()
+
+  const storedItem: DefaultTheme = getStoredItem(STORAGE_THEME_KEY, lightTheme)
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme.title === 'light' ? darkTheme : lightTheme)
-  }, [setTheme, theme.title])
+    storeItem(
+      STORAGE_THEME_KEY,
+      storedItem.title === 'light' ? darkTheme : lightTheme
+    )
+  }, [storedItem])
 
   return (
     <AnimateSharedLayout>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={storedItem}>
         <GlobalStyle />
         <Component {...pageProps} />
         <ToastContainer

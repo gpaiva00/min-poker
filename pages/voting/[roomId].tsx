@@ -28,7 +28,7 @@ const Voting: FC = () => {
   const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
   const [room, setRoom] = useState<Room>(DEFAULT_ROOM)
   const [isVoting, setIsVoting] = useState(false)
-  const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
+  const { storeItem, getStoredItem } = usePersistedState()
   const [toggleOptionsModal, setToggleOptionsModal] = useState(false)
   const [toggleConfirmModal, setToggleConfirmModal] = useState(false)
   const [participantIdToRemove, setParticipantIdToRemove] = useState('')
@@ -38,7 +38,11 @@ const Voting: FC = () => {
 
   const loading = false
 
-  const userInfo: UserInfo = storage && JSON.parse(storage)
+  const userInfo: UserInfo = getStoredItem(
+    STORAGE_KEY_USER,
+    DEFAULT_PARTICIPANT
+  )
+  // const userInfo: UserInfo = storage && JSON.parse(storage)
   const imHost = room.hostId === userInfo.userId
 
   const handleDeleteRoom = async () => {
@@ -126,7 +130,7 @@ const Voting: FC = () => {
         viewerMode,
       }
 
-      setStorage(JSON.stringify(newUserInfo))
+      storeItem(STORAGE_KEY_USER, newUserInfo)
 
       const newParticipant: Participant = {
         name: userName,

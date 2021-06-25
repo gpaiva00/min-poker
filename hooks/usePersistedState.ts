@@ -1,11 +1,11 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 
-type Response<T> = [T, Dispatch<SetStateAction<T>>]
+// type Response<T> = [T, Dispatch<SetStateAction<T>>]
 
-function usePersistedState<T>(key: string, initialState: T): Response<T> {
+function usePersistedState() {
   const isRendered = typeof window !== 'undefined'
 
-  const [state, setState] = useState(() => {
+  const getStoredItem = (key: string, initialState?: object) => {
     if (isRendered) {
       const storedValue = localStorage.getItem(key)
 
@@ -13,13 +13,13 @@ function usePersistedState<T>(key: string, initialState: T): Response<T> {
     }
 
     return initialState
-  })
+  }
 
-  useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(state))
-  }, [key, state, isRendered])
+  const storeItem = (key: string, item: object) => {
+    localStorage.setItem(key, JSON.stringify(item))
+  }
 
-  return [state, setState]
+  return { getStoredItem, storeItem }
 }
 
 export default usePersistedState

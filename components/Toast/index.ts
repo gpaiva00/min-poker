@@ -1,4 +1,5 @@
 import { toast, ToastProps } from 'react-toastify'
+import { STORAGE_THEME_KEY } from '../../constants'
 import { usePersistedState } from '../../hooks'
 
 interface ToastComponentProps {
@@ -19,6 +20,9 @@ const toastConfig: ToastProps = {
 
 const Toast = ({ type, message }: ToastComponentProps) => {
   // TODO dinamizar a cor de fundo da Toast
+  const { getStoredItem } = usePersistedState()
+  const storedTheme = getStoredItem(STORAGE_THEME_KEY)
+  console.log({ storedTheme })
 
   switch (type) {
     case 'warning':
@@ -27,7 +31,7 @@ const Toast = ({ type, message }: ToastComponentProps) => {
       return toast.error(message, toastConfig)
 
     default:
-      return toast.dark(message, toastConfig)
+      return toast.info(message, toastConfig)
   }
 }
 

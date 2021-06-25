@@ -1,6 +1,7 @@
 import { Participant, Result, Room } from './typings/Room'
 
 export const STORAGE_KEY_USER = '@minPoker'
+export const STORAGE_THEME_KEY = '@minPokerTheme'
 
 export const LIGHTEN_AMOUNT_LOW = 0.05
 export const LIGHTEN_AMOUNT_NORMAL = 0.2

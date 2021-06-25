@@ -21,20 +21,27 @@ import {
 
 import usePersistedState from '../hooks/usePersistedState'
 
-import { ANIMATION_DURATION, STORAGE_KEY_USER } from '../constants'
+import {
+  ANIMATION_DURATION,
+  DEFAULT_PARTICIPANT,
+  STORAGE_KEY_USER,
+} from '../constants'
 import { generateNickName, idGenerator, validateInputValue } from '../utils'
 
 import { UserInfo } from '../typings'
 import { createRoom } from '../services/firebase'
 
 const Home: FC = () => {
-  const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
+  const { storeItem, getStoredItem } = usePersistedState()
   const [inputValue, setInputValue] = useState('')
   const [loading, setLoading] = useState(false)
 
   const router = useRouter()
 
-  const userInfo: UserInfo = storage && JSON.parse(storage)
+  const userInfo: UserInfo = getStoredItem(
+    STORAGE_KEY_USER,
+    DEFAULT_PARTICIPANT
+  )
 
   const handleCreateRoom = async () => {
     setLoading(true)
@@ -47,11 +54,11 @@ const Home: FC = () => {
       })
 
     try {
-      if (!userInfo) {
+      if (!userInfo.userId) {
         hostName = generateNickName()
         hostId = idGenerator()
 
-        setStorage(JSON.stringify({ name: hostName, userId: hostId }))
+        storeItem(STORAGE_KEY_USER, { name: hostName, userId: hostId })
       } else {
         const { name, userId } = userInfo
         hostName = name
