@@ -24,6 +24,8 @@ declare module 'styled-components' {
       modalLabel: string
       inputBorder: string
       modalButtonBackground: string
+      toastBackground: string
+      toastTextColor: string
     }
 
     fonts: {

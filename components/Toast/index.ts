@@ -1,4 +1,5 @@
 import { toast, ToastProps } from 'react-toastify'
+import { DefaultTheme, ThemeProvider } from 'styled-components'
 import { STORAGE_THEME_KEY } from '../../constants'
 import { usePersistedState } from '../../hooks'
 
@@ -7,31 +8,37 @@ interface ToastComponentProps {
   message: string
 }
 
-const toastConfig: ToastProps = {
-  position: 'bottom-right',
-  autoClose: 3000,
-  hideProgressBar: true,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: false,
-  progress: undefined,
-  // styles: {}
-}
-
 const Toast = ({ type, message }: ToastComponentProps) => {
   // TODO dinamizar a cor de fundo da Toast
   const { getStoredItem } = usePersistedState()
-  const storedTheme = getStoredItem(STORAGE_THEME_KEY)
+  const storedTheme: DefaultTheme = getStoredItem(STORAGE_THEME_KEY)
   console.log({ storedTheme })
+
+  const toastConfig: ToastProps = {
+    position: 'bottom-right',
+    autoClose: 3000,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: false,
+    progress: undefined,
+    closeButton: false,
+  }
 
   switch (type) {
     case 'warning':
-      return toast.warning(message, {})
+      return toast.warning(message, toastConfig)
     case 'error':
       return toast.error(message, toastConfig)
 
     default:
-      return toast.info(message, toastConfig)
+      return toast.dark(message, {
+        ...toastConfig,
+        style: {
+          background: storedTheme.colors.toastBackground,
+          color: storedTheme.colors.toastTextColor,
+        },
+      })
   }
 }
 

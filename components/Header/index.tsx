@@ -20,18 +20,12 @@ import {
 import { returnInviteLink } from '../../utils'
 
 interface HeaderProps {
-  showRoomTitle?: boolean
   roomTitle?: string
   roomId?: string | string[]
   setToggleModal?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Header: FC<HeaderProps> = ({
-  showRoomTitle,
-  roomTitle,
-  roomId,
-  setToggleModal,
-}) => {
+const Header: FC<HeaderProps> = ({ roomTitle, roomId, setToggleModal }) => {
   const inviteLink = returnInviteLink(roomId)
 
   return (
@@ -43,7 +37,7 @@ const Header: FC<HeaderProps> = ({
           <HeaderImage src="/minPoker3.png" />
         </TitleContainer>
       </Link>
-      {showRoomTitle && (
+      {roomTitle && (
         <OptionsContainer>
           <CopyToClipboard
             text={inviteLink}

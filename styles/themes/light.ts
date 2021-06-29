@@ -17,6 +17,8 @@ export default {
     modalLabel: '#252527',
     inputBorder: '#252527',
     modalButtonBackground: '#121214',
+    toastBackground: '#121214',
+    toastTextColor: '#fff',
   },
 
   fonts: {

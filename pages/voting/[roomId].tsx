@@ -3,7 +3,13 @@ import { useRouter } from 'next/router'
 
 import { PageContainer } from '../../styles/Voting.styles'
 
-import { Header, ParticipantsPanel, Toast, VotingPanel } from '../../components'
+import {
+  Footer,
+  Header,
+  ParticipantsPanel,
+  Toast,
+  VotingPanel,
+} from '../../components'
 
 import { Participant, Room, UserInfo } from '../../typings'
 import usePersistedState from '../../hooks/usePersistedState'
@@ -247,7 +253,6 @@ const Voting: FC = () => {
           loading={loading}
         />
         <Header
-          showRoomTitle
           roomTitle={room.name}
           roomId={room.id}
           setToggleModal={setToggleOptionsModal}
@@ -272,6 +277,7 @@ const Voting: FC = () => {
             showResults={room.showResults}
           />
         </PageContainer>
+        <Footer showCredits={false} />
       </main>
     </div>
   )

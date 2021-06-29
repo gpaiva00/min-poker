@@ -47,11 +47,13 @@ const Home: FC = () => {
     setLoading(true)
     let hostName: string, hostId: string
 
-    if (!validateInputValue(inputValue))
+    if (!validateInputValue(inputValue)) {
+      setLoading(false)
       return Toast({
         type: 'warning',
         message: 'Type a valid name for your room!',
       })
+    }
 
     try {
       if (!userInfo.userId) {
