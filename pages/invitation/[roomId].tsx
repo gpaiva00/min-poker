@@ -3,15 +3,21 @@ import React, { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import usePersistedState from '../../hooks/usePersistedState'
-import { STORAGE_KEY_USER } from '../../constants'
+import { DEFAULT_PARTICIPANT, STORAGE_KEY_USER } from '../../constants'
 import { UserInfo } from '../../typings/UserInfo'
 import { generateNickName, idGenerator } from '../../utils'
 import { enterRoom } from '../../services/firebase'
 
 const Invitation: FC = () => {
   const [message, setMessage] = useState('Loading...')
-  const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
-  let { userId, name: userName }: UserInfo = storage && JSON.parse(storage)
+  const { getStoredItem, storeItem } = usePersistedState()
+
+  let { userId, name: userName }: UserInfo = getStoredItem(
+    STORAGE_KEY_USER,
+    DEFAULT_PARTICIPANT
+  )
+
+  // let { userId, name: userName }: UserInfo = storage && JSON.parse(storage)
 
   const router = useRouter()
   const { roomId } = router.query
@@ -24,7 +30,7 @@ const Invitation: FC = () => {
         if (!userId) userId = idGenerator()
         if (!userName) userName = generateNickName()
 
-        setStorage(JSON.stringify({ name: userName, userId }))
+        storeItem(STORAGE_KEY_USER, { name: userName, userId })
 
         await enterRoom({ roomId, userId, userName })
 
