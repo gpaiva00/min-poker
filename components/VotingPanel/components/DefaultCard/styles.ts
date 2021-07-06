@@ -14,8 +14,8 @@ export const Card = styled.div<CardProps>`
   border-color: ${({ theme }) => theme.colors.lightSmoke};
   border-radius: 6px;
 
-  width: 100px;
-  height: 100px;
+  width: 105px;
+  height: 105px;
 
   margin: ${({ theme }) => theme.margins.normal};
   cursor: pointer;

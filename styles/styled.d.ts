@@ -21,6 +21,8 @@ declare module 'styled-components' {
       focus: string
       white: string
       buttonText: string
+      lightButtonHover: string
+      darkButtonHover: string
       modalLabel: string
       inputBorder: string
       modalButtonBackground: string

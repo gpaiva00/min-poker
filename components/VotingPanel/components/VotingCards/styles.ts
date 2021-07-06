@@ -19,7 +19,7 @@ export const TitleContainer = styled.div`
   width: 100%;
 
   padding-left: 100px;
-  margin-bottom: ${({ theme }) => theme.margins.medium};
+  margin-bottom: ${({ theme }) => theme.margins.normal};
 
   @media (max-width: 768px) {
     align-items: center;

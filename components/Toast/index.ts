@@ -9,10 +9,8 @@ interface ToastComponentProps {
 }
 
 const Toast = ({ type, message }: ToastComponentProps) => {
-  // TODO dinamizar a cor de fundo da Toast
   const { getStoredItem } = usePersistedState()
   const storedTheme: DefaultTheme = getStoredItem(STORAGE_THEME_KEY)
-  console.log({ storedTheme })
 
   const toastConfig: ToastProps = {
     position: 'bottom-right',

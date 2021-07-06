@@ -18,6 +18,9 @@ import {
   LinkIcon,
 } from './styles'
 import { returnInviteLink } from '../../utils'
+import { usePersistedState } from '../../hooks'
+import { DefaultTheme } from 'styled-components'
+import { DEFAULT_THEME_OBJ, STORAGE_THEME_KEY } from '../../constants'
 
 interface HeaderProps {
   roomTitle?: string
@@ -28,13 +31,21 @@ interface HeaderProps {
 const Header: FC<HeaderProps> = ({ roomTitle, roomId, setToggleModal }) => {
   const inviteLink = returnInviteLink(roomId)
 
+  const { getStoredItem } = usePersistedState()
+  const storedTheme: DefaultTheme = getStoredItem(STORAGE_THEME_KEY)
+
+  const { title: themeTitle } = storedTheme ?? DEFAULT_THEME_OBJ
+
   return (
     <Container>
       <Link href="/">
         <TitleContainer>
-          {/* <MinText>min</MinText>
-          <Title>POKER</Title> */}
-          <HeaderImage src="/minPoker3.png" />
+          {/* <HeaderImage
+            src={
+              themeTitle === 'dark' ? '/minPoker3_teste.png' : '/minPoker3.png'
+            }
+          /> */}
+          <HeaderImage src="/minPoker.png" />
         </TitleContainer>
       </Link>
       {roomTitle && (

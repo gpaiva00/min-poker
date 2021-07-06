@@ -22,6 +22,10 @@ export const RESULTS_TEXT = {
   question: '?',
 }
 
+export const DEFAULT_THEME_OBJ = {
+  title: 'light',
+}
+
 export const DEFAULT_RESULT: Result = {
   average: 0,
   items: [

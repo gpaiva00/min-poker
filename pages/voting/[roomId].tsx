@@ -3,13 +3,7 @@ import { useRouter } from 'next/router'
 
 import { PageContainer } from '../../styles/Voting.styles'
 
-import {
-  Footer,
-  Header,
-  ParticipantsPanel,
-  Toast,
-  VotingPanel,
-} from '../../components'
+import { Header, ParticipantsPanel, Toast, VotingPanel } from '../../components'
 
 import { Participant, Room, UserInfo } from '../../typings'
 import usePersistedState from '../../hooks/usePersistedState'
@@ -29,6 +23,7 @@ import {
   updateRoom,
   updateVote,
 } from '../../services/firebase'
+import { ThemeButton } from '../../components/ThemeButton'
 
 const Voting: FC = () => {
   const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
@@ -48,7 +43,7 @@ const Voting: FC = () => {
     STORAGE_KEY_USER,
     DEFAULT_PARTICIPANT
   )
-  // const userInfo: UserInfo = storage && JSON.parse(storage)
+
   const imHost = room.hostId === userInfo.userId
 
   const handleDeleteRoom = async () => {
@@ -214,8 +209,6 @@ const Voting: FC = () => {
     }
   }, [roomId])
 
-  // console.warn({ room: room.name, me })
-
   useEffect(() => {
     const unsubscribe = streamRoomById(roomId, {
       next: querySnapshot => {
@@ -277,7 +270,7 @@ const Voting: FC = () => {
             showResults={room.showResults}
           />
         </PageContainer>
-        <Footer showCredits={false} />
+        <ThemeButton />
       </main>
     </div>
   )

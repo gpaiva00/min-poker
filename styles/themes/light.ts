@@ -14,6 +14,8 @@ export default {
     darkText: '#121214',
     white: '#fff',
     buttonText: '#fff',
+    lightButtonHover: '#38383b',
+    darkButtonHover: '#38383b',
     modalLabel: '#252527',
     inputBorder: '#252527',
     modalButtonBackground: '#121214',

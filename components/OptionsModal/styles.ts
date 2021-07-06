@@ -41,10 +41,8 @@ export const Button = styled(OriginalButton)`
   width: 100%;
   background: ${({ theme }) => theme.colors.modalButtonBackground};
 
-  ${ButtonContainer} {
-    &:hover {
-      background: #000;
-    }
+  &:hover {
+    background: ${({ theme }) => theme.colors.darkButtonHover};
   }
 
   ${Text} {

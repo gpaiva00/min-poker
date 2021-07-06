@@ -1,4 +1,6 @@
 import styled from 'styled-components'
+import { Footer } from '../components'
+import { Container } from '../components/Footer/styles'
 
 export const PageContainer = styled.div`
   display: flex;
@@ -11,6 +13,4 @@ export const PageContainer = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
   }
-
-  /* background: lightgray; */
 `

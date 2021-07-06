@@ -17,8 +17,6 @@ const Invitation: FC = () => {
     DEFAULT_PARTICIPANT
   )
 
-  // let { userId, name: userName }: UserInfo = storage && JSON.parse(storage)
-
   const router = useRouter()
   const { roomId } = router.query
 

@@ -1,8 +1,7 @@
 import styled from 'styled-components'
-import { lighten } from 'polished'
+import { darken, lighten } from 'polished'
 
 import { ButtonProps } from './typings'
-import { LIGHTEN_AMOUNT_LOW } from '../../constants'
 
 export const Container = styled.button<ButtonProps>`
   background: ${({ theme, variant }) =>
@@ -17,10 +16,10 @@ export const Container = styled.button<ButtonProps>`
 
   cursor: pointer;
 
-  /* &:hover {
+  &:hover {
     background: ${({ theme, variant }) =>
-    variant !== 'danger' && lighten(LIGHTEN_AMOUNT_LOW, theme.colors.text)};
-  } */
+      variant !== 'danger' && theme.colors.lightButtonHover};
+  }
 `
 
 export const Text = styled.p<ButtonProps>`
