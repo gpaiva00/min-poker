@@ -27,6 +27,7 @@ import {
 } from '../../styles/ParticipantsPanel.styles'
 
 import { FiCoffee } from 'react-icons/fi'
+import { sortParticipants } from '../../utils/sortParticipants'
 import { RESULTS_TEXT } from '../../constants'
 
 const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
@@ -47,6 +48,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   const [isEditing, setIsEditing] = useState(false)
 
   const { participants, showResults, isVoting } = room
+
   const { name, userId } = userInfo
 
   const showParticipantVote = (vote: string) => {
@@ -94,7 +96,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
 
     if (!newParticipants.length) setIsEditing(false)
 
-    setParticipantsList(newParticipants)
+    setParticipantsList(sortParticipants(newParticipants))
   }, [participants])
 
   return (

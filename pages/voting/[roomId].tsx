@@ -23,7 +23,6 @@ import {
   updateRoom,
   updateVote,
 } from '../../services/firebase'
-import { ThemeButton } from '../../components/ThemeButton'
 
 const Voting: FC = () => {
   const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
@@ -202,12 +201,12 @@ const Voting: FC = () => {
     setParticipantIdToRemove(participantId)
   }
 
-  useEffect(() => {
-    if (!validateRoomId(roomId)) {
-      router.push('/')
-      return
-    }
-  }, [roomId])
+  // useEffect(() => {
+  //   if (!validateRoomId(roomId)) {
+  //     router.push('/')
+  //     return
+  //   }
+  // }, [roomId])
 
   useEffect(() => {
     const unsubscribe = streamRoomById(roomId, {
@@ -270,7 +269,6 @@ const Voting: FC = () => {
             showResults={room.showResults}
           />
         </PageContainer>
-        <ThemeButton />
       </main>
     </div>
   )
