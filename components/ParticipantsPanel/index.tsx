@@ -27,7 +27,7 @@ import {
 } from '../../styles/ParticipantsPanel.styles'
 
 import { FiCoffee } from 'react-icons/fi'
-import { sortParticipants } from '../../utils/sortParticipants'
+import { sortParticipants } from '../../utils'
 import { RESULTS_TEXT } from '../../constants'
 
 const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
