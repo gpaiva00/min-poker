@@ -1,8 +1,6 @@
 import React, { FC } from 'react'
 
 import { Container, Credits, Name } from './styles'
-import { ThemeButton } from '../ThemeButton'
-
 interface FooterProps {
   showCredits?: boolean
 }
@@ -17,8 +15,6 @@ const Footer: FC<FooterProps> = ({ showCredits = true }) => (
         </Name>
       </Credits>
     )}
-
-    <ThemeButton />
   </Container>
 )
 
