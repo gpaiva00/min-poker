@@ -18,7 +18,7 @@ const expectedListSort = [
   {
     id: '4',
     name: 'Carl',
-    vote: '3',
+    vote: '',
     viewerMode: false,
   },
   {

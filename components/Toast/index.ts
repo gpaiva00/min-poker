@@ -1,17 +1,10 @@
 import { toast, ToastProps } from 'react-toastify'
-import { DefaultTheme, ThemeProvider } from 'styled-components'
-import { STORAGE_THEME_KEY } from '../../constants'
-import { usePersistedState } from '../../hooks'
-
 interface ToastComponentProps {
   type?: 'error' | 'warning'
   message: string
 }
 
 const Toast = ({ type, message }: ToastComponentProps) => {
-  const { getStoredItem } = usePersistedState()
-  const storedTheme: DefaultTheme = getStoredItem(STORAGE_THEME_KEY)
-
   const toastConfig: ToastProps = {
     position: 'bottom-right',
     autoClose: 3000,
@@ -30,13 +23,7 @@ const Toast = ({ type, message }: ToastComponentProps) => {
       return toast.error(message, toastConfig)
 
     default:
-      return toast.dark(message, {
-        ...toastConfig,
-        style: {
-          background: storedTheme.colors.toastBackground,
-          color: storedTheme.colors.toastTextColor,
-        },
-      })
+      return toast.dark(message, toastConfig)
   }
 }
 
