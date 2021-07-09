@@ -5,6 +5,7 @@ import { streamMyRooms } from '../../services/firebase'
 import { LatestRoomsProps } from './typings'
 import Link from 'next/link'
 import { ANIMATION_DURATION, DELAY_DURATION } from '../../constants'
+import { i18n } from '../../translate/i18n'
 import { Room } from '../../typings'
 
 const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
@@ -33,7 +34,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ ease: 'easeInOut', duration: ANIMATION_DURATION }}
       >
-        <Title>your latest rooms</Title>
+        <Title>{i18n.t('titles.latestRooms')}</Title>
       </motion.div>
 
       <ItemsContainer>

@@ -26,6 +26,7 @@ import {
   DEFAULT_PARTICIPANT,
   STORAGE_KEY_USER,
 } from '../constants'
+import { i18n } from '../translate/i18n'
 import { generateNickName, idGenerator, validateInputValue } from '../utils'
 
 import { UserInfo } from '../typings'
@@ -50,8 +51,8 @@ const Home: FC = () => {
     if (!validateInputValue(inputValue)) {
       setLoading(false)
       return Toast({
-        type: 'warning',
-        message: 'Type a valid name for your room!',
+        type: 'error',
+        message: i18n.t('toast.typeValidRoomName'),
       })
     }
 
@@ -77,7 +78,7 @@ const Home: FC = () => {
       setLoading(false)
       Toast({
         type: 'error',
-        message: 'There was an error to create your room. Try later.',
+        message: i18n.t('toast.errorCreatingRoom'),
       })
     }
   }
@@ -96,7 +97,9 @@ const Home: FC = () => {
             animate={{ opacity: 1 }}
             transition={{ ease: 'easeInOut', duration: ANIMATION_DURATION }}
           >
-            <InstructionText>Enter a name for your room</InstructionText>
+            <InstructionText>
+              {i18n.t('descriptions.enterRoomName')}
+            </InstructionText>
           </motion.p>
 
           <motion.div
@@ -107,12 +110,12 @@ const Home: FC = () => {
             <InputContainer>
               <Input
                 value={inputValue}
-                placeholder="Room name"
+                placeholder={i18n.t('labels.roomName')}
                 onInput={event => setInputValue(event.target.value)}
                 onKeyDown={handleKeyDown}
               />
               <Button loading={loading} onClick={handleCreateRoom}>
-                Create room
+                {i18n.t('buttons.createRoom')}
               </Button>
             </InputContainer>
           </motion.div>

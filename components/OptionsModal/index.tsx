@@ -12,6 +12,7 @@ import {
   SwitchContainer,
 } from './styles'
 import theme from '../../styles/themes/light'
+import { i18n } from '../../translate/i18n'
 import { Participant, Room, UserInfo } from '../../typings'
 
 interface OptionsModalProps {
@@ -52,12 +53,12 @@ const OptionsModal: FC<OptionsModalProps> = ({
       height={imHost ? '480' : '380'}
       toggle={toggle}
       setToggleModal={setToggleModal}
-      title="options"
+      title={i18n.t('titles.options')}
     >
       <Container imHost={imHost}>
         {imHost && (
           <InputContainer>
-            <Label>Room name</Label>
+            <Label>{i18n.t('labels.roomName')}</Label>
             <Input
               placeholder={originalRoomName}
               value={roomName}
@@ -67,7 +68,7 @@ const OptionsModal: FC<OptionsModalProps> = ({
         )}
 
         <InputContainer>
-          <Label>Your name</Label>
+          <Label>{i18n.t('labels.yourName')}</Label>
           <Input
             placeholder={originalUserName}
             value={userName}
@@ -75,7 +76,7 @@ const OptionsModal: FC<OptionsModalProps> = ({
           />
         </InputContainer>
         <SwitchContainer>
-          <Label>Viewer mode</Label>
+          <Label>{i18n.t('labels.viewerMode')}</Label>
           <Switch
             checked={viewerMode}
             onChange={setViewerMode}
@@ -96,7 +97,7 @@ const OptionsModal: FC<OptionsModalProps> = ({
             })
           }
         >
-          Save
+          {i18n.t('buttons.save')}
         </Button>
       </Container>
     </Modal>

@@ -27,6 +27,7 @@ import {
 } from '../../styles/ParticipantsPanel.styles'
 
 import { FiCoffee } from 'react-icons/fi'
+import { i18n } from '../../translate/i18n'
 import { sortParticipants } from '../../utils'
 import { RESULTS_TEXT } from '../../constants'
 
@@ -44,7 +45,6 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   const [participantsList, setParticipantsList] = useState<ParticipantProps[]>(
     []
   )
-
   const [isEditing, setIsEditing] = useState(false)
 
   const { participants, showResults, isVoting } = room
@@ -102,7 +102,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   return (
     <Container>
       <TitleContainer>
-        <Title>Participants</Title>
+        <Title>{i18n.t('titles.participants')}</Title>
         {imHost && showEditOptions()}
       </TitleContainer>
 
@@ -132,7 +132,9 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
                 loading={loading}
                 onClick={() => setStartVoting(!isVoting)}
               >
-                {isVoting ? 'Finish voting' : 'Start voting'}
+                {isVoting
+                  ? i18n.t('buttons.finishVoting')
+                  : i18n.t('buttons.startVoting')}
               </StartVoting>
             </ButtonContainer>
           )}
@@ -145,7 +147,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
               onClick={handleDeleteRoom}
               variant="danger"
             >
-              Delete room
+              {i18n.t('buttons.deleteRoom')}
             </DeleteRoom>
           ) : (
             <DeleteRoom
@@ -153,7 +155,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
               onClick={handleExitRoom}
               variant="danger"
             >
-              Exit room
+              {i18n.t('buttons.exitRoom')}
             </DeleteRoom>
           )}
         </ButtonContainer>

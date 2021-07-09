@@ -17,6 +17,7 @@ import {
   OptionsIcon,
   LinkIcon,
 } from './styles'
+import { i18n } from '../../translate/i18n'
 import { returnInviteLink } from '../../utils'
 import { usePersistedState } from '../../hooks'
 import { DefaultTheme } from 'styled-components'
@@ -53,7 +54,7 @@ const Header: FC<HeaderProps> = ({ roomTitle, roomId, setToggleModal }) => {
           <CopyToClipboard
             text={inviteLink}
             onCopy={() =>
-              Toast({ message: 'Invitation link copied to your clipboard.' })
+              Toast({ message: i18n.t('toast.invitationLinkCopied') })
             }
           >
             <RoomTitleContainer>

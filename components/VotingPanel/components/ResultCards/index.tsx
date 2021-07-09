@@ -10,6 +10,8 @@ import {
   Title,
   TitleContainer,
 } from './styles'
+
+import { i18n } from '../../../../translate/i18n'
 import { ResultCard, Waiting } from '../'
 import { Result } from '../../../../typings'
 import { ANIMATION_DURATION, DELAY_DURATION } from '../../../../constants'
@@ -26,16 +28,18 @@ const ResultCards: FC<ResultCardsProps> = ({ results }) => (
         animate={{ opacity: 1 }}
         transition={{ ease: 'easeInOut', duration: ANIMATION_DURATION }}
       >
-        <Title>Results</Title>
+        <Title>{i18n.t('titles.results')}</Title>
       </motion.h1>
 
       <AverageContainer>
-        <AverageTitle>Average:</AverageTitle>
+        <AverageTitle>{i18n.t('titles.average')}</AverageTitle>
         <AverageValue>{results.average}</AverageValue>
       </AverageContainer>
     </TitleContainer>
 
-    {!results.items.length && <Waiting description="nobody voted" />}
+    {!results.items.length && (
+      <Waiting description={i18n.t('descriptions.nobodyVoted')} />
+    )}
 
     <CardsContainer>
       {results.items.map((item, key) => (

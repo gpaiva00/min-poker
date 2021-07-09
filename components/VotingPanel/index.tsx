@@ -1,7 +1,8 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC } from 'react'
 
 import { Container } from './styles'
 import { VotingPanelProps } from './typings'
+import { i18n } from '../../translate/i18n'
 
 import { Waiting, VotingCards } from './components'
 import ResultCards from './components/ResultCards'
@@ -11,10 +12,12 @@ const VotingPanel: FC<VotingPanelProps> = ({ room, me, handleVoteClick }) => {
 
   const renderPage = () => {
     if (!isVoting && !showResults)
-      return <Waiting description="waiting voting to start" />
+      return (
+        <Waiting description={i18n.t('descriptions.waitingVotingToStart')} />
+      )
 
     if (me.viewerMode && !showResults)
-      return <Waiting description="Voting is running" />
+      return <Waiting description={i18n.t('descriptions.votingIsRunning')} />
     else if (!me.viewerMode && !showResults)
       return (
         <VotingCards
