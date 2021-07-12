@@ -4,4 +4,5 @@ export default {
   finishVoting: 'Encerrar votação',
   deleteRoom: 'Excluir sala',
   save: 'Salvar',
+  exitRoom: 'Sair da sala',
 }
