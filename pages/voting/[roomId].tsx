@@ -12,16 +12,19 @@ import {
   DEFAULT_ROOM,
   STORAGE_KEY_USER,
 } from '../../constants'
+import { i18n } from '../../translate/i18n'
 import { calculateVotingResult, validateRoomId } from '../../utils'
 import OptionsModal from '../../components/OptionsModal'
 import RemoveParticipantModal from '../../components/RemoveParticipantModal'
 import {
   deleteRoom,
   exitRoom,
+  getRoomFromId,
   removeParticipant,
   streamRoomById,
   updateRoom,
   updateVote,
+  verifyIfIsNotParticipant,
 } from '../../services/firebase'
 
 const Voting: FC = () => {
@@ -55,7 +58,7 @@ const Voting: FC = () => {
     } catch (error) {
       Toast({
         type: 'error',
-        message: 'Error trying to close your room. Sorry :(',
+        message: i18n.t('toast.errorDeletingRoom'),
       })
     }
   }
@@ -66,7 +69,7 @@ const Voting: FC = () => {
 
       router.push('/')
     } catch (error) {
-      Toast({ type: 'error', message: 'Error trying to exit room. Sorry :(' })
+      Toast({ type: 'error', message: i18n.t('toast.errorExitingRoom') })
     }
   }
 
@@ -95,7 +98,7 @@ const Voting: FC = () => {
         if (!calculateResult)
           return Toast({
             type: 'error',
-            message: 'Error trying calculate voting results. Try again.',
+            message: i18n.t('toast.errorCalculatingResults'),
           })
 
         const { average, results: items } = calculateResult
@@ -116,7 +119,7 @@ const Voting: FC = () => {
     } catch (error) {
       Toast({
         type: 'error',
-        message: 'Error trying to start voting. Try again.',
+        message: i18n.t('toast.errorToStartVoting'),
       })
       console.error('Error when trying to start voting', error)
     }
@@ -150,11 +153,11 @@ const Voting: FC = () => {
         newParticipant,
       })
 
-      Toast({ message: 'Options updated successfully.' })
+      Toast({ message: i18n.t('toast.optionsUpdated') })
     } catch (error) {
       Toast({
         type: 'error',
-        message: 'Error trying to change your name. Try again.',
+        message: i18n.t('toast.errorChangingName'),
       })
       console.error('Error trying to change name', error)
     }
@@ -172,7 +175,7 @@ const Voting: FC = () => {
     } catch (error) {
       Toast({
         type: 'error',
-        message: 'Error trying to set your vote. Try again.',
+        message: i18n.t('toast.errorSettingVote'),
       })
       console.error('Error trying to set your vote', error)
     }
@@ -185,12 +188,12 @@ const Voting: FC = () => {
       setToggleConfirmModal(false)
 
       Toast({
-        message: 'Participant removed from your room',
+        message: i18n.t('toast.participanteRemovedFromRoom'),
       })
     } catch (error) {
       Toast({
         type: 'error',
-        message: 'Error trying to remove participant. Try again.',
+        message: i18n.t('toast.errorRemovingParticipantFromRoom'),
       })
       console.error('Error trying to remove participant room', error)
     }
@@ -201,14 +204,19 @@ const Voting: FC = () => {
     setParticipantIdToRemove(participantId)
   }
 
-  // useEffect(() => {
-  //   if (!validateRoomId(roomId)) {
-  //     router.push('/')
-  //     return
-  //   }
-  // }, [roomId])
-
   useEffect(() => {
+    const verifyParticipant = async () => {
+      if (
+        roomId &&
+        (await verifyIfIsNotParticipant({ userId: userInfo.userId, roomId }))
+      ) {
+        router.push(`/invitation/${roomId}`)
+        return
+      }
+    }
+
+    verifyParticipant()
+
     const unsubscribe = streamRoomById(roomId, {
       next: querySnapshot => {
         const updatedRoom: Room = querySnapshot.docs

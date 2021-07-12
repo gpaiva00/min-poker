@@ -4,6 +4,7 @@ import 'firebase/analytics'
 import 'firebase/firestore'
 import { DEFAULT_RESULT } from '../constants'
 import { ROOM_COLLECTION } from './constants'
+import { VerifyIfIsNotParticipantProps } from '../typings/Services'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -154,14 +155,26 @@ export const getRoomFromId = async (roomId: string | string[]) => {
   }
 }
 
+export const verifyIfIsNotParticipant = async ({
+  room,
+  userId,
+  roomId,
+}: VerifyIfIsNotParticipantProps) => {
+  let myRoom = room
+
+  if (!room) {
+    const { room } = await getRoomFromId(roomId)
+    myRoom = room
+  }
+
+  return myRoom.participants.findIndex(({ id }) => id === userId) === -1
+}
+
 export const enterRoom = async ({ roomId, userName, userId }) => {
   try {
     const { room, roomPath } = await getRoomFromId(roomId)
 
-    const isNotParticipant =
-      room.participants.findIndex(({ id }) => id === userId) === -1
-
-    if (isNotParticipant) {
+    if (verifyIfIsNotParticipant({ room, userId })) {
       const newParticipants = [
         ...room.participants,
         {

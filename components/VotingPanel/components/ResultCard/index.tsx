@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { FiCoffee } from 'react-icons/fi'
+import { i18n } from '../../../../translate/i18n'
 import { RESULTS_TEXT } from '../../../../constants'
 
 import { Card, CardIcon, CardText, TextContainer, Votes } from './styles'
@@ -21,7 +22,8 @@ const ResultCard: FC<CardProps> = ({ id, votes }) => (
       )}
     </TextContainer>
     <Votes>
-      {votes} {votes === 1 ? 'vote' : 'votes'}
+      {votes}{' '}
+      {votes === 1 ? i18n.t('descriptions.vote') : i18n.t('descriptions.votes')}
     </Votes>
   </Card>
 )
