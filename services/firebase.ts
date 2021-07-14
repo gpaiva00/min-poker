@@ -35,7 +35,7 @@ if (!firebase.apps.length) {
   db = firebase.firestore(app)
 }
 
-firebase.analytics()
+export const firebaseAnalytics = firebase.analytics()
 
 export const authenticateAnonymously = () => {
   return firebase.auth().signInAnonymously()
