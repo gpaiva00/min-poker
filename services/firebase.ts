@@ -17,25 +17,17 @@ const firebaseConfig = {
 }
 
 let db: firebase.firestore.Firestore = null
-let app = null
 
 if (!firebase.apps.length) {
   try {
-    app = firebase.initializeApp(firebaseConfig)
+    firebase.initializeApp(firebaseConfig)
     db = firebase.firestore()
-    // firebase
-    //   .auth(app)
-    //   .signInAnonymously()
-    //   .then(() => (db = firebase.firestore(app)))
   } catch (error) {
-    console.error(error.code, error.message)
+    console.error('Error initializing firebase', error.code, error.message)
   }
-} else {
-  app = firebase.app()
-  db = firebase.firestore(app)
 }
 
-export const firebaseAnalytics = firebase.analytics()
+export const firebaseAnalytics = firebase.analytics
 
 export const authenticateAnonymously = () => {
   return firebase.auth().signInAnonymously()

@@ -73,7 +73,7 @@ const Home: FC = () => {
 
       await createRoom({ roomId, roomName, hostId, hostName })
       setLoading(false)
-      firebaseAnalytics.logEvent('create_room')
+      firebaseAnalytics().logEvent('create_room')
       router.push(`voting/${roomId}`)
     } catch (error) {
       setLoading(false)
@@ -81,7 +81,7 @@ const Home: FC = () => {
         type: 'error',
         message: i18n.t('toast.errorCreatingRoom'),
       })
-      firebaseAnalytics.logEvent('error_creating_room', {
+      firebaseAnalytics().logEvent('error_creating_room', {
         error: error.message,
       })
     }
