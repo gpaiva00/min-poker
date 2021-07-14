@@ -62,7 +62,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
         </motion.p>
       ) : (
         <ItemsContainer>
-          {isLoading && myLatestRooms?.length && (
+          {isLoading && !!myLatestRooms?.length && (
             <Skeleton width={150} height={16} />
           )}
           {myLatestRooms.map((room, key) => (

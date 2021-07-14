@@ -215,6 +215,12 @@ const Voting: FC = () => {
     setParticipantIdToRemove(participantId)
   }
 
+  const setLoadingToFalse = () => {
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 2000)
+  }
+
   useEffect(() => {
     setIsLoading(true)
     const verifyParticipant = async () => {
@@ -240,11 +246,11 @@ const Voting: FC = () => {
           ({ id }) => id === userInfo.userId
         )
         setMe(me ? me : DEFAULT_PARTICIPANT)
-        setIsLoading(false)
+        setLoadingToFalse()
       },
       error: () => {
         console.error('Cannot find room')
-        setIsLoading(false)
+        setLoadingToFalse()
       },
     })
     return unsubscribe
