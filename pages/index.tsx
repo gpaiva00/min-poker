@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 
 import { useRouter } from 'next/router'
 
+import { getAnalytics, logEvent } from 'firebase/analytics'
+
 import {
   PageContainer,
   InstructionText,
@@ -31,6 +33,8 @@ import { generateNickName, idGenerator, validateInputValue } from '../utils'
 
 import { UserInfo } from '../typings'
 import { createRoom } from '../services/firebase'
+
+const analytics = getAnalytics()
 
 const Home: FC = () => {
   const { storeItem, getStoredItem } = usePersistedState()
@@ -73,6 +77,7 @@ const Home: FC = () => {
 
       await createRoom({ roomId, roomName, hostId, hostName })
       setLoading(false)
+      logEvent(analytics, 'created_room')
       router.push(`voting/${roomId}`)
     } catch (error) {
       setLoading(false)
@@ -80,6 +85,7 @@ const Home: FC = () => {
         type: 'error',
         message: i18n.t('toast.errorCreatingRoom'),
       })
+      logEvent(analytics, 'error_creating_room', { error: error.message })
     }
   }
 
