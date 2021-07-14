@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { BiTime } from 'react-icons/bi'
+import Skeleton from 'react-loading-skeleton'
 
 import { ParticipantsPanelProps } from './typings'
 import { Participant as ParticipantProps } from '../../typings'
@@ -109,15 +110,18 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
       <PanelContainer>
         <Panel>
           <List>
-            <Participant>
-              <MyName viewerMode={me.viewerMode}>{name}</MyName>
-              {me.viewerMode ? (
-                <ViewerModeIcon size={20} />
-              ) : (
-                showParticipantVote(me.vote)
-              )}
-            </Participant>
-
+            {loading ? (
+              <Skeleton height={30} />
+            ) : (
+              <Participant>
+                <MyName viewerMode={me.viewerMode}>{name}</MyName>
+                {me.viewerMode ? (
+                  <ViewerModeIcon size={20} />
+                ) : (
+                  showParticipantVote(me.vote)
+                )}
+              </Participant>
+            )}
             {participantsList.map(({ name, vote, viewerMode, id }, key) => (
               <Participant key={key}>
                 <Name viewerMode={viewerMode}>{name}</Name>
@@ -128,35 +132,45 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
 
           {imHost && (
             <ButtonContainer>
-              <StartVoting
-                loading={loading}
-                onClick={() => setStartVoting(!isVoting)}
-              >
-                {isVoting
-                  ? i18n.t('buttons.finishVoting')
-                  : i18n.t('buttons.startVoting')}
-              </StartVoting>
+              {loading ? (
+                <Skeleton width={260} height={50} />
+              ) : (
+                <StartVoting
+                  loading={loading}
+                  onClick={() => setStartVoting(!isVoting)}
+                >
+                  {isVoting
+                    ? i18n.t('buttons.finishVoting')
+                    : i18n.t('buttons.startVoting')}
+                </StartVoting>
+              )}
             </ButtonContainer>
           )}
         </Panel>
 
         <ButtonContainer>
-          {imHost ? (
-            <DeleteRoom
-              loading={loading}
-              onClick={handleDeleteRoom}
-              variant="danger"
-            >
-              {i18n.t('buttons.deleteRoom')}
-            </DeleteRoom>
+          {loading ? (
+            <Skeleton width={200} height={25} />
           ) : (
-            <DeleteRoom
-              loading={loading}
-              onClick={handleExitRoom}
-              variant="danger"
-            >
-              {i18n.t('buttons.exitRoom')}
-            </DeleteRoom>
+            <>
+              {imHost ? (
+                <DeleteRoom
+                  loading={loading}
+                  onClick={handleDeleteRoom}
+                  variant="danger"
+                >
+                  {i18n.t('buttons.deleteRoom')}
+                </DeleteRoom>
+              ) : (
+                <DeleteRoom
+                  loading={loading}
+                  onClick={handleExitRoom}
+                  variant="danger"
+                >
+                  {i18n.t('buttons.exitRoom')}
+                </DeleteRoom>
+              )}
+            </>
           )}
         </ButtonContainer>
       </PanelContainer>

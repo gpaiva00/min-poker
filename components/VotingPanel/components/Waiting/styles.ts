@@ -8,8 +8,6 @@ export const WaitingContainer = styled.div`
 
   width: 100%;
   margin-bottom: ${({ theme }) => theme.margins.medium};
-
-  /* background: lightgray; */
 `
 
 export const Description = styled.h1`

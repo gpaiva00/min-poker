@@ -20,6 +20,8 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    console.warn('entrou')
+
     setIsLoading(true)
     const unsubscribe = streamMyRooms(userInfo.userId, {
       next: querySnapshot => {
@@ -48,7 +50,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
         <Title>{i18n.t('titles.latestRooms')}</Title>
       </motion.div>
 
-      {!myLatestRooms?.length ? (
+      {!isLoading && !myLatestRooms?.length ? (
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -60,7 +62,9 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
         </motion.p>
       ) : (
         <ItemsContainer>
-          {isLoading && <Skeleton width={150} height={16} />}
+          {isLoading && myLatestRooms?.length && (
+            <Skeleton width={150} height={16} />
+          )}
           {myLatestRooms.map((room, key) => (
             <Link key={key} href={`voting/${room.id}`}>
               <Item>

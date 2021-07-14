@@ -35,11 +35,10 @@ const Voting: FC = () => {
   const [toggleOptionsModal, setToggleOptionsModal] = useState(false)
   const [toggleConfirmModal, setToggleConfirmModal] = useState(false)
   const [participantIdToRemove, setParticipantIdToRemove] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
   const { roomId } = router.query
-
-  const loading = false
 
   const userInfo: UserInfo = getStoredItem(
     STORAGE_KEY_USER,
@@ -217,6 +216,7 @@ const Voting: FC = () => {
   }
 
   useEffect(() => {
+    setIsLoading(true)
     const verifyParticipant = async () => {
       if (
         roomId &&
@@ -240,8 +240,12 @@ const Voting: FC = () => {
           ({ id }) => id === userInfo.userId
         )
         setMe(me ? me : DEFAULT_PARTICIPANT)
+        setIsLoading(false)
       },
-      error: () => console.error('Cannot find room'),
+      error: () => {
+        console.error('Cannot find room')
+        setIsLoading(false)
+      },
     })
     return unsubscribe
   }, [roomId, setRoom])
@@ -255,19 +259,20 @@ const Voting: FC = () => {
           room={room}
           userInfo={userInfo}
           handleSaveRoomOptions={handleSaveRoomOptions}
-          loading={loading}
+          loading={isLoading}
           imHost={imHost}
         />
         <RemoveParticipantModal
           toggle={toggleConfirmModal}
           setToggleModal={setToggleConfirmModal}
           handlePressConfirm={handleRemoveParticipant}
-          loading={loading}
+          loading={isLoading}
         />
         <Header
           roomTitle={room.name}
           roomId={room.id}
           setToggleModal={setToggleOptionsModal}
+          isLoading={isLoading}
         />
 
         <PageContainer>
@@ -280,13 +285,14 @@ const Voting: FC = () => {
             room={room}
             me={me}
             userInfo={userInfo}
-            loading={loading}
+            loading={isLoading}
           />
           <VotingPanel
             handleVoteClick={handleVoteClick}
             room={room}
             me={me}
             showResults={room.showResults}
+            loading={isLoading}
           />
         </PageContainer>
       </main>

@@ -23,20 +23,29 @@ import { returnInviteLink } from '../../utils'
 import { usePersistedState } from '../../hooks'
 import { DefaultTheme } from 'styled-components'
 import { DEFAULT_THEME_OBJ, STORAGE_THEME_KEY } from '../../constants'
+import Skeleton from 'react-loading-skeleton'
 
 interface HeaderProps {
   roomTitle?: string
   roomId?: string | string[]
   setToggleModal?: React.Dispatch<React.SetStateAction<boolean>>
+  isLoading: boolean
 }
 
-const Header: FC<HeaderProps> = ({ roomTitle, roomId, setToggleModal }) => {
+const Header: FC<HeaderProps> = ({
+  roomTitle,
+  roomId,
+  setToggleModal,
+  isLoading,
+}) => {
   const inviteLink = returnInviteLink(roomId)
 
   const { getStoredItem } = usePersistedState()
   const storedTheme: DefaultTheme = getStoredItem(STORAGE_THEME_KEY)
 
   const { title: themeTitle } = storedTheme ?? DEFAULT_THEME_OBJ
+
+  console.warn({ isLoading })
 
   return (
     <Container>
@@ -60,8 +69,14 @@ const Header: FC<HeaderProps> = ({ roomTitle, roomId, setToggleModal }) => {
             }}
           >
             <RoomTitleContainer>
-              <RoomTitle>{roomTitle}</RoomTitle>
-              <LinkIcon size={26} />
+              {isLoading ? (
+                <Skeleton width={150} height={20} />
+              ) : (
+                <>
+                  <RoomTitle>{roomTitle}</RoomTitle>
+                  <LinkIcon size={26} />
+                </>
+              )}
             </RoomTitleContainer>
           </CopyToClipboard>
           <Options onClick={() => setToggleModal(true)}>
