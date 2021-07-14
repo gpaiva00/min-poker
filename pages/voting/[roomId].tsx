@@ -19,7 +19,7 @@ import RemoveParticipantModal from '../../components/RemoveParticipantModal'
 import {
   deleteRoom,
   exitRoom,
-  getRoomFromId,
+  firebaseAnalytics,
   removeParticipant,
   streamRoomById,
   updateRoom,
@@ -53,7 +53,7 @@ const Voting: FC = () => {
       setTimeout(() => {
         deleteRoom(room.id)
       }, 200)
-
+      firebaseAnalytics().logEvent('delete_room')
       router.push('/')
     } catch (error) {
       Toast({
@@ -66,7 +66,7 @@ const Voting: FC = () => {
   const handleExitRoom = async () => {
     try {
       await exitRoom(room.id, userInfo.userId)
-
+      firebaseAnalytics().logEvent('exit_room')
       router.push('/')
     } catch (error) {
       Toast({ type: 'error', message: i18n.t('toast.errorExitingRoom') })
@@ -115,6 +115,10 @@ const Voting: FC = () => {
         newRoom,
       })
 
+      firebaseAnalytics().logEvent('handle_start_voting', {
+        totalParticipants: room.participants.length,
+      })
+
       setIsVoting(!isVoting)
     } catch (error) {
       Toast({
@@ -153,6 +157,8 @@ const Voting: FC = () => {
         newParticipant,
       })
 
+      firebaseAnalytics().logEvent('room_options_saved')
+
       Toast({ message: i18n.t('toast.optionsUpdated') })
     } catch (error) {
       Toast({
@@ -172,6 +178,10 @@ const Voting: FC = () => {
         voteId,
         userId: userInfo.userId,
       })
+
+      firebaseAnalytics().logEvent('vote_click', {
+        voteId,
+      })
     } catch (error) {
       Toast({
         type: 'error',
@@ -184,6 +194,8 @@ const Voting: FC = () => {
   const handleRemoveParticipant = async () => {
     try {
       await removeParticipant(room.id, participantIdToRemove)
+
+      firebaseAnalytics().logEvent('remove_participant')
 
       setToggleConfirmModal(false)
 

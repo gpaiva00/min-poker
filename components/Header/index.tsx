@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { firebaseAnalytics } from '../../services/firebase'
 
 import Link from 'next/link'
 
@@ -53,9 +54,10 @@ const Header: FC<HeaderProps> = ({ roomTitle, roomId, setToggleModal }) => {
         <OptionsContainer>
           <CopyToClipboard
             text={inviteLink}
-            onCopy={() =>
+            onCopy={() => {
+              firebaseAnalytics().logEvent('invitation_link_copied')
               Toast({ message: i18n.t('toast.invitationLinkCopied') })
-            }
+            }}
           >
             <RoomTitleContainer>
               <RoomTitle>{roomTitle}</RoomTitle>
