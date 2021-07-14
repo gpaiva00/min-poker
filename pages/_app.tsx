@@ -3,6 +3,7 @@ import React, { FC, useEffect } from 'react'
 import { AppProps } from 'next/app'
 
 import { AnimateSharedLayout } from 'framer-motion'
+import { SkeletonTheme } from 'react-loading-skeleton'
 
 import GlobalStyle from '../styles/global'
 import { ThemeProvider } from 'styled-components'
@@ -37,7 +38,12 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
     <AnimateSharedLayout>
       <ThemeProvider theme={lightTheme}>
         <GlobalStyle />
-        <Component {...pageProps} />
+        <SkeletonTheme
+          color={lightTheme.colors.lightSmoke}
+          highlightColor={lightTheme.colors.smoke}
+        >
+          <Component {...pageProps} />
+        </SkeletonTheme>
         <ToastContainer
           position="bottom-center"
           autoClose={5000}

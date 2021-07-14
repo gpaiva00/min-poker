@@ -38,3 +38,9 @@ export const Item = styled.a`
     text-decoration: underline;
   }
 `
+
+export const EmptyLatestRoomsLabel = styled.p`
+  font-family: ${({ theme }) => theme.fonts.lightItalic};
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  margin-top: ${({ theme }) => theme.margins.small};
+`
