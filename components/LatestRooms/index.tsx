@@ -8,7 +8,7 @@ import {
   ItemsContainer,
   Title,
 } from './styles'
-import { streamMyRooms } from '../../services/firebase'
+import { streamRoomHistory } from '../../services/firebase'
 import { LatestRoomsProps } from './typings'
 import Link from 'next/link'
 import { ANIMATION_DURATION, DELAY_DURATION } from '../../constants'
@@ -20,14 +20,14 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    console.warn('entrou')
-
     setIsLoading(true)
-    const unsubscribe = streamMyRooms(userInfo.userId, {
+    const unsubscribe = streamRoomHistory(userInfo.userId, {
       next: querySnapshot => {
         const updatedRooms: Room[] = querySnapshot.docs.map(docSnapshot =>
           docSnapshot.data()
         )
+
+        console.warn({ updatedRooms })
 
         setMyLatestRooms(updatedRooms)
         setIsLoading(false)

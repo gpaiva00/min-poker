@@ -2,9 +2,10 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/analytics'
 import 'firebase/firestore'
-import { DEFAULT_RESULT } from '../constants'
-import { ROOM_COLLECTION } from './constants'
+import { DEFAULT_RESULT, DEFAULT_ROOM_HISTORY } from '../constants'
+import { ROOM_COLLECTION, ROOM_HISTORY_COLLECTION } from './constants'
 import { VerifyIfIsNotParticipantProps } from '../typings/Services'
+import { Participant, RoomHistory } from '../typings'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -56,6 +57,7 @@ export const createRoom = async ({ roomId, roomName, hostId, hostName }) => {
     }
 
     await db.collection(ROOM_COLLECTION).add(saveOnDB)
+    // await updateRoomHistory({ roomId, userId: hostId })
   } catch (error) {}
 }
 
@@ -149,6 +151,32 @@ export const getRoomFromId = async (roomId: string | string[]) => {
   }
 }
 
+export const getRoomHistoryFromUserId = async (userId: string | string[]) => {
+  await authenticateAnonymously()
+
+  try {
+    const roomHistoryRef = await db
+      .collection(ROOM_HISTORY_COLLECTION)
+      .where('userId', '==', userId)
+      .get()
+
+    if (!roomHistoryRef.docs.length)
+      return {
+        roomHistory: {} as RoomHistory,
+        roomHistoryRef: '',
+        roomHistoryPath: '',
+      }
+
+    const roomHistory: RoomHistory = roomHistoryRef?.docs?.shift().data()
+    const roomHistoryPath = roomHistoryRef?.docs[0]?.ref?.path
+
+    return { roomHistory, roomHistoryRef, roomHistoryPath }
+  } catch (error) {
+    console.error('Cannot find room history', error)
+    throw new Error('Cannot find room history.')
+  }
+}
+
 export const verifyIfIsNotParticipant = async ({
   room,
   userId,
@@ -164,12 +192,36 @@ export const verifyIfIsNotParticipant = async ({
   return myRoom.participants.findIndex(({ id }) => id === userId) === -1
 }
 
+export const updateRoomHistory = async ({ roomId, userId }) => {
+  try {
+    const { roomHistory, roomHistoryPath } = await getRoomHistoryFromUserId(
+      userId
+    )
+    let history = roomHistory?.history || []
+
+    if (!Object.keys(roomHistory).length)
+      history.push({ roomId, lastVisitDate: new Date() })
+
+    // const roomIdIndex = history.findIndex(history => history.roomId === roomId)
+
+    // if (roomIdIndex === -1) console.warn({ history })
+
+    await db.doc(roomHistoryPath).update({
+      ...updateRoom,
+      participants: newParticipants,
+    })
+    console.warn({ history })
+  } catch (error) {
+    console.error('Cannot update room history', error)
+  }
+}
+
 export const enterRoom = async ({ roomId, userName, userId }) => {
   try {
     const { room, roomPath } = await getRoomFromId(roomId)
 
     if (verifyIfIsNotParticipant({ room, userId })) {
-      const newParticipants = [
+      const newParticipants: Participant[] = [
         ...room.participants,
         {
           id: userId,
@@ -184,6 +236,8 @@ export const enterRoom = async ({ roomId, userName, userId }) => {
         participants: newParticipants,
       })
     }
+
+    // await updateRoomHistory({ roomId, userId })
   } catch (error) {
     console.error('Cannot enter room', error)
     throw new Error('Cannot enter room. Try later.')
@@ -225,14 +279,17 @@ export const removeParticipant = async (roomId: string, participantId) => {
   }
 }
 
-export const streamMyRooms = (userId: string | string[], observer) => {
+export const streamRoomHistory = (userId: string | string[], observer) => {
   try {
-    return db
-      .collection(ROOM_COLLECTION)
-      .where('hostId', '==', userId)
-      .onSnapshot(observer)
+    return (
+      db
+        .collection(ROOM_HISTORY_COLLECTION)
+        // .where('hostId', '==', userId)
+        .where('userId', '==', userId)
+        .onSnapshot(observer)
+    )
   } catch (error) {
-    console.error('Cannot stream my rooms', error.message)
+    console.error('Cannot stream room history', error.message)
   }
 }
 

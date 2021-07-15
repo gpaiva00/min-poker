@@ -45,8 +45,6 @@ const Header: FC<HeaderProps> = ({
 
   const { title: themeTitle } = storedTheme ?? DEFAULT_THEME_OBJ
 
-  console.warn({ isLoading })
-
   return (
     <Container>
       <Link href="/">
