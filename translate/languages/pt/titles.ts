@@ -4,4 +4,5 @@ export default {
   results: 'Resultados',
   latestRooms: 'Histórico de salas',
   average: 'Média',
+  removeParticipant: 'Remover participante',
 }

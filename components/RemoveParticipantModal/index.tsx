@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { i18n } from '../../translate/i18n'
 
 import ConfirmModal from '../ConfirmModal'
 
@@ -18,10 +19,11 @@ const RemoveParticipantModal: FC<OptionsModalProps> = ({
   <ConfirmModal
     toggle={toggle}
     setToggleModal={setToggleModal}
-    title="Remove participant"
+    title={i18n.t('titles.removeParticipant')}
     onPressConfirm={handlePressConfirm}
     loading={loading}
-    description="Are you sure you want to remove this participant?"
+    description={i18n.t('descriptions.confirmRemoveParticipant')}
+    primaryButtonLabel={i18n.t('buttons.remove')}
   />
 )
 

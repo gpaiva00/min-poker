@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { i18n } from '../../translate/i18n'
 
 import Modal from '../Modal'
 
@@ -10,6 +11,7 @@ interface OptionsModalProps {
   loading: boolean
   title: string
   description: string
+  primaryButtonLabel?: string
   onPressConfirm(): void
 }
 
@@ -20,6 +22,7 @@ const ConfirmModal: FC<OptionsModalProps> = ({
   title,
   description,
   onPressConfirm,
+  primaryButtonLabel,
 }) => {
   return (
     <Modal
@@ -33,10 +36,10 @@ const ConfirmModal: FC<OptionsModalProps> = ({
 
         <ButtonsContainer>
           <Button loading={loading} onClick={() => setToggleModal(false)}>
-            Cancel
+            {i18n.t('buttons.cancel')}
           </Button>
           <Button variant="danger" loading={loading} onClick={onPressConfirm}>
-            Remove
+            {primaryButtonLabel || i18n.t('buttons.confirm')}
           </Button>
         </ButtonsContainer>
       </Container>

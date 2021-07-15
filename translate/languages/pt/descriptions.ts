@@ -6,4 +6,5 @@ export default {
   yourLatestRoomsWillAppearHere: 'Suas salas aparecerão aqui',
   vote: 'voto',
   votes: 'votos',
+  confirmRemoveParticipant: 'Tem certeza que deseja remover esse participante?',
 }

@@ -5,4 +5,7 @@ export default {
   deleteRoom: 'Excluir sala',
   save: 'Salvar',
   exitRoom: 'Sair da sala',
+  cancel: 'Cancelar',
+  remove: 'Remover',
+  confirm: 'Confirmar',
 }
