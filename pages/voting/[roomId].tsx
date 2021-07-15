@@ -249,7 +249,6 @@ const Voting: FC = () => {
         setLoadingToFalse()
       },
       error: () => {
-        console.error('Cannot find room')
         setLoadingToFalse()
       },
     })
