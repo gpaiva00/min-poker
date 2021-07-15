@@ -122,12 +122,17 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
                 )}
               </Participant>
             )}
-            {participantsList.map(({ name, vote, viewerMode, id }, key) => (
-              <Participant key={key}>
-                <Name viewerMode={viewerMode}>{name}</Name>
-                {showParticipantsOptions({ vote, viewerMode, id })}
-              </Participant>
-            ))}
+
+            {loading ? (
+              <Skeleton height={25} count={5} />
+            ) : (
+              participantsList.map(({ name, vote, viewerMode, id }, key) => (
+                <Participant key={key}>
+                  <Name viewerMode={viewerMode}>{name}</Name>
+                  {showParticipantsOptions({ vote, viewerMode, id })}
+                </Participant>
+              ))
+            )}
           </List>
 
           {imHost && (
