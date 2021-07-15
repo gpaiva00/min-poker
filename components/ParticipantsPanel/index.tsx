@@ -25,6 +25,7 @@ import {
   ViewerModeIcon,
   NoVoteIcon,
   VotedIcon,
+  OwnerIcon,
 } from '../../styles/ParticipantsPanel.styles'
 
 import { FiCoffee } from 'react-icons/fi'
@@ -48,7 +49,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   )
   const [isEditing, setIsEditing] = useState(false)
 
-  const { participants, showResults, isVoting } = room
+  const { participants, showResults, isVoting, hostId } = room
 
   const { name, userId } = userInfo
 
@@ -114,7 +115,11 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
               <Skeleton height={30} />
             ) : (
               <Participant>
-                <MyName viewerMode={me.viewerMode}>{name}</MyName>
+                <MyName viewerMode={me.viewerMode}>
+                  {imHost && <OwnerIcon size={12} />}
+                  {name}
+                </MyName>
+
                 {me.viewerMode ? (
                   <ViewerModeIcon size={20} />
                 ) : (
@@ -128,7 +133,10 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
             ) : (
               participantsList.map(({ name, vote, viewerMode, id }, key) => (
                 <Participant key={key}>
-                  <Name viewerMode={viewerMode}>{name}</Name>
+                  <Name viewerMode={viewerMode}>
+                    {id === hostId && <OwnerIcon size={12} />}
+                    {name}
+                  </Name>
                   {showParticipantsOptions({ vote, viewerMode, id })}
                 </Participant>
               ))

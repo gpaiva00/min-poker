@@ -4,6 +4,8 @@ import Button from '../components/Button'
 import { MdEdit } from 'react-icons/md'
 import { FaCheck } from 'react-icons/fa'
 import { FaRegEye } from 'react-icons/fa'
+import { RiVipCrownFill } from 'react-icons/ri'
+
 import {
   AiFillMinusCircle,
   AiFillCheckCircle,
@@ -14,7 +16,7 @@ import { lighten } from 'polished'
 import { LIGHTEN_AMOUNT_NORMAL } from '../constants'
 
 interface NameProps {
-  viewerMode: boolean
+  viewerMode?: boolean
 }
 
 export const Container = styled.div`
@@ -128,9 +130,15 @@ export const List = styled.div`
 export const MyName = styled.p<NameProps>`
   font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
+  padding-top: 5px;
 
   color: ${({ theme, viewerMode }) =>
     viewerMode ? theme.colors.smoke : theme.colors.primary};
+`
+
+export const OwnerIcon = styled(RiVipCrownFill)`
+  position: absolute;
+  margin-top: -10px;
 `
 
 export const Participant = styled.div`
