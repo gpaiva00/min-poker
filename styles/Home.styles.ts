@@ -7,5 +7,5 @@ export const PageContainer = styled.div`
   justify-content: center;
   flex-direction: column;
 
-  height: 85vh;
+  height: 60vh;
 `

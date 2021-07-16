@@ -44,7 +44,7 @@ export default {
     small: '10px',
     normal: '20px',
     medium: '40px',
-    big: '60px',
+    big: '80px',
   },
 
   paddings: {
