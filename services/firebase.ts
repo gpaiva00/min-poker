@@ -333,6 +333,7 @@ export const streamRoomHistory = (userId: string | string[], observer) => {
       .onSnapshot(observer)
   } catch (error) {
     console.error('Cannot stream room history', error.message)
+    throw new Error('Cannot stream room history.')
   }
 }
 

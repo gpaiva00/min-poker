@@ -25,23 +25,27 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
 
   useEffect(() => {
     setIsLoading(true)
-    const unsubscribe = streamRoomHistory(userInfo.userId, {
-      next: querySnapshot => {
-        let roomHistory: RoomHistory = querySnapshot.docs.map(docSnapshot =>
-          docSnapshot.data()
-        )[0]
+    try {
+      const unsubscribe = streamRoomHistory(userInfo.userId, {
+        next: querySnapshot => {
+          let roomHistory: RoomHistory = querySnapshot.docs.map(docSnapshot =>
+            docSnapshot.data()
+          )[0]
 
-        if (Array.isArray(roomHistory)) roomHistory = DEFAULT_ROOM_HISTORY
+          if (Array.isArray(roomHistory)) roomHistory = DEFAULT_ROOM_HISTORY
 
-        setRoomHistory(sortRoomHistoryByDate(roomHistory))
-        setIsLoading(false)
-      },
-      error: error => {
-        console.error('Cannot find room history', error)
-        setIsLoading(false)
-      },
-    })
-    return unsubscribe
+          setRoomHistory(sortRoomHistoryByDate(roomHistory))
+          setIsLoading(false)
+        },
+        error: error => {
+          console.error('Cannot find room history', error)
+          setIsLoading(false)
+        },
+      })
+      return unsubscribe
+    } catch {
+      setIsLoading(false)
+    }
   }, [userInfo, setRoomHistory])
 
   return (
