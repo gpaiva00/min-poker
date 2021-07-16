@@ -10,6 +10,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@loadable/component": "^5.15.0",
+    "feeder-react-feedback": "^0.0.6",
     "firebase": "^8.3.2",
     "framer-motion": "^4.0.3",
     "i18next": "^20.3.2",

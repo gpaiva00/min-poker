@@ -8,4 +8,6 @@ export default {
   cancel: 'Cancelar',
   remove: 'Remover',
   confirm: 'Confirmar',
+  sendFeedback: 'Enviar Feedback',
+  thanks: 'Obrigado!',
 }

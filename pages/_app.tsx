@@ -13,6 +13,10 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.min.css'
 import { firebaseAnalytics } from '../services/firebase'
 import { useRouter } from 'next/router'
+import loadable from '@loadable/component'
+const Feedback = loadable(() => import('feeder-react-feedback/dist/Feedback'))
+import 'feeder-react-feedback/dist/feeder-react-feedback.css'
+import { i18n } from '../translate/i18n'
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   const routers = useRouter()
@@ -36,6 +40,15 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
 
   return (
     <AnimateSharedLayout>
+      <Feedback
+        email={true}
+        emailRequired={true}
+        feedbackTypes={['Geral', 'Bug', 'Ideia']}
+        projectName="minPOKER"
+        submitButtonMsg={i18n.t('buttons.sendFeedback')}
+        postSubmitButtonMsg={i18n.t('buttons.thanks')}
+        projectId={process.env.FEEDBACK_PROJECT_ID}
+      />
       <ThemeProvider theme={lightTheme}>
         <GlobalStyle />
         <SkeletonTheme
