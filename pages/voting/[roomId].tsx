@@ -18,11 +18,13 @@ import OptionsModal from '../../components/OptionsModal'
 import RemoveParticipantModal from '../../components/RemoveParticipantModal'
 import {
   deleteRoom,
+  deleteRoomHistoryRegister,
   exitRoom,
   firebaseAnalytics,
   removeParticipant,
   streamRoomById,
   updateRoom,
+  updateRoomHistory,
   updateVote,
   verifyIfIsNotParticipant,
 } from '../../services/firebase'
@@ -51,6 +53,7 @@ const Voting: FC = () => {
     try {
       setTimeout(() => {
         deleteRoom(room.id)
+        deleteRoomHistoryRegister({ roomId, userId: userInfo.userId })
       }, 200)
       firebaseAnalytics().logEvent('delete_room')
       router.push('/')
@@ -232,6 +235,8 @@ const Voting: FC = () => {
         return
       }
     }
+
+    updateRoomHistory({ roomId, userId: userInfo.userId, roomName: room.name })
 
     verifyParticipant()
 

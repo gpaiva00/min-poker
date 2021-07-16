@@ -1,9 +1,10 @@
-export interface History {
+export interface RoomHistoryItems {
   roomId: string
+  roomName: string
   lastVisitDate: Date
 }
 
 export interface RoomHistory {
   userId: string
-  history: History[]
+  history: RoomHistoryItems[]
 }

@@ -62,8 +62,9 @@ export const DEFAULT_ROOM_HISTORY: RoomHistory = {
   userId: '',
   history: [
     {
+      roomName: '',
       roomId: '',
-      lastVisitDate: null,
+      lastVisitDate: new Date(),
     },
   ],
 }
