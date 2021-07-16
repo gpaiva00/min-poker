@@ -68,6 +68,7 @@ const Voting: FC = () => {
   const handleExitRoom = async () => {
     try {
       await exitRoom(room.id, userInfo.userId)
+      deleteRoomHistoryRegister({ roomId, userId: userInfo.userId })
       firebaseAnalytics().logEvent('exit_room')
       router.push('/')
     } catch (error) {
