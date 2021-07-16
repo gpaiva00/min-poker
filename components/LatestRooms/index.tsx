@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import Skeleton from 'react-loading-skeleton'
 import {
   Container,
   EmptyLatestRoomsLabel,
@@ -8,37 +8,41 @@ import {
   ItemsContainer,
   Title,
 } from './styles'
-import { streamMyRooms } from '../../services/firebase'
+import { streamRoomHistory } from '../../services/firebase'
 import { LatestRoomsProps } from './typings'
 import Link from 'next/link'
 import { ANIMATION_DURATION, DELAY_DURATION } from '../../constants'
 import { i18n } from '../../translate/i18n'
-import { Room } from '../../typings'
+import { RoomHistory } from '../../typings'
+import { DEFAULT_ROOM_HISTORY } from '../../constants'
+import { sortRoomHistoryByDate } from '../../utils'
 
 const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
-  const [myLatestRooms, setMyLatestRooms] = useState<Room[]>([])
+  const [roomHistory, setRoomHistory] = useState<RoomHistory>(
+    DEFAULT_ROOM_HISTORY
+  )
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    console.warn('entrou')
-
     setIsLoading(true)
-    const unsubscribe = streamMyRooms(userInfo.userId, {
+    const unsubscribe = streamRoomHistory(userInfo.userId, {
       next: querySnapshot => {
-        const updatedRooms: Room[] = querySnapshot.docs.map(docSnapshot =>
+        let roomHistory: RoomHistory = querySnapshot.docs.map(docSnapshot =>
           docSnapshot.data()
-        )
+        )[0]
 
-        setMyLatestRooms(updatedRooms)
+        if (Array.isArray(roomHistory)) roomHistory = DEFAULT_ROOM_HISTORY
+
+        setRoomHistory(sortRoomHistoryByDate(roomHistory))
         setIsLoading(false)
       },
       error: error => {
-        console.error('Cannot find my rooms', error)
+        console.error('Cannot find room history', error)
         setIsLoading(false)
       },
     })
     return unsubscribe
-  }, [userInfo, setMyLatestRooms])
+  }, [userInfo, setRoomHistory])
 
   return (
     <Container>
@@ -50,7 +54,8 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
         <Title>{i18n.t('titles.latestRooms')}</Title>
       </motion.div>
 
-      {!isLoading && !myLatestRooms?.length ? (
+      {(!isLoading && !roomHistory.userId) ||
+      (roomHistory.userId && !roomHistory.history.length) ? (
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -62,11 +67,11 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
         </motion.p>
       ) : (
         <ItemsContainer>
-          {isLoading && !!myLatestRooms?.length && (
+          {isLoading && !roomHistory.userId && (
             <Skeleton width={150} height={16} />
           )}
-          {myLatestRooms.map((room, key) => (
-            <Link key={key} href={`voting/${room.id}`}>
+          {roomHistory.history.map((roomHistory, key) => (
+            <Link key={key} href={`voting/${roomHistory.roomId}`}>
               <Item>
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
@@ -77,7 +82,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
                     delay: DELAY_DURATION,
                   }}
                 >
-                  {room.name}
+                  {roomHistory.roomName}
                 </motion.p>
               </Item>
             </Link>
