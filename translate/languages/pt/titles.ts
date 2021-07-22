@@ -5,4 +5,5 @@ export default {
   latestRooms: 'Histórico de salas',
   average: 'Média',
   removeParticipant: 'Remover participante',
+  chooseAnOption: 'Escolha uma opção',
 }
