@@ -42,12 +42,12 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
     <AnimateSharedLayout>
       <Feedback
         email={true}
-        emailRequired={true}
+        emailRequired={false}
         feedbackTypes={['Geral', 'Bug', 'Ideia']}
         projectName="minPOKER"
         submitButtonMsg={i18n.t('buttons.sendFeedback')}
         postSubmitButtonMsg={i18n.t('buttons.thanks')}
-        projectId={process.env.FEEDBACK_PROJECT_ID}
+        projectId={process.env.NEXT_PUBLIC_FEEDBACK_PROJECT_ID}
       />
       <ThemeProvider theme={lightTheme}>
         <GlobalStyle />
