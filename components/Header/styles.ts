@@ -55,7 +55,7 @@ export const TitleContainer = styled.div`
 export const HeaderImage = styled.img`
   position: absolute;
   top: 0;
-  width: 190px;
+  width: 175px;
   margin-top: ${({ theme }) => theme.margins.small};
 
   background: white;
