@@ -82,7 +82,7 @@ const VotingCards: FC<VotingCardsProps> = ({
           animate={{ opacity: 1 }}
           transition={{ ease: 'easeInOut', duration: ANIMATION_DURATION }}
         >
-          <Title>{i18n.t('titles.chooseAnOptions')}</Title>
+          <Title>{i18n.t('titles.chooseAnOption')}</Title>
         </motion.h1>
       </TitleContainer>
 
