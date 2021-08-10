@@ -11,6 +11,7 @@ import ResultCard from './VotingPanel/components/ResultCard'
 import VotingPanel from './VotingPanel'
 import Modal from './Modal'
 import CreateRoom from './CreateRoom'
+import RoomTitle from './RoomTitle'
 
 export {
   Button,
@@ -26,4 +27,5 @@ export {
   VotingPanel,
   Modal,
   CreateRoom,
+  RoomTitle,
 }

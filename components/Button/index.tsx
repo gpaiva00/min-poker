@@ -9,13 +9,16 @@ const Button: FC<ButtonProps> = ({
   variant = 'primary',
   loading,
   children,
+  size = 's',
   ...props
 }) => (
   <Container variant={variant} onClick={onClick} disabled={loading} {...props}>
     {loading ? (
       <Loading color={variant} />
     ) : (
-      <Text variant={variant}>{children}</Text>
+      <Text size={size} variant={variant}>
+        {children}
+      </Text>
     )}
   </Container>
 )

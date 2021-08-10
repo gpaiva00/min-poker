@@ -3,25 +3,18 @@ import React, { FC, useEffect, useState } from 'react'
 import Modal from '../Modal'
 import Switch from 'react-switch'
 
-import {
-  Container,
-  Input,
-  Button,
-  InputContainer,
-  Label,
-  SwitchContainer,
-} from './styles'
+import { Container, Button, SwitchContainer } from './styles'
 import theme from '../../styles/themes/light'
 import { i18n } from '../../translate/i18n'
 import { Participant, Room, UserInfo } from '../../typings'
+import { Input, InputContainer, Label } from '../Modal/styles'
 
 interface OptionsModalProps {
   toggle: boolean
-  handleSaveRoomOptions({ userName, roomName, viewerMode }): any
+  handleSaveRoomOptions({ roomName, viewerMode }): any
   userInfo: UserInfo
   room: Room
   setToggleModal: React.Dispatch<React.SetStateAction<boolean>>
-  imHost: boolean
   loading: boolean
 }
 
@@ -31,16 +24,11 @@ const OptionsModal: FC<OptionsModalProps> = ({
   userInfo,
   handleSaveRoomOptions,
   setToggleModal,
-  imHost,
   loading,
 }) => {
   const { name: originalRoomName } = room
-  const {
-    name: originalUserName,
-    viewerMode: originalViewerMode = false,
-  } = userInfo
+  const { viewerMode: originalViewerMode = false } = userInfo
 
-  const [userName, setUserName] = useState(originalUserName)
   const [roomName, setRoomName] = useState(originalRoomName)
   const [viewerMode, setViewerMode] = useState(originalViewerMode)
 
@@ -50,31 +38,21 @@ const OptionsModal: FC<OptionsModalProps> = ({
 
   return (
     <Modal
-      height={imHost ? '480' : '380'}
+      height="380"
       toggle={toggle}
       setToggleModal={setToggleModal}
       title={i18n.t('titles.options')}
     >
-      <Container imHost={imHost}>
-        {imHost && (
-          <InputContainer>
-            <Label>{i18n.t('labels.roomName')}</Label>
-            <Input
-              placeholder={originalRoomName}
-              value={roomName}
-              onInput={event => setRoomName(event.target.value)}
-            />
-          </InputContainer>
-        )}
-
+      <Container>
         <InputContainer>
-          <Label>{i18n.t('labels.yourName')}</Label>
+          <Label>{i18n.t('labels.roomName')}</Label>
           <Input
-            placeholder={originalUserName}
-            value={userName}
-            onInput={event => setUserName(event.target.value)}
+            placeholder={originalRoomName}
+            value={roomName}
+            onInput={event => setRoomName(event.target.value)}
           />
         </InputContainer>
+
         <SwitchContainer>
           <Label>{i18n.t('labels.viewerMode')}</Label>
           <Switch
@@ -91,7 +69,6 @@ const OptionsModal: FC<OptionsModalProps> = ({
           loading={loading}
           onClick={() =>
             handleSaveRoomOptions({
-              userName: userName.length ? userName : originalUserName,
               roomName: roomName.length ? roomName : originalRoomName,
               viewerMode,
             })

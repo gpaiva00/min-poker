@@ -3,10 +3,10 @@ import React, { FC, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { FiCoffee } from 'react-icons/fi'
 
-import { CardsContainer, Title, TitleContainer } from './styles'
 import { DefaultCard } from '../'
 import { ANIMATION_DURATION, DELAY_DURATION } from '../../../../constants'
 import { i18n } from '../../../../translate/i18n'
+import { CardsContainer, Title, TitleContainer } from '../../styles'
 
 interface VotingCardsProps {
   handleVoteClick(id: string): void
@@ -63,7 +63,7 @@ const VotingCards: FC<VotingCardsProps> = ({
       id: 'question',
     },
     {
-      text: <FiCoffee size={40} />,
+      text: <FiCoffee size={30} />,
       id: 'coffee',
     },
   ]
@@ -76,7 +76,7 @@ const VotingCards: FC<VotingCardsProps> = ({
 
   return (
     <>
-      <TitleContainer>
+      {/* <TitleContainer>
         <motion.h1
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -84,7 +84,7 @@ const VotingCards: FC<VotingCardsProps> = ({
         >
           <Title>{i18n.t('titles.chooseAnOption')}</Title>
         </motion.h1>
-      </TitleContainer>
+      </TitleContainer> */}
 
       <CardsContainer>
         {cardsToVote.map((item, key) => (

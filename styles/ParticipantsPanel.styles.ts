@@ -25,7 +25,7 @@ export const Container = styled.div`
   align-items: flex-start;
   justify-content: center;
 
-  margin-left: ${({ theme }) => theme.margins.normal};
+  margin: ${({ theme }) => `0 ${theme.margins.xl}`};
 
   @media (max-width: 768px) {
     width: 100%;
@@ -81,9 +81,9 @@ export const RemoveIcon = styled(AiFillMinusCircle)`
 
 export const Title = styled.h1`
   font-family: ${({ theme }) => theme.fonts.semiBold};
-  font-size: ${({ theme }) => theme.fontSizes.regular};
+  font-size: ${({ theme }) => theme.fontSizes.s};
 
-  margin-bottom: ${({ theme }) => theme.margins.normal};
+  margin-bottom: ${({ theme }) => theme.margins.s};
   color: ${({ theme }) => theme.colors.text};
 
   text-transform: uppercase;
@@ -96,9 +96,11 @@ export const PanelContainer = styled.div`
   @media (max-width: 768px) {
     width: 100%;
     height: 80vh;
-    ${({ theme }) => `padding: 0 ${theme.margins.normal}`};
+    ${({ theme }) => `padding: 0 ${theme.margins.s}`};
     margin-bottom: 100px;
   }
+
+  /* background: lightblue; */
 `
 
 export const Panel = styled.div`
@@ -107,7 +109,7 @@ export const Panel = styled.div`
   border-color: ${({ theme }) => theme.colors.lightSmoke};
   border-radius: 6px;
 
-  height: 85%;
+  height: 550px;
   overflow: hidden;
 `
 
@@ -115,10 +117,10 @@ export const List = styled.div`
   display: flex;
   flex-direction: column;
 
-  height: 500px;
+  height: 450px;
   width: 100%;
 
-  padding-top: ${({ theme }) => theme.paddings.normal};
+  padding-top: ${({ theme }) => theme.paddings.s};
 
   overflow: auto;
 
@@ -129,7 +131,7 @@ export const List = styled.div`
 
 export const MyName = styled.p<NameProps>`
   font-family: ${({ theme }) => theme.fonts.bold};
-  font-size: ${({ theme }) => theme.fontSizes.regular};
+  font-size: ${({ theme }) => theme.fontSizes.s};
   padding-top: 5px;
 
   color: ${({ theme, viewerMode }) =>
@@ -146,18 +148,16 @@ export const Participant = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  ${({ theme }) => `padding: ${theme.paddings.normal} ${theme.margins.normal}`};
+  ${({ theme }) => `padding: ${theme.paddings.s} ${theme.margins.s}`};
 
   &:last-child {
     padding-bottom: 0;
   }
-
-  /* background: lightgray; */
 `
 
 export const Name = styled.p<NameProps>`
   font-family: ${({ theme }) => theme.fonts.light};
-  font-size: ${({ theme }) => theme.fontSizes.regular};
+  font-size: ${({ theme }) => theme.fontSizes.s};
 
   color: ${({ theme, viewerMode }) =>
     viewerMode ? theme.colors.smoke : theme.colors.primary};
@@ -165,21 +165,5 @@ export const Name = styled.p<NameProps>`
 
 export const Vote = styled.p`
   font-family: ${({ theme }) => theme.fonts.bold};
-  font-size: ${({ theme }) => theme.fontSizes.regular};
-`
-
-export const ButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: ${({ theme }) => theme.margins.normal};
-  width: 100%;
-`
-
-export const StartVoting = styled(Button)`
-  width: 100%;
-`
-
-export const DeleteRoom = styled(StartVoting)`
-  outline: none;
+  font-size: ${({ theme }) => theme.fontSizes.s};
 `

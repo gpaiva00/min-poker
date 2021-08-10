@@ -7,7 +7,6 @@ export const Container = styled.button<ButtonProps>`
   background: ${({ theme, variant }) =>
     variant === 'primary' ? theme.colors.primary : 'transparent'};
 
-  font-size: ${({ theme }) => theme.fontSizes.regular};
   border-radius: 6px;
   border: 0;
 
@@ -16,7 +15,11 @@ export const Container = styled.button<ButtonProps>`
 
   cursor: pointer;
 
+  box-shadow: ${({ variant }) =>
+    variant === 'primary' ? `0px 0px 13px -4px #000000` : ''};
+
   &:hover {
+    transition: background-color 0.3s;
     background: ${({ theme, variant }) =>
       variant !== 'danger' && theme.colors.lightButtonHover};
   }
@@ -25,7 +28,7 @@ export const Container = styled.button<ButtonProps>`
 export const Text = styled.p<ButtonProps>`
   font-family: ${({ theme, variant }) =>
     variant !== 'danger' ? theme.fonts.light : theme.fonts.semiBold};
-  font-size: ${({ theme }) => theme.fontSizes.regular};
+  font-size: ${({ theme, size }) => theme.fontSizes[size]};
   color: ${({ theme, variant }) =>
     variant === 'primary' ? theme.colors.buttonText : theme.colors[variant]};
 

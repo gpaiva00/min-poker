@@ -11,6 +11,7 @@ import usePersistedState from '../hooks/usePersistedState'
 import { DEFAULT_PARTICIPANT, STORAGE_KEY_USER } from '../constants'
 
 import { UserInfo } from '../typings'
+import { MainContainer } from '../styles/global'
 
 const Home: FC = () => {
   const { storeItem, getStoredItem } = usePersistedState()
@@ -21,9 +22,9 @@ const Home: FC = () => {
   )
 
   return (
-    <div>
+    <MainContainer>
       <main>
-        <Header />
+        <Header showOptions={false} />
         <LatestRooms userInfo={userInfo} />
 
         <PageContainer>
@@ -31,7 +32,7 @@ const Home: FC = () => {
         </PageContainer>
         <Footer />
       </main>
-    </div>
+    </MainContainer>
   )
 }
 

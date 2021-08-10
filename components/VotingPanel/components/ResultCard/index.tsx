@@ -3,7 +3,8 @@ import { FiCoffee } from 'react-icons/fi'
 import { i18n } from '../../../../translate/i18n'
 import { RESULTS_TEXT } from '../../../../constants'
 
-import { Card, CardIcon, CardText, TextContainer, Votes } from './styles'
+import { Card, CardIcon, TextContainer, Votes } from './styles'
+import { CardText as DefaultCardText } from '../DefaultCard/styles'
 
 interface CardProps {
   id: string
@@ -18,7 +19,7 @@ const ResultCard: FC<CardProps> = ({ id, votes }) => (
           <FiCoffee size={40} />
         </CardIcon>
       ) : (
-        <CardText>{RESULTS_TEXT[id]}</CardText>
+        <DefaultCardText>{RESULTS_TEXT[id]}</DefaultCardText>
       )}
     </TextContainer>
     <Votes>

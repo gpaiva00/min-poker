@@ -1,22 +1,16 @@
 import styled from 'styled-components'
-import { Button as OriginalButton } from '..'
+import { DefaultContainer } from '../Modal/styles'
 
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-
+export const Container = styled(DefaultContainer)`
   text-align: center;
-  width: 100%;
   height: 170px;
 `
 
 export const Description = styled.p`
   font-family: ${({ theme }) => theme.fonts.regular};
-  font-size: ${({ theme }) => theme.fontSizes.regular};
+  font-size: ${({ theme }) => theme.fontSizes.s};
 
-  margin-top: ${({ theme }) => theme.margins.normal};
+  margin-top: ${({ theme }) => theme.margins.s};
 `
 
 export const ButtonsContainer = styled.div`
@@ -25,9 +19,5 @@ export const ButtonsContainer = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  width: 100%;
-`
-
-export const Button = styled(OriginalButton)`
   width: 100%;
 `

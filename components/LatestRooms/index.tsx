@@ -6,7 +6,6 @@ import {
   EmptyLatestRoomsLabel,
   Item,
   ItemsContainer,
-  Title,
 } from './styles'
 import { streamRoomHistory } from '../../services/firebase'
 import { LatestRoomsProps } from './typings'
@@ -16,6 +15,7 @@ import { i18n } from '../../translate/i18n'
 import { RoomHistory } from '../../typings'
 import { DEFAULT_ROOM_HISTORY } from '../../constants'
 import { sortRoomHistoryByDate } from '../../utils'
+import { DefaultTitle } from '../../styles/global'
 
 const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
   const [roomHistory, setRoomHistory] = useState<RoomHistory>(
@@ -55,7 +55,7 @@ const LatestRooms: FC<LatestRoomsProps> = ({ userInfo }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ ease: 'easeInOut', duration: ANIMATION_DURATION }}
       >
-        <Title>{i18n.t('titles.latestRooms')}</Title>
+        <DefaultTitle>{i18n.t('titles.latestRooms')}</DefaultTitle>
       </motion.div>
 
       {(!isLoading && !roomHistory.userId) ||

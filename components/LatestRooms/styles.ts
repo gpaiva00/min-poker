@@ -1,15 +1,9 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
-  margin-top: ${({ theme }) => theme.margins.big};
-  margin-left: ${({ theme }) => theme.margins.normal};
-`
-
-export const Title = styled.h1`
-  font-family: ${({ theme }) => theme.fonts.semiBold};
-  font-size: ${({ theme }) => theme.fontSizes.regular};
-
-  text-transform: uppercase;
+  margin-top: ${({ theme }) => theme.margins.m};
+  margin-bottom: 0;
+  padding-bottom: 0;
 `
 
 export const ItemsContainer = styled.div`
@@ -18,15 +12,15 @@ export const ItemsContainer = styled.div`
   align-items: flex-start;
   justify-content: center;
 
-  ${({ theme }) => `margin: ${theme.margins.small} ${theme.margins.normal}`};
+  ${({ theme }) => `margin: ${theme.margins.xs} ${theme.margins.s}`};
 `
 
 export const Item = styled.a`
   font-family: ${({ theme }) => theme.fonts.lightItalic};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   color: ${({ theme }) => theme.colors.text};
 
-  margin-bottom: ${({ theme }) => theme.margins.small};
+  margin-bottom: ${({ theme }) => theme.margins.xs};
   cursor: pointer;
 
   &:hover {
@@ -36,6 +30,6 @@ export const Item = styled.a`
 
 export const EmptyLatestRoomsLabel = styled.p`
   font-family: ${({ theme }) => theme.fonts.lightItalic};
-  font-size: ${({ theme }) => theme.fontSizes.small};
-  margin-top: ${({ theme }) => theme.margins.small};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  margin-top: ${({ theme }) => theme.margins.xs};
 `

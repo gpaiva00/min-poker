@@ -7,7 +7,6 @@ import { Participant as ParticipantProps } from '../../typings'
 
 import {
   ButtonContainer,
-  DeleteRoom,
   Container,
   List,
   MyName,
@@ -32,12 +31,10 @@ import { FiCoffee } from 'react-icons/fi'
 import { i18n } from '../../translate/i18n'
 import { sortParticipants } from '../../utils'
 import { RESULTS_TEXT } from '../../constants'
+import participantsMock from '../../test/mocks/participantsList.mock'
 
 const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
-  setStartVoting,
   imHost,
-  handleDeleteRoom,
-  handleExitRoom,
   handleRemoveParticipant,
   room,
   userInfo,
@@ -92,7 +89,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   }
 
   useEffect(() => {
-    let newParticipants = participants.filter(
+    let newParticipants = participantsMock.filter(
       ({ id }) => id !== '' && id !== userId
     )
 
@@ -142,50 +139,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
               ))
             )}
           </List>
-
-          {imHost && (
-            <ButtonContainer>
-              {loading ? (
-                <Skeleton width={260} height={50} />
-              ) : (
-                <StartVoting
-                  loading={loading}
-                  onClick={() => setStartVoting(!isVoting)}
-                >
-                  {isVoting
-                    ? i18n.t('buttons.finishVoting')
-                    : i18n.t('buttons.startVoting')}
-                </StartVoting>
-              )}
-            </ButtonContainer>
-          )}
         </Panel>
-
-        <ButtonContainer>
-          {loading ? (
-            <Skeleton width={200} height={25} />
-          ) : (
-            <>
-              {imHost ? (
-                <DeleteRoom
-                  loading={loading}
-                  onClick={handleDeleteRoom}
-                  variant="danger"
-                >
-                  {i18n.t('buttons.deleteRoom')}
-                </DeleteRoom>
-              ) : (
-                <DeleteRoom
-                  loading={loading}
-                  onClick={handleExitRoom}
-                  variant="danger"
-                >
-                  {i18n.t('buttons.exitRoom')}
-                </DeleteRoom>
-              )}
-            </>
-          )}
-        </ButtonContainer>
       </PanelContainer>
     </Container>
   )

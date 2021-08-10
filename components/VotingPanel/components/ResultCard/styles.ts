@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { DEFAULT_CARD_SIZE } from '../DefaultCard/styles'
 
 export const Card = styled.div`
   display: flex;
@@ -13,15 +14,13 @@ export const Card = styled.div`
   color: ${({ theme }) => theme.colors.lightText};
   border-radius: 6px;
 
-  width: 100px;
-  height: 100px;
+  width: ${DEFAULT_CARD_SIZE};
+  height: ${DEFAULT_CARD_SIZE};
 
-  margin: ${({ theme }) => theme.margins.normal};
+  margin: ${({ theme }) => theme.margins.s};
 `
 
-export const CardIcon = styled.div`
-  /* margin-top: ${({ theme }) => theme.margins.small}; */
-`
+export const CardIcon = styled.div``
 
 export const TextContainer = styled.div`
   display: flex;
@@ -34,14 +33,9 @@ export const TextContainer = styled.div`
   /* background: lightgray; */
 `
 
-export const CardText = styled.h1`
-  font-family: ${({ theme }) => theme.fonts.bold};
-  font-size: ${({ theme }) => theme.fontSizes.big};
-`
-
 export const Votes = styled.small`
   font-family: ${({ theme }) => theme.fonts.regular};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
 
   margin-bottom: 5px;
 `

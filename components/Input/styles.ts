@@ -13,7 +13,9 @@ export const Container = styled.div<ContainerProps>`
   padding: 0 10px;
   height: ${({ theme }) => theme.sizes.inputHeight};
   width: 300px;
-  margin-right: ${({ theme }) => theme.margins.normal};
+  margin-right: ${({ theme }) => theme.margins.s};
+
+  box-shadow: 0px 0px 13px -10px #000000;
 
   :focus-within {
     border-color: ${({ variant, theme }) =>
@@ -22,7 +24,7 @@ export const Container = styled.div<ContainerProps>`
 `
 
 export const StyledInput = styled.input<ContainerProps>`
-  font-size: ${({ theme }) => theme.fontSizes.regular};
+  font-size: ${({ theme }) => theme.fontSizes.s};
   font-family: ${({ theme }) => theme.fonts.light};
   color: ${({ theme }) => theme.colors.inputText};
 

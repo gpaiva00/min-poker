@@ -40,22 +40,23 @@ declare module 'styled-components' {
     }
 
     fontSizes: {
-      small: string
-      regular: string
-      medium: string
-      big: string
-      biggest: string
+      xs: string
+      s: string
+      m: string
+      l: string
+      xl: string
     }
 
     margins: {
-      small: string
-      normal: string
-      medium: string
-      big: string
+      xs: string
+      s: string
+      m: string
+      l: string
+      xl: string
     }
 
     paddings: {
-      normal: string
+      s: string
     }
 
     sizes: {

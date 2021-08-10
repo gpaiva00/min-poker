@@ -2,14 +2,14 @@ export default {
   title: 'light',
 
   colors: {
-    background: '#fff',
+    background: '#f0f0f0',
     text: '#252527',
     inputText: '#252527',
     focus: '#252527',
     smoke: '#bab5ba',
-    lightSmoke: '#e1e1e1',
+    lightSmoke: '#c9c9c9',
     primary: '#121214',
-    danger: '#ff1a1a',
+    danger: '#ff5959',
     lightText: '#fff',
     darkText: '#121214',
     white: '#fff',
@@ -33,22 +33,23 @@ export default {
   },
 
   fontSizes: {
-    small: '1rem',
-    regular: '1.3rem',
-    medium: '2.2rem',
-    big: '3rem',
-    biggest: '3.5rem',
+    xs: '1rem',
+    s: '1.3rem',
+    m: '2.2rem',
+    x: '3rem',
+    xl: '3.5rem',
   },
 
   margins: {
-    small: '10px',
-    normal: '20px',
-    medium: '40px',
-    big: '80px',
+    xs: '10px',
+    s: '20px',
+    m: '40px',
+    l: '80px',
+    xl: '100px',
   },
 
   paddings: {
-    normal: '10px',
+    s: '10px',
   },
 
   sizes: {

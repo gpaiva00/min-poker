@@ -4,7 +4,7 @@ import { Container as InputComponentContainer } from '../../components/Input/sty
 
 export const InstructionText = styled.p`
   font-family: ${({ theme }) => theme.fonts.regular};
-  font-size: ${({ theme }) => theme.fontSizes.regular};
+  font-size: ${({ theme }) => theme.fontSizes.s};
 `
 
 export const InputContainer = styled.div`
@@ -12,13 +12,13 @@ export const InputContainer = styled.div`
   align-items: center;
   justify-content: center;
 
-  margin-top: ${({ theme }) => theme.margins.normal};
+  margin-top: ${({ theme }) => theme.margins.s};
 
   @media (max-width: 768px) {
     flex-direction: column;
 
     ${ButtonContainer} {
-      margin-top: ${({ theme }) => theme.margins.normal};
+      margin-top: ${({ theme }) => theme.margins.s};
       width: 100%;
     }
 

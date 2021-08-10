@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 
 export default createGlobalStyle`
   @font-face {
@@ -60,4 +60,14 @@ export default createGlobalStyle`
   }
 
   transition: all 0.25s linear;
+`
+
+export const MainContainer = styled.div`
+  margin: ${({ theme }) => ` 0 ${theme.margins.l}`};
+`
+export const DefaultTitle = styled.h1`
+  font-family: ${({ theme }) => theme.fonts.semiBold};
+  font-size: ${({ theme }) => theme.fontSizes.s};
+
+  text-transform: uppercase;
 `

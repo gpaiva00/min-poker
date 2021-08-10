@@ -3,7 +3,13 @@ import { useRouter } from 'next/router'
 
 import { PageContainer } from '../../styles/Voting.styles'
 
-import { Header, ParticipantsPanel, Toast, VotingPanel } from '../../components'
+import {
+  Header,
+  ParticipantsPanel,
+  RoomTitle,
+  Toast,
+  VotingPanel,
+} from '../../components'
 
 import { Participant, Room, UserInfo } from '../../typings'
 import usePersistedState from '../../hooks/usePersistedState'
@@ -28,14 +34,19 @@ import {
   updateVote,
   verifyIfIsNotParticipant,
 } from '../../services/firebase'
+import { MainContainer } from '../../styles/global'
+import AccountModal from '../../components/AccountModal'
 
 const Voting: FC = () => {
   const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
   const [room, setRoom] = useState<Room>(DEFAULT_ROOM)
   const [isVoting, setIsVoting] = useState(false)
   const { storeItem, getStoredItem } = usePersistedState()
+
   const [toggleOptionsModal, setToggleOptionsModal] = useState(false)
+  const [toggleAccountModal, setToggleAccountModal] = useState(false)
   const [toggleConfirmModal, setToggleConfirmModal] = useState(false)
+
   const [participantIdToRemove, setParticipantIdToRemove] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -132,26 +143,68 @@ const Voting: FC = () => {
     }
   }
 
-  const handleSaveRoomOptions = async ({ userName, roomName, viewerMode }) => {
+  const handleSaveRoomOptions = async ({ roomName, viewerMode }) => {
     try {
-      const newUserInfo = {
-        ...userInfo,
-        name: userName,
-        viewerMode,
-      }
+      // const newUserInfo = {
+      //   ...userInfo,
+      //   name: userName || userInfo.name,
+      //   viewerMode,
+      // }
 
-      storeItem(STORAGE_KEY_USER, newUserInfo)
+      // storeItem(STORAGE_KEY_USER, newUserInfo)
 
-      const newParticipant: Participant = {
-        name: userName,
-        viewerMode,
-        vote: viewerMode ? '' : me.vote,
-      }
+      // const newParticipant: Participant = {
+      //   name: userInfo.name || userInfo.name,
+      //   viewerMode,
+      //   vote: viewerMode ? '' : me.vote,
+      // }
 
       const newRoom = {
         ...room,
         name: roomName,
       }
+
+      await updateRoom({
+        room,
+        userId: userInfo.userId,
+        newRoom,
+      })
+
+      firebaseAnalytics().logEvent('room_options_saved')
+
+      Toast({ message: i18n.t('toast.optionsUpdated') })
+    } catch (error) {
+      Toast({
+        type: 'error',
+        message: i18n.t('toast.errorChangingName'),
+      })
+      console.error('Error trying to change name', error)
+    }
+
+    setToggleOptionsModal(false)
+  }
+
+  const handleSaveUserData = async ({ userName }) => {
+    try {
+      const newUserInfo = {
+        ...userInfo,
+        name: userName,
+      }
+
+      storeItem(STORAGE_KEY_USER, newUserInfo)
+      // TODO dividir as funcs de salvar options e dados do usuário
+      // Criar também uma collection para salvar os dados do usuário
+
+      // const newParticipant: Participant = {
+      //   name: userName || userInfo.name,
+      //   viewerMode,
+      //   vote: viewerMode ? '' : me.vote,
+      // }
+
+      // const newRoom = {
+      //   ...room,
+      //   name: roomName,
+      // }
 
       await updateRoom({
         room,
@@ -262,7 +315,7 @@ const Voting: FC = () => {
   }, [roomId, setRoom])
 
   return (
-    <div>
+    <MainContainer>
       <main>
         <OptionsModal
           toggle={toggleOptionsModal}
@@ -279,35 +332,51 @@ const Voting: FC = () => {
           handlePressConfirm={handleRemoveParticipant}
           loading={isLoading}
         />
+        <AccountModal
+          toggle={toggleAccountModal}
+          setToggleModal={setToggleAccountModal}
+          handleSaveRoomOptions={handleSaveRoomOptions}
+          userName={userInfo.name}
+        />
+
         <Header
-          roomTitle={room.name}
-          roomId={room.id}
-          setToggleModal={setToggleOptionsModal}
+          setToggleOptionsModal={setToggleOptionsModal}
+          setToggleAccountModal={setToggleAccountModal}
           isLoading={isLoading}
+          userName={userInfo.name}
+          showOptions={imHost}
+        />
+
+        <RoomTitle
+          isLoading={isLoading}
+          roomName={room.name}
+          roomId={room.id}
+          imHost={imHost}
+          handleDeleteRoom={handleDeleteRoom}
+          handleExitRoom={handleExitRoom}
         />
 
         <PageContainer>
-          <ParticipantsPanel
-            setStartVoting={handleStartVoting}
-            imHost={imHost}
-            handleDeleteRoom={handleDeleteRoom}
-            handleExitRoom={handleExitRoom}
+          {/* <ParticipantsPanel
             handleRemoveParticipant={handleShowConfirmModal}
             room={room}
+            imHost={imHost}
             me={me}
             userInfo={userInfo}
             loading={isLoading}
-          />
+          /> */}
           <VotingPanel
+            setStartVoting={handleStartVoting}
             handleVoteClick={handleVoteClick}
             room={room}
             me={me}
+            imHost={imHost}
             showResults={room.showResults}
             loading={isLoading}
           />
         </PageContainer>
       </main>
-    </div>
+    </MainContainer>
   )
 }
 

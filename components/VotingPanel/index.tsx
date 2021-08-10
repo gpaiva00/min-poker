@@ -1,6 +1,19 @@
 import React, { FC } from 'react'
+import Skeleton from 'react-loading-skeleton'
 
-import { Container, ImageContainer, MinPokerImage } from './styles'
+import {
+  ButtonContainer,
+  Container,
+  ImageContainer,
+  InfoContainer,
+  MinPokerImage,
+  Panel,
+  PlayStopButton,
+  PlayStopButtonText,
+  StartVoting,
+} from './styles'
+
+import { FaPlay, FaStop } from 'react-icons/fa'
 import { VotingPanelProps } from './typings'
 import { i18n } from '../../translate/i18n'
 
@@ -12,6 +25,8 @@ const VotingPanel: FC<VotingPanelProps> = ({
   me,
   handleVoteClick,
   loading,
+  imHost,
+  setStartVoting,
 }) => {
   const { isVoting, showResults, results } = room
 
@@ -34,12 +49,34 @@ const VotingPanel: FC<VotingPanelProps> = ({
     if (showResults && !isVoting) return <ResultCards results={results} />
   }
 
-  return loading ? (
-    <ImageContainer>
-      <MinPokerImage src="/minPoker.png" />
-    </ImageContainer>
-  ) : (
-    <Container>{renderPage()}</Container>
+  // return loading ? (
+  //   <ImageContainer>
+  //     <MinPokerImage src="/minPoker.png" />
+  //   </ImageContainer>
+  // ) : (
+  //   )
+  return (
+    <Container>
+      <Panel imHost={imHost}>
+        {imHost && (
+          <ButtonContainer>
+            <PlayStopButton
+              // loading={loading}
+              onClick={() => setStartVoting(!isVoting)}
+            >
+              {isVoting ? <FaStop size={20} /> : <FaPlay size={20} />}
+
+              <PlayStopButtonText>
+                {isVoting
+                  ? i18n.t('buttons.finishVoting')
+                  : i18n.t('buttons.startVoting')}
+              </PlayStopButtonText>
+            </PlayStopButton>
+          </ButtonContainer>
+        )}
+        <InfoContainer>{renderPage()}</InfoContainer>
+      </Panel>
+    </Container>
   )
 }
 

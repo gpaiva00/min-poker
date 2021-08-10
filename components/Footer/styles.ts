@@ -4,6 +4,7 @@ import { BiMoon } from 'react-icons/bi'
 export const Container = styled.div`
   position: absolute;
   bottom: 0;
+  right: 0;
 
   width: 100%;
   text-align: center;

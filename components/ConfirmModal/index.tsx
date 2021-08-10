@@ -2,8 +2,9 @@ import React, { FC } from 'react'
 import { i18n } from '../../translate/i18n'
 
 import Modal from '../Modal'
+import { DefaultButton } from '../Modal/styles'
 
-import { Container, Button, Description, ButtonsContainer } from './styles'
+import { Container, Description, ButtonsContainer } from './styles'
 
 interface OptionsModalProps {
   toggle: boolean
@@ -35,12 +36,19 @@ const ConfirmModal: FC<OptionsModalProps> = ({
         <Description>{description}</Description>
 
         <ButtonsContainer>
-          <Button loading={loading} onClick={() => setToggleModal(false)}>
+          <DefaultButton
+            loading={loading}
+            onClick={() => setToggleModal(false)}
+          >
             {i18n.t('buttons.cancel')}
-          </Button>
-          <Button variant="danger" loading={loading} onClick={onPressConfirm}>
+          </DefaultButton>
+          <DefaultButton
+            variant="danger"
+            loading={loading}
+            onClick={onPressConfirm}
+          >
             {primaryButtonLabel || i18n.t('buttons.confirm')}
-          </Button>
+          </DefaultButton>
         </ButtonsContainer>
       </Container>
     </Modal>
