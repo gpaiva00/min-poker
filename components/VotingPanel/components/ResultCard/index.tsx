@@ -16,7 +16,7 @@ const ResultCard: FC<CardProps> = ({ id, votes }) => (
     <TextContainer>
       {id === 'coffee' ? (
         <CardIcon>
-          <FiCoffee size={40} />
+          <FiCoffee size={30} />
         </CardIcon>
       ) : (
         <DefaultCardText>{RESULTS_TEXT[id]}</DefaultCardText>

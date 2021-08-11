@@ -10,22 +10,40 @@ export const PANEL_WIDTH = '900px'
 export const Container = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   position: absolute;
   bottom: 0;
 
   width: 90%;
   padding-bottom: ${({ theme }) => theme.margins.m};
+  /* background: lightcyan; */
 `
 
 export const InfoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${({ theme }) => `0 ${theme.margins.s}`};
+  /* padding: ${({ theme }) => `0 ${theme.margins.s}`}; */
 
-  width: 100%;
+  width: ${PANEL_WIDTH};
   /* background: lightcoral; */
+`
+
+export const InfoTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: ${({ theme }) => theme.margins.s};
+
+  width: ${PANEL_WIDTH};
+  /* background: lightcoral; */
+`
+
+export const InfoText = styled.p`
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-family: ${({ theme }) => theme.fonts.semiBold};
+  color: ${({ theme }) => theme.colors.text};
 `
 
 export const Panel = styled.div<PanelProps>`
@@ -69,9 +87,7 @@ export const CardsContainer = styled.div`
   width: auto;
   height: 100%;
 
-  &:last-child {
-    margin-right: 0;
-  }
+  padding-left: ${({ theme }) => theme.margins.s};
 
   @media (max-width: 768px) {
     width: 100%;
@@ -108,9 +124,9 @@ export const ButtonContainer = styled.div`
   justify-content: center;
 
   /* background: darkgray; */
-  /* padding: ${({ theme }) => theme.margins.s}; */
+  padding: ${({ theme }) => theme.margins.s};
   height: 100%;
-  width: 120px;
+  /* max-width: 150px; */
 `
 
 export const PlayStopButton = styled.div`
@@ -124,6 +140,6 @@ export const PlayStopButton = styled.div`
 export const PlayStopButtonText = styled.p`
   text-align: center;
   font-family: ${({ theme }) => theme.fonts.light};
-  font-size: 12px;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   margin-top: 5px;
 `

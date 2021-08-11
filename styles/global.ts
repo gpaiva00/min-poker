@@ -47,6 +47,9 @@ export default createGlobalStyle`
   }
 
   body {
+    -webkit-font-smoothing: antialiased;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
+    text-rendering: optimizeLegibility;
     background: ${props => props.theme.colors.background};
     color: ${props => props.theme.colors.text};
     font-family: 'regular';

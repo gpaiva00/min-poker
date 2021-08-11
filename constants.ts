@@ -75,3 +75,46 @@ export const DEFAULT_PARTICIPANT: Participant = {
   vote: '',
   viewerMode: false,
 }
+
+export const CARDS_TO_VOTE = [
+  {
+    text: '1',
+    id: '1',
+  },
+  {
+    text: '2',
+    id: '2',
+  },
+  {
+    text: '3',
+    id: '3',
+  },
+  {
+    text: '5',
+    id: '5',
+  },
+  {
+    text: '8',
+    id: '8',
+  },
+  {
+    text: '13',
+    id: '13',
+  },
+  {
+    text: '21',
+    id: '21',
+  },
+  {
+    text: '34',
+    id: '34',
+  },
+  {
+    text: '?',
+    id: 'question',
+  },
+  {
+    text: '',
+    id: 'coffee',
+  },
+]

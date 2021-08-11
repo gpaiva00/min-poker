@@ -1,11 +1,12 @@
 import React, { FC } from 'react'
-import Skeleton from 'react-loading-skeleton'
 
 import {
   ButtonContainer,
   Container,
   ImageContainer,
   InfoContainer,
+  InfoText,
+  InfoTextContainer,
   MinPokerImage,
   Panel,
   PlayStopButton,
@@ -24,7 +25,6 @@ const VotingPanel: FC<VotingPanelProps> = ({
   room,
   me,
   handleVoteClick,
-  loading,
   imHost,
   setStartVoting,
 }) => {
@@ -49,21 +49,22 @@ const VotingPanel: FC<VotingPanelProps> = ({
     if (showResults && !isVoting) return <ResultCards results={results} />
   }
 
-  // return loading ? (
-  //   <ImageContainer>
-  //     <MinPokerImage src="/minPoker.png" />
-  //   </ImageContainer>
-  // ) : (
-  //   )
+  const renderInfoText = () => {
+    if (!isVoting && !showResults) return ''
+
+    if (!me.viewerMode && !showResults) return i18n.t('titles.chooseAnOption')
+    else if (showResults && !isVoting) return i18n.t('titles.results')
+  }
+
   return (
     <Container>
+      <InfoTextContainer>
+        <InfoText>{renderInfoText()}</InfoText>
+      </InfoTextContainer>
       <Panel imHost={imHost}>
         {imHost && (
           <ButtonContainer>
-            <PlayStopButton
-              // loading={loading}
-              onClick={() => setStartVoting(!isVoting)}
-            >
+            <PlayStopButton onClick={() => setStartVoting(!isVoting)}>
               {isVoting ? <FaStop size={20} /> : <FaPlay size={20} />}
 
               <PlayStopButtonText>

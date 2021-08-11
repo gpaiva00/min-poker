@@ -1,4 +1,5 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
+import { FiCoffee } from 'react-icons/fi'
 
 import { Card, CardIcon, CardText } from './styles'
 
@@ -17,7 +18,9 @@ const DefaultCard: FC<CardProps> = ({
 }) => (
   <Card selected={isSelected === id} onClick={() => handleVoteClick(id)}>
     {id === 'coffee' ? (
-      <CardIcon>{text}</CardIcon>
+      <CardIcon>
+        <FiCoffee size={30} />
+      </CardIcon>
     ) : (
       <CardText>{text}</CardText>
     )}

@@ -116,6 +116,7 @@ const Voting: FC = () => {
           })
 
         const { average, results: items } = calculateResult
+        console.warn({ calculateResult })
 
         newRoom.results = {
           average,
@@ -371,7 +372,6 @@ const Voting: FC = () => {
             room={room}
             me={me}
             imHost={imHost}
-            showResults={room.showResults}
             loading={isLoading}
           />
         </PageContainer>

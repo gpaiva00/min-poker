@@ -16,6 +16,6 @@ export const AverageTitle = styled.h1`
 `
 
 export const AverageValue = styled.p`
-  font-family: ${({ theme }) => theme.fonts.boldItalic};
+  font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.s};
 `
