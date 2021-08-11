@@ -61,18 +61,9 @@ export default class MyDocument extends Document {
 
           <script
             async
-            src="https://www.googletagmanager.com/gtag/js?id=UA-193632976-1"
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2239314107524032"
+            crossorigin="anonymous"
           ></script>
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'UA-193632976-1');
-            `,
-            }}
-          />
 
           <title>minPOKER</title>
         </Head>
