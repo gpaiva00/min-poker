@@ -39,7 +39,7 @@ const Home: FC = () => {
   const router = useRouter()
   const db = getDatabase()
 
-  const userInfo: UserInfo = storage && JSON.parse(storage)
+  const userInfo: UserInfo = storage && JSON.parse(JSON.stringify(storage))
 
   const handleCreateRoom = async () => {
     setLoading(true)
