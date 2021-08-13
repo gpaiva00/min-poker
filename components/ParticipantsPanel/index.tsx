@@ -1,37 +1,23 @@
 import React, { FC, useEffect, useState } from 'react'
-import { BiTime } from 'react-icons/bi'
 import Skeleton from 'react-loading-skeleton'
 
 import { ParticipantsPanelProps } from './typings'
 import { Participant as ParticipantProps } from '../../typings'
 
 import {
-  ButtonContainer,
   Container,
   List,
-  MyName,
-  Name,
   Panel,
   PanelContainer,
-  Participant,
-  StartVoting,
-  Title,
-  Vote,
-  TitleContainer,
   EditIcon,
   DoneIcon,
   RemoveIcon,
   ViewerModeIcon,
-  NoVoteIcon,
-  VotedIcon,
-  OwnerIcon,
 } from '../../styles/ParticipantsPanel.styles'
 
-import { FiCoffee } from 'react-icons/fi'
-import { i18n } from '../../translate/i18n'
 import { sortParticipants } from '../../utils'
-import { RESULTS_TEXT } from '../../constants'
 import participantsMock from '../../test/mocks/participantsList.mock'
+import Participant from '../Participant'
 
 const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   imHost,
@@ -49,24 +35,6 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   const { participants, showResults, isVoting, hostId } = room
 
   const { name, userId } = userInfo
-
-  const showParticipantVote = (vote: string) => {
-    if (!isVoting && !showResults) return
-
-    if (showResults && !vote.length) return <NoVoteIcon size={20} />
-
-    if (!vote.length) return <BiTime size={20} />
-
-    if (vote.length && !showResults) return <VotedIcon size={20} />
-    else
-      return vote === 'coffee' ? (
-        <Vote>
-          <FiCoffee size={20} />
-        </Vote>
-      ) : (
-        <Vote>{RESULTS_TEXT[vote]}</Vote>
-      )
-  }
 
   const showEditOptions = () => {
     if (!participantsList.length) return
@@ -100,46 +68,57 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
 
   return (
     <Container>
-      <TitleContainer>
+      {/* <TitleContainer>
         <Title>{i18n.t('titles.participants')}</Title>
         {imHost && showEditOptions()}
-      </TitleContainer>
+      </TitleContainer> */}
 
       <PanelContainer>
-        <Panel>
-          <List>
-            {loading ? (
-              <Skeleton height={30} />
-            ) : (
-              <Participant>
-                <MyName viewerMode={me.viewerMode}>
-                  {imHost && <OwnerIcon size={12} />}
-                  {name}
-                </MyName>
+        {loading ? (
+          <Skeleton height={30} />
+        ) : (
+          // <Participant>
+          //   <MyName viewerMode={me.viewerMode}>
+          //     {imHost && <OwnerIcon size={12} />}
+          //     {name}
+          //   </MyName>
 
-                {me.viewerMode ? (
-                  <ViewerModeIcon size={20} />
-                ) : (
-                  showParticipantVote(me.vote)
-                )}
-              </Participant>
-            )}
+          //   {me.viewerMode ? (
+          //     <ViewerModeIcon size={20} />
+          //   ) : (
+          //     showParticipantVote(me.vote)
+          //   )}
+          // </Participant>
+          <Participant
+            name={me.name}
+            vote={me.vote}
+            isVoting={isVoting}
+            showResults={showResults}
+            imHost={imHost}
+          />
+        )}
 
-            {loading ? (
-              <Skeleton height={25} count={5} />
-            ) : (
-              participantsList.map(({ name, vote, viewerMode, id }, key) => (
-                <Participant key={key}>
-                  <Name viewerMode={viewerMode}>
-                    {id === hostId && <OwnerIcon size={12} />}
-                    {name}
-                  </Name>
-                  {showParticipantsOptions({ vote, viewerMode, id })}
-                </Participant>
-              ))
-            )}
-          </List>
-        </Panel>
+        {loading ? (
+          <Skeleton height={25} count={5} />
+        ) : (
+          participantsList.map(({ name, vote, viewerMode, id }, key) => (
+            // <Participant key={key}>
+            //   <Name viewerMode={viewerMode}>
+            //     {id === hostId && <OwnerIcon size={12} />}
+            //     {name}
+            //   </Name>
+            //   {showParticipantsOptions({ vote, viewerMode, id })}
+            // </Participant>
+            <Participant
+              key={key}
+              imHost={id === hostId}
+              showResults={showResults}
+              isVoting={isVoting}
+              name={name}
+              vote={vote}
+            />
+          ))
+        )}
       </PanelContainer>
     </Container>
   )

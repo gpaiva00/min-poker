@@ -37,51 +37,51 @@ const RoomTitle: FC<RoomTitleProps> = ({
   const inviteLink = returnInviteLink(roomId)
 
   return (
-    <CopyToClipboard
-      text={inviteLink}
-      onCopy={() => {
-        firebaseAnalytics().logEvent('invitation_link_copied')
-        Toast({ message: i18n.t('toast.invitationLinkCopied') })
-      }}
-    >
-      <Container>
-        {isLoading ? (
-          <Skeleton width={150} height={20} />
-        ) : (
-          <>
+    <Container>
+      {isLoading ? (
+        <Skeleton width={150} height={20} />
+      ) : (
+        <>
+          <CopyToClipboard
+            text={inviteLink}
+            onCopy={() => {
+              firebaseAnalytics().logEvent('invitation_link_copied')
+              Toast({ message: i18n.t('toast.invitationLinkCopied') })
+            }}
+          >
             <TitleContainer>
               <Title>{roomName}</Title>
               <LinkIcon size={26} />
             </TitleContainer>
-            <>
-              {isLoading ? (
-                <Skeleton width={200} height={25} />
-              ) : (
-                <>
-                  {imHost ? (
-                    <Button
-                      loading={isLoading}
-                      onClick={handleDeleteRoom}
-                      variant="danger"
-                    >
-                      {i18n.t('buttons.deleteRoom')}
-                    </Button>
-                  ) : (
-                    <Button
-                      loading={isLoading}
-                      onClick={handleExitRoom}
-                      variant="danger"
-                    >
-                      {i18n.t('buttons.exitRoom')}
-                    </Button>
-                  )}
-                </>
-              )}
-            </>
+          </CopyToClipboard>
+          <>
+            {isLoading ? (
+              <Skeleton width={200} height={25} />
+            ) : (
+              <>
+                {imHost ? (
+                  <Button
+                    loading={isLoading}
+                    onClick={handleDeleteRoom}
+                    variant="danger"
+                  >
+                    {i18n.t('buttons.deleteRoom')}
+                  </Button>
+                ) : (
+                  <Button
+                    loading={isLoading}
+                    onClick={handleExitRoom}
+                    variant="danger"
+                  >
+                    {i18n.t('buttons.exitRoom')}
+                  </Button>
+                )}
+              </>
+            )}
           </>
-        )}
-      </Container>
-    </CopyToClipboard>
+        </>
+      )}
+    </Container>
   )
 }
 

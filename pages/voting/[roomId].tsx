@@ -358,14 +358,14 @@ const Voting: FC = () => {
         />
 
         <PageContainer>
-          {/* <ParticipantsPanel
+          <ParticipantsPanel
             handleRemoveParticipant={handleShowConfirmModal}
             room={room}
             imHost={imHost}
             me={me}
             userInfo={userInfo}
             loading={isLoading}
-          /> */}
+          />
           <VotingPanel
             setStartVoting={handleStartVoting}
             handleVoteClick={handleVoteClick}

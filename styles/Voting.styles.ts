@@ -8,7 +8,7 @@ export const PageContainer = styled.div`
   align-items: center;
   flex-direction: row;
 
-  margin-top: 50px;
+  /* margin-top: 50px; */
 
   @media (max-width: 768px) {
     flex-direction: column;

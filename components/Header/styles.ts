@@ -67,5 +67,6 @@ export const MinText = styled.p`
 
 export const UserAvatar = styled(Avatar)`
   cursor: pointer;
-  box-shadow: 0px 0px 13px -6px #000000;
+  /* box-shadow: 0px 0px 13px -6px #000000; */
+  box-shadow: 0px 5px 15px 1px rgba(178, 178, 178, 0.74);
 `

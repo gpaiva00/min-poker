@@ -13,16 +13,11 @@ export const Container = styled.div`
   justify-content: flex-start;
   flex-direction: column;
   padding-top: ${({ theme }) => theme.margins.m};
-
-  &:hover {
-    ${LinkIcon} {
-      color: ${({ theme }) => theme.colors.lightButtonHover};
-    }
-  }
 `
 
 export const TitleContainer = styled.div`
   display: flex;
+  align-items: center;
 
   &:hover {
     ${LinkIcon} {
