@@ -15,6 +15,7 @@ const Input: FC<InputProps> = ({
       type="text"
       value={value}
       placeholder={placeholder}
+      spellCheck="false"
       {...props}
     />
   </Container>

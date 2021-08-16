@@ -11,17 +11,21 @@ export const Container = styled.div`
 
   margin: ${({ theme }) => `0 ${theme.margins.m}`};
 `
+export const VoteRelativeContainer = styled.div`
+  position: relative;
+`
+
 export const VoteContainer = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  height: 50px;
-  width: 40px;
+  height: 55px;
+  width: 47px;
 
-  margin-top: -60px;
-  margin-left: 65px;
+  margin-top: -10px;
+  margin-left: 45px;
 
   background: #2f2f30;
   border-radius: 8px;
@@ -41,7 +45,11 @@ export const WhileVotingContainer = styled(VoteContainer)`
   background: ${({ theme }) => theme.colors.smoke};
   color: #6f6f6f;
 `
-export const OwnerIcon = styled(RiVipCrownFill)``
+export const OwnerIcon = styled(RiVipCrownFill)`
+  position: absolute;
+  margin-top: -85px;
+  color: ${({ theme }) => theme.colors.text};
+`
 
 export const Name = styled.p`
   font-family: ${({ theme }) => theme.fonts.semiBold};

@@ -14,6 +14,7 @@ import {
   CoffeeContainer,
   WhileVotingContainer,
   ClockGif,
+  VoteRelativeContainer,
 } from './styles'
 import { ANIMATION_DURATION, RESULTS_TEXT } from '../../constants'
 import { UserAvatar } from '../Header/styles'
@@ -58,9 +59,11 @@ const Participant: FC<ParticipantProps> = ({
     else voteResult = RESULTS_TEXT[vote]
 
     return (
-      <VoteContainer>
-        <Vote>{voteResult}</Vote>
-      </VoteContainer>
+      <VoteRelativeContainer>
+        <VoteContainer>
+          <Vote>{voteResult}</Vote>
+        </VoteContainer>
+      </VoteRelativeContainer>
     )
   }
 
