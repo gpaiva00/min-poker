@@ -19,7 +19,7 @@ export const Container = styled.div`
   /* background: lightgrey; */
 
   /* width: 100%; */
-  height: 450px;
+  height: 400px;
 
   /* margin: ${({ theme }) => `0 ${theme.margins.xl}`}; */
 

@@ -57,7 +57,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   }
 
   useEffect(() => {
-    let newParticipants = participantsMock.filter(
+    let newParticipants = participants.filter(
       ({ id }) => id !== '' && id !== userId
     )
 

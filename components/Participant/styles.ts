@@ -20,8 +20,8 @@ export const VoteContainer = styled.div`
   height: 50px;
   width: 40px;
 
-  margin-top: -70px;
-  margin-left: 60px;
+  margin-top: -60px;
+  margin-left: 65px;
 
   background: #2f2f30;
   border-radius: 8px;
