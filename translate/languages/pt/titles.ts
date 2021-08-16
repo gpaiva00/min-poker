@@ -6,4 +6,5 @@ export default {
   average: 'Média',
   removeParticipant: 'Remover participante',
   chooseAnOption: 'Escolha uma opção',
+  createAccount: 'Criar uma conta',
 }

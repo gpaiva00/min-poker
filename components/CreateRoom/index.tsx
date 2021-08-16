@@ -5,12 +5,18 @@ import { useRouter } from 'next/router'
 
 import { generateNickName, idGenerator, validateInputValue } from '../../utils'
 import { createRoom, firebaseAnalytics } from '../../services/firebase'
-import { ANIMATION_DURATION, STORAGE_KEY_USER } from '../../constants'
+import {
+  ANIMATION_DURATION,
+  STORAGE_KEY_USER,
+  STORAGE_TOKEN_KEY,
+} from '../../constants'
 import { i18n } from '../../translate/i18n'
 
 import { InstructionText, InputContainer } from './styles'
 import { Input, Button, Toast } from '..'
 import { UserInfo } from '../../typings'
+import { usePersistedState } from '../../hooks'
+import CreateAccountModal from '../CreateAccountModal'
 
 interface CreateRoomProps {
   userInfo: UserInfo
@@ -20,7 +26,11 @@ interface CreateRoomProps {
 const CreateRoom: FC<CreateRoomProps> = ({ userInfo, storeItem }) => {
   const [inputValue, setInputValue] = useState('')
   const [loading, setLoading] = useState(false)
+  const [toggleCreateAccountModal, setToggleCreateAccountModal] = useState(
+    false
+  )
 
+  const { getStoredItem } = usePersistedState()
   const router = useRouter()
 
   const handleCreateRoom = async () => {
@@ -36,16 +46,22 @@ const CreateRoom: FC<CreateRoomProps> = ({ userInfo, storeItem }) => {
     }
 
     try {
-      if (!userInfo.userId) {
-        hostName = generateNickName()
-        hostId = idGenerator()
-
-        storeItem(STORAGE_KEY_USER, { name: hostName, userId: hostId })
-      } else {
-        const { name, userId } = userInfo
-        hostName = name
-        hostId = userId
+      if (!getStoredItem(STORAGE_TOKEN_KEY)) {
+        setToggleCreateAccountModal(true)
+        setLoading(false)
+        return
+        // throw new Error()
       }
+      // if (!userInfo.userId) {
+      //   hostName = generateNickName()
+      //   hostId = idGenerator()
+
+      //   storeItem(STORAGE_KEY_USER, { name: hostName, userId: hostId })
+      // } else {
+      //   const { name, userId } = userInfo
+      //   hostName = name
+      //   hostId = userId
+      // }
 
       const roomId = idGenerator()
       const roomName = inputValue
@@ -70,6 +86,11 @@ const CreateRoom: FC<CreateRoomProps> = ({ userInfo, storeItem }) => {
 
   return (
     <>
+      <CreateAccountModal
+        toggle={toggleCreateAccountModal}
+        setToggleModal={setToggleCreateAccountModal}
+      />
+
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

@@ -74,3 +74,8 @@ export const DefaultTitle = styled.h1`
 
   text-transform: uppercase;
 `
+
+export const DefaultDescription = styled.p`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: ${({ theme }) => theme.fontSizes.s};
+`

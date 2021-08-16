@@ -7,4 +7,5 @@ export default {
   vote: 'voto',
   votes: 'votos',
   confirmRemoveParticipant: 'Tem certeza que deseja remover esse participante?',
+  createAccountToAccessRoom: 'Crie uma conta para acessar essa sala.',
 }

@@ -11,4 +11,5 @@ export default {
   confirm: 'Confirmar',
   sendFeedback: 'Enviar Feedback',
   thanks: 'Obrigado!',
+  signInWithGoogle: 'Entrar com Google',
 }

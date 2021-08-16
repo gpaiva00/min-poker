@@ -10,19 +10,6 @@ export const Container = styled.div`
 
   padding-top: ${({ theme }) => theme.margins.xs};
 `
-export const TitleContainer = styled.div`
-  cursor: pointer;
-`
-
-export const Title = styled.h1`
-  font-family: ${({ theme }) => theme.fonts.bold};
-  font-size: ${({ theme }) => theme.fontSizes.l};
-  cursor: pointer;
-
-  @media (max-width: 768px) {
-    font-size: ${({ theme }) => theme.fontSizes.m};
-  }
-`
 
 export const OptionsContainer = styled.div`
   display: flex;
@@ -57,12 +44,6 @@ export const HeaderImage = styled.img`
   @media (max-width: 768px) {
     width: 120px;
   }
-`
-
-export const MinText = styled.p`
-  font-family: ${({ theme }) => theme.fonts.bold};
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.danger};
 `
 
 export const UserAvatar = styled(Avatar)`

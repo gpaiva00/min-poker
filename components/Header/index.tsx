@@ -1,11 +1,9 @@
 import React, { FC } from 'react'
 import Link from 'next/link'
+import MinPokerTitle from '../MinPokerTitle'
 
 import {
   Container,
-  TitleContainer,
-  Title,
-  MinText,
   OptionsContainer,
   Options,
   OptionsIcon,
@@ -28,11 +26,7 @@ const Header: FC<HeaderProps> = ({
   return (
     <Container>
       <Link href="/">
-        <TitleContainer>
-          <MinText>min</MinText>
-          <Title>POKER</Title>
-          {/* <HeaderImage src="/minPoker.png" /> */}
-        </TitleContainer>
+        <MinPokerTitle />
       </Link>
 
       <OptionsContainer>
