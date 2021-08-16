@@ -9,13 +9,13 @@ export const Card = styled.div<CardProps>`
   align-items: center;
   justify-content: center;
 
-  border-width: 0.5px;
+  border-width: 1.5px;
   border-style: solid;
   border-color: ${({ theme }) => theme.colors.lightSmoke};
   border-radius: 6px;
 
-  width: 100px;
-  height: 100px;
+  width: 105px;
+  height: 105px;
 
   margin: ${({ theme }) => theme.margins.normal};
   cursor: pointer;

@@ -1,6 +1,9 @@
 import styled from 'styled-components'
-import { Input as OriginalInput, Button as OriginalButton } from '..'
+import { lighten } from 'polished'
 
+import { LIGHTEN_AMOUNT_LOW } from '../../constants'
+import { Input as OriginalInput, Button as OriginalButton } from '..'
+import { Container as ButtonContainer, Text } from '../Button/styles'
 interface InputContainerProps {
   imHost: boolean
 }
@@ -36,11 +39,21 @@ export const Input = styled(OriginalInput)`
 
 export const Button = styled(OriginalButton)`
   width: 100%;
+  background: ${({ theme }) => theme.colors.modalButtonBackground};
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.darkButtonHover};
+  }
+
+  ${Text} {
+    color: ${({ theme }) => theme.colors.white};
+  }
 `
 
 export const Label = styled.p`
   font-family: ${({ theme }) => theme.fonts.regular};
   font-size: ${({ theme }) => theme.fontSizes.regular};
+  color: ${({ theme }) => theme.colors.modalLabel};
 
   margin-bottom: ${({ theme }) => theme.margins.small};
 `

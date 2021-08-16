@@ -5,80 +5,74 @@ import { PageContainer } from '../../styles/Voting.styles'
 
 import { Header, ParticipantsPanel, Toast, VotingPanel } from '../../components'
 
-import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { Participant, Room, UserInfo } from '../../typings'
-import { getDatabase } from '../../services/firebase'
 import usePersistedState from '../../hooks/usePersistedState'
 import {
   DEFAULT_PARTICIPANT,
   DEFAULT_ROOM,
   STORAGE_KEY_USER,
 } from '../../constants'
-import { calculateVotingResult, updateRoom, validateRoomId } from '../../utils'
+import { i18n } from '../../translate/i18n'
+import { calculateVotingResult, validateRoomId } from '../../utils'
 import OptionsModal from '../../components/OptionsModal'
 import RemoveParticipantModal from '../../components/RemoveParticipantModal'
+import {
+  deleteRoom,
+  deleteRoomHistoryRegister,
+  exitRoom,
+  firebaseAnalytics,
+  removeParticipant,
+  streamRoomById,
+  updateRoom,
+  updateRoomHistory,
+  updateVote,
+  verifyIfIsNotParticipant,
+} from '../../services/firebase'
 
 const Voting: FC = () => {
   const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
+  const [room, setRoom] = useState<Room>(DEFAULT_ROOM)
   const [isVoting, setIsVoting] = useState(false)
-  const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
+  const { storeItem, getStoredItem } = usePersistedState()
   const [toggleOptionsModal, setToggleOptionsModal] = useState(false)
   const [toggleConfirmModal, setToggleConfirmModal] = useState(false)
   const [participantIdToRemove, setParticipantIdToRemove] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
   const { roomId } = router.query
 
-  const db = getDatabase()
-  const [rooms, loading, error] = useCollectionData<Room[]>(
-    db.collection('rooms').where('id', '==', roomId || ''),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-      refField: 'ref',
-    }
+  const userInfo: UserInfo = getStoredItem(
+    STORAGE_KEY_USER,
+    DEFAULT_PARTICIPANT
   )
 
-  const room: Room = rooms && rooms[0] ? rooms[0] : DEFAULT_ROOM
-
-  const userInfo: UserInfo = storage && JSON.parse(storage)
   const imHost = room.hostId === userInfo.userId
 
   const handleDeleteRoom = async () => {
     try {
-      setTimeout(async () => {
-        await db.doc(room.ref.path).delete()
-      }, 500)
-
+      setTimeout(() => {
+        deleteRoom(room.id)
+        deleteRoomHistoryRegister({ roomId, userId: userInfo.userId })
+      }, 200)
+      firebaseAnalytics().logEvent('delete_room')
       router.push('/')
     } catch (error) {
       Toast({
         type: 'error',
-        message: 'Error trying to close your room. Sorry :(',
+        message: i18n.t('toast.errorDeletingRoom'),
       })
-      console.error('Error trying to close room', error)
     }
   }
 
   const handleExitRoom = async () => {
     try {
-      const roomPath = room.ref.path.split('/')[1]
-      const roomRef = db.collection('rooms').doc(roomPath)
-
-      const newParticipants = room.participants.filter(
-        participant => participant.id !== userInfo.userId
-      )
-
-      await roomRef.set(
-        {
-          ...room,
-          participants: newParticipants,
-        },
-        { merge: false }
-      )
+      await exitRoom(room.id, userInfo.userId)
+      deleteRoomHistoryRegister({ roomId, userId: userInfo.userId })
+      firebaseAnalytics().logEvent('exit_room')
       router.push('/')
     } catch (error) {
-      Toast({ type: 'error', message: 'Error trying to exit room. Sorry :(' })
-      console.error('Error trying to exit room', error)
+      Toast({ type: 'error', message: i18n.t('toast.errorExitingRoom') })
     }
   }
 
@@ -107,7 +101,7 @@ const Voting: FC = () => {
         if (!calculateResult)
           return Toast({
             type: 'error',
-            message: 'Error trying calculate voting results. Try again.',
+            message: i18n.t('toast.errorCalculatingResults'),
           })
 
         const { average, results: items } = calculateResult
@@ -123,11 +117,16 @@ const Voting: FC = () => {
         newParticipant,
         newRoom,
       })
+
+      firebaseAnalytics().logEvent('handle_start_voting', {
+        totalParticipants: room.participants.length,
+      })
+
       setIsVoting(!isVoting)
     } catch (error) {
       Toast({
         type: 'error',
-        message: 'Error trying to start voting. Try again.',
+        message: i18n.t('toast.errorToStartVoting'),
       })
       console.error('Error when trying to start voting', error)
     }
@@ -138,9 +137,10 @@ const Voting: FC = () => {
       const newUserInfo = {
         ...userInfo,
         name: userName,
+        viewerMode,
       }
 
-      setStorage(JSON.stringify(newUserInfo))
+      storeItem(STORAGE_KEY_USER, newUserInfo)
 
       const newParticipant: Participant = {
         name: userName,
@@ -160,11 +160,13 @@ const Voting: FC = () => {
         newParticipant,
       })
 
-      Toast({ message: 'Options updated with success.' })
+      firebaseAnalytics().logEvent('room_options_saved')
+
+      Toast({ message: i18n.t('toast.optionsUpdated') })
     } catch (error) {
       Toast({
         type: 'error',
-        message: 'Error trying to change your name. Try again.',
+        message: i18n.t('toast.errorChangingName'),
       })
       console.error('Error trying to change name', error)
     }
@@ -174,19 +176,19 @@ const Voting: FC = () => {
 
   const handleVoteClick = async (voteId: string) => {
     try {
-      const newParticipant = {
-        vote: voteId,
-      }
-
-      await updateRoom({
-        room,
-        newParticipant,
+      await updateVote({
+        roomId: room.id,
+        voteId,
         userId: userInfo.userId,
+      })
+
+      firebaseAnalytics().logEvent('vote_click', {
+        voteId,
       })
     } catch (error) {
       Toast({
         type: 'error',
-        message: 'Error trying to set your vote. Try again.',
+        message: i18n.t('toast.errorSettingVote'),
       })
       console.error('Error trying to set your vote', error)
     }
@@ -194,29 +196,19 @@ const Voting: FC = () => {
 
   const handleRemoveParticipant = async () => {
     try {
-      const roomPath = room.ref.path.split('/')[1]
-      const roomRef = db.collection('rooms').doc(roomPath)
+      await removeParticipant(room.id, participantIdToRemove)
 
-      const newParticipants = room.participants.filter(
-        participant => participant.id !== participantIdToRemove
-      )
-
-      await roomRef.set(
-        {
-          ...room,
-          participants: newParticipants,
-        },
-        { merge: false }
-      )
+      firebaseAnalytics().logEvent('remove_participant')
 
       setToggleConfirmModal(false)
+
       Toast({
-        message: 'Participant removed from your room',
+        message: i18n.t('toast.participanteRemovedFromRoom'),
       })
     } catch (error) {
       Toast({
         type: 'error',
-        message: 'Error trying to remove participant. Try again.',
+        message: i18n.t('toast.errorRemovingParticipantFromRoom'),
       })
       console.error('Error trying to remove participant room', error)
     }
@@ -227,17 +219,47 @@ const Voting: FC = () => {
     setParticipantIdToRemove(participantId)
   }
 
-  useEffect(() => {
-    if (!validateRoomId(roomId)) {
-      router.push('/')
-      return
-    }
-  }, [roomId])
+  const setLoadingToFalse = () => {
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 1500)
+  }
 
   useEffect(() => {
-    const me = room.participants.find(({ id }) => id === userInfo.userId)
-    setMe(me ? me : DEFAULT_PARTICIPANT)
-  }, [room])
+    setIsLoading(true)
+    const verifyParticipant = async () => {
+      if (
+        roomId &&
+        (await verifyIfIsNotParticipant({ userId: userInfo.userId, roomId }))
+      ) {
+        router.push(`/invitation/${roomId}`)
+        return
+      }
+    }
+
+    updateRoomHistory({ roomId, userId: userInfo.userId, roomName: room.name })
+
+    verifyParticipant()
+
+    const unsubscribe = streamRoomById(roomId, {
+      next: querySnapshot => {
+        const updatedRoom: Room = querySnapshot.docs
+          .map(docSnapshot => docSnapshot.data())
+          .shift()
+
+        setRoom(updatedRoom)
+        const me = updatedRoom.participants.find(
+          ({ id }) => id === userInfo.userId
+        )
+        setMe(me ? me : DEFAULT_PARTICIPANT)
+        setLoadingToFalse()
+      },
+      error: () => {
+        setLoadingToFalse()
+      },
+    })
+    return unsubscribe
+  }, [roomId, setRoom])
 
   return (
     <div>
@@ -246,23 +268,22 @@ const Voting: FC = () => {
           toggle={toggleOptionsModal}
           setToggleModal={setToggleOptionsModal}
           room={room}
-          me={me}
           userInfo={userInfo}
           handleSaveRoomOptions={handleSaveRoomOptions}
-          loading={loading}
+          loading={isLoading}
           imHost={imHost}
         />
         <RemoveParticipantModal
           toggle={toggleConfirmModal}
           setToggleModal={setToggleConfirmModal}
           handlePressConfirm={handleRemoveParticipant}
-          loading={loading}
+          loading={isLoading}
         />
         <Header
-          showRoomTitle
           roomTitle={room.name}
-          roomId={roomId}
+          roomId={room.id}
           setToggleModal={setToggleOptionsModal}
+          isLoading={isLoading}
         />
 
         <PageContainer>
@@ -275,13 +296,14 @@ const Voting: FC = () => {
             room={room}
             me={me}
             userInfo={userInfo}
-            loading={loading}
+            loading={isLoading}
           />
           <VotingPanel
             handleVoteClick={handleVoteClick}
             room={room}
             me={me}
             showResults={room.showResults}
+            loading={isLoading}
           />
         </PageContainer>
       </main>

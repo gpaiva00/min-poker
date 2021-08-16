@@ -1,6 +1,7 @@
 // collects page's style becoming from server and applies it just before the page be rendered
 import 'regenerator-runtime'
 import 'regenerator-runtime/runtime.js'
+
 import React from 'react'
 import Document, {
   DocumentContext,
@@ -57,12 +58,6 @@ export default class MyDocument extends Document {
             content="Minimalist Planning Poker Game"
           />
           <meta property="og:image" content="/ogMinPoker.png" key="ogimage" />
-
-          {/* <link rel="preconnect" href="https://fonts.gstatic.com" />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap"
-            rel="stylesheet"
-          /> */}
 
           <title>minPOKER</title>
           <script

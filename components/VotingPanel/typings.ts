@@ -5,4 +5,5 @@ export interface VotingPanelProps {
   handleVoteClick(id: string): void
   showResults: boolean
   me: Participant
+  loading: boolean
 }

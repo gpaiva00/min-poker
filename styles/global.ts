@@ -42,6 +42,10 @@ export default createGlobalStyle`
     box-sizing: border-box;
   }
 
+  p,h1 {
+    user-select: none;
+  }
+
   body {
     background: ${props => props.theme.colors.background};
     color: ${props => props.theme.colors.text};
@@ -54,4 +58,6 @@ export default createGlobalStyle`
     margin: 0;
     padding: 0 3px;
   }
+
+  transition: all 0.25s linear;
 `

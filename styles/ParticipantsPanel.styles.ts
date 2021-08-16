@@ -3,10 +3,21 @@ import Button from '../components/Button'
 
 import { MdEdit } from 'react-icons/md'
 import { FaCheck } from 'react-icons/fa'
-import { AiFillMinusCircle } from 'react-icons/ai'
+import { FaRegEye } from 'react-icons/fa'
+import { RiVipCrownFill } from 'react-icons/ri'
+
+import {
+  AiFillMinusCircle,
+  AiFillCheckCircle,
+  AiFillCloseCircle,
+} from 'react-icons/ai'
 
 import { lighten } from 'polished'
 import { LIGHTEN_AMOUNT_NORMAL } from '../constants'
+
+interface NameProps {
+  viewerMode?: boolean
+}
 
 export const Container = styled.div`
   display: flex;
@@ -48,6 +59,16 @@ export const DoneIcon = styled(FaCheck)`
   }
 `
 
+export const ViewerModeIcon = styled(FaRegEye)`
+  color: ${({ theme }) => theme.colors.smoke};
+`
+
+export const NoVoteIcon = styled(AiFillCloseCircle)`
+  color: ${({ theme }) => theme.colors.danger};
+`
+
+export const VotedIcon = styled(AiFillCheckCircle)``
+
 export const RemoveIcon = styled(AiFillMinusCircle)`
   cursor: pointer;
   color: ${({ theme }) => theme.colors.danger};
@@ -81,12 +102,12 @@ export const PanelContainer = styled.div`
 `
 
 export const Panel = styled.div`
-  border-width: 0.5px;
+  border-width: 1.5px;
   border-style: solid;
   border-color: ${({ theme }) => theme.colors.lightSmoke};
   border-radius: 6px;
 
-  height: 90%;
+  height: 85%;
   overflow: hidden;
 `
 
@@ -94,7 +115,7 @@ export const List = styled.div`
   display: flex;
   flex-direction: column;
 
-  height: 530px;
+  height: 500px;
   width: 100%;
 
   padding-top: ${({ theme }) => theme.paddings.normal};
@@ -102,13 +123,22 @@ export const List = styled.div`
   overflow: auto;
 
   @media (max-width: 768px) {
-    height: 60vh;
+    height: 57vh;
   }
 `
 
-export const MyName = styled.p`
-  font-family: ${({ theme }) => theme.fonts.semiBold};
+export const MyName = styled.p<NameProps>`
+  font-family: ${({ theme }) => theme.fonts.bold};
   font-size: ${({ theme }) => theme.fontSizes.regular};
+  padding-top: 5px;
+
+  color: ${({ theme, viewerMode }) =>
+    viewerMode ? theme.colors.smoke : theme.colors.primary};
+`
+
+export const OwnerIcon = styled(RiVipCrownFill)`
+  position: absolute;
+  margin-top: -10px;
 `
 
 export const Participant = styled.div`
@@ -121,11 +151,16 @@ export const Participant = styled.div`
   &:last-child {
     padding-bottom: 0;
   }
+
+  /* background: lightgray; */
 `
 
-export const Name = styled.p`
+export const Name = styled.p<NameProps>`
   font-family: ${({ theme }) => theme.fonts.light};
   font-size: ${({ theme }) => theme.fontSizes.regular};
+
+  color: ${({ theme, viewerMode }) =>
+    viewerMode ? theme.colors.smoke : theme.colors.primary};
 `
 
 export const Vote = styled.p`

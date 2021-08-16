@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, FC } from 'react'
+import React, { FC } from 'react'
 
 import { Container, StyledInput } from './styles'
 import { InputProps } from './typings'

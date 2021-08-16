@@ -11,7 +11,8 @@ import {
   Label,
   SwitchContainer,
 } from './styles'
-import theme from '../../styles/theme'
+import theme from '../../styles/themes/light'
+import { i18n } from '../../translate/i18n'
 import { Participant, Room, UserInfo } from '../../typings'
 
 interface OptionsModalProps {
@@ -22,7 +23,6 @@ interface OptionsModalProps {
   setToggleModal: React.Dispatch<React.SetStateAction<boolean>>
   imHost: boolean
   loading: boolean
-  me: Participant
 }
 
 const OptionsModal: FC<OptionsModalProps> = ({
@@ -33,32 +33,32 @@ const OptionsModal: FC<OptionsModalProps> = ({
   setToggleModal,
   imHost,
   loading,
-  me,
 }) => {
   const { name: originalRoomName } = room
-  const { name: originalUserName } = userInfo
+  const {
+    name: originalUserName,
+    viewerMode: originalViewerMode = false,
+  } = userInfo
 
   const [userName, setUserName] = useState(originalUserName)
   const [roomName, setRoomName] = useState(originalRoomName)
-  const [viewerMode, setViewerMode] = useState(false)
+  const [viewerMode, setViewerMode] = useState(originalViewerMode)
 
   useEffect(() => {
-    setRoomName(room.name)
-
-    if (me) setViewerMode(me.viewerMode)
-  }, [room, me])
+    setRoomName(originalRoomName)
+  }, [room])
 
   return (
     <Modal
       height={imHost ? '480' : '380'}
       toggle={toggle}
       setToggleModal={setToggleModal}
-      title="options"
+      title={i18n.t('titles.options')}
     >
       <Container imHost={imHost}>
         {imHost && (
           <InputContainer>
-            <Label>Room name</Label>
+            <Label>{i18n.t('labels.roomName')}</Label>
             <Input
               placeholder={originalRoomName}
               value={roomName}
@@ -68,15 +68,15 @@ const OptionsModal: FC<OptionsModalProps> = ({
         )}
 
         <InputContainer>
-          <Label>Your name</Label>
+          <Label>{i18n.t('labels.yourName')}</Label>
           <Input
-            placeholder={userName}
+            placeholder={originalUserName}
             value={userName}
             onInput={event => setUserName(event.target.value)}
           />
         </InputContainer>
         <SwitchContainer>
-          <Label>Viewer mode</Label>
+          <Label>{i18n.t('labels.viewerMode')}</Label>
           <Switch
             checked={viewerMode}
             onChange={setViewerMode}
@@ -97,7 +97,7 @@ const OptionsModal: FC<OptionsModalProps> = ({
             })
           }
         >
-          Save
+          {i18n.t('buttons.save')}
         </Button>
       </Container>
     </Modal>

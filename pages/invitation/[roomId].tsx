@@ -1,83 +1,46 @@
 import React, { FC, useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
-import { useCollectionData } from 'react-firebase-hooks/firestore'
-import { getDatabase } from '../../services/firebase'
 
-import { Room } from '../../typings/Room'
 import usePersistedState from '../../hooks/usePersistedState'
-import { DEFAULT_ROOM, STORAGE_KEY_USER } from '../../constants'
+import { DEFAULT_PARTICIPANT, STORAGE_KEY_USER } from '../../constants'
 import { UserInfo } from '../../typings/UserInfo'
 import { generateNickName, idGenerator } from '../../utils'
+import { enterRoom } from '../../services/firebase'
 
 const Invitation: FC = () => {
+  const [message, setMessage] = useState('Loading...')
+  const { getStoredItem, storeItem } = usePersistedState()
+
+  let { userId, name: userName }: UserInfo = getStoredItem(
+    STORAGE_KEY_USER,
+    DEFAULT_PARTICIPANT
+  )
+
   const router = useRouter()
   const { roomId } = router.query
-  const [message, setMessage] = useState('Loading...')
-
-  const [storage, setStorage] = usePersistedState(STORAGE_KEY_USER, '')
-  let { userId, name: userName }: UserInfo = storage && JSON.parse(storage)
-
-  const db = getDatabase()
-
-  const [rooms, loading, error] = useCollectionData<Room[]>(
-    db.collection('rooms').where('id', '==', roomId || ''),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-      refField: 'ref',
-    }
-  )
 
   useEffect(() => {
     const verifyRoomId = async () => {
-      if (rooms && !rooms.length) setMessage('Room not found.')
-
       try {
-        const room: Room = rooms && rooms[0] ? rooms[0] : DEFAULT_ROOM
-
-        if (!room.hostId) return
+        if (!roomId) return
 
         if (!userId) userId = idGenerator()
         if (!userName) userName = generateNickName()
 
-        setStorage(JSON.stringify({ name: userName, userId }))
+        storeItem(STORAGE_KEY_USER, { name: userName, userId })
 
-        const isNotParticipant =
-          room.participants.findIndex(({ id }) => id === userId) === -1
+        await enterRoom({ roomId, userId, userName })
 
-        if (isNotParticipant) {
-          const roomPath = room.ref.path.split('/')[1]
-          const roomRef = db.collection('rooms').doc(roomPath)
-
-          const newParticipants = [
-            ...room.participants,
-            {
-              id: userId,
-              name: userName,
-              vote: '',
-              viewerMode: false,
-            },
-          ]
-
-          await roomRef.set(
-            {
-              ...room,
-              participants: newParticipants,
-            },
-            { merge: false }
-          )
-
-          return router.push(`/voting/${roomId}`)
-        }
+        return router.push(`/voting/${roomId}`)
       } catch (error) {
         console.error('Error trying to set new participant', error)
+        setMessage(error.message)
       }
-
-      router.push(`/voting/${roomId}`)
     }
 
     verifyRoomId()
-  }, [rooms])
+  }, [roomId])
 
   return <p>{message}</p>
 }

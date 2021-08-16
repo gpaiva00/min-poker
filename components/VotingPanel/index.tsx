@@ -1,20 +1,28 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC } from 'react'
 
-import { Container } from './styles'
+import { Container, ImageContainer, MinPokerImage } from './styles'
 import { VotingPanelProps } from './typings'
+import { i18n } from '../../translate/i18n'
 
 import { Waiting, VotingCards } from './components'
 import ResultCards from './components/ResultCards'
 
-const VotingPanel: FC<VotingPanelProps> = ({ room, me, handleVoteClick }) => {
+const VotingPanel: FC<VotingPanelProps> = ({
+  room,
+  me,
+  handleVoteClick,
+  loading,
+}) => {
   const { isVoting, showResults, results } = room
 
   const renderPage = () => {
     if (!isVoting && !showResults)
-      return <Waiting description="waiting voting to start" />
+      return (
+        <Waiting description={i18n.t('descriptions.waitingVotingToStart')} />
+      )
 
     if (me.viewerMode && !showResults)
-      return <Waiting description="Voting is running" />
+      return <Waiting description={i18n.t('descriptions.votingIsRunning')} />
     else if (!me.viewerMode && !showResults)
       return (
         <VotingCards
@@ -26,7 +34,13 @@ const VotingPanel: FC<VotingPanelProps> = ({ room, me, handleVoteClick }) => {
     if (showResults && !isVoting) return <ResultCards results={results} />
   }
 
-  return <Container>{renderPage()}</Container>
+  return loading ? (
+    <ImageContainer>
+      <MinPokerImage src="/minPoker.png" />
+    </ImageContainer>
+  ) : (
+    <Container>{renderPage()}</Container>
+  )
 }
 
 export default VotingPanel

@@ -1,8 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { BiTime } from 'react-icons/bi'
-
-import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai'
-import { FaRegEye } from 'react-icons/fa'
+import Skeleton from 'react-loading-skeleton'
 
 import { ParticipantsPanelProps } from './typings'
 import { Participant as ParticipantProps } from '../../typings'
@@ -24,9 +22,15 @@ import {
   EditIcon,
   DoneIcon,
   RemoveIcon,
+  ViewerModeIcon,
+  NoVoteIcon,
+  VotedIcon,
+  OwnerIcon,
 } from '../../styles/ParticipantsPanel.styles'
 
 import { FiCoffee } from 'react-icons/fi'
+import { i18n } from '../../translate/i18n'
+import { sortParticipants } from '../../utils'
 import { RESULTS_TEXT } from '../../constants'
 
 const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
@@ -43,20 +47,20 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   const [participantsList, setParticipantsList] = useState<ParticipantProps[]>(
     []
   )
-
   const [isEditing, setIsEditing] = useState(false)
 
-  const { participants, showResults, isVoting } = room
+  const { participants, showResults, isVoting, hostId } = room
+
   const { name, userId } = userInfo
 
   const showParticipantVote = (vote: string) => {
     if (!isVoting && !showResults) return
 
-    if (showResults && !vote.length) return <AiFillCloseCircle size={20} />
+    if (showResults && !vote.length) return <NoVoteIcon size={20} />
 
     if (!vote.length) return <BiTime size={20} />
 
-    if (vote.length && !showResults) return <AiFillCheckCircle size={20} />
+    if (vote.length && !showResults) return <VotedIcon size={20} />
     else
       return vote === 'coffee' ? (
         <Vote>
@@ -68,6 +72,8 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
   }
 
   const showEditOptions = () => {
+    if (!participantsList.length) return
+
     if (isEditing)
       return <DoneIcon onClick={() => setIsEditing(false)} size={20} />
 
@@ -80,7 +86,7 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
         <RemoveIcon onClick={() => handleRemoveParticipant(id)} size={20} />
       )
 
-    if (viewerMode) return <FaRegEye size={20} />
+    if (viewerMode) return <ViewerModeIcon size={20} />
 
     return showParticipantVote(vote)
   }
@@ -90,65 +96,94 @@ const ParticipantsPanel: FC<ParticipantsPanelProps> = ({
       ({ id }) => id !== '' && id !== userId
     )
 
-    setParticipantsList(newParticipants)
+    if (!newParticipants.length) setIsEditing(false)
+
+    setParticipantsList(sortParticipants(newParticipants))
   }, [participants])
 
   return (
     <Container>
       <TitleContainer>
-        <Title>Participants</Title>
+        <Title>{i18n.t('titles.participants')}</Title>
         {imHost && showEditOptions()}
       </TitleContainer>
 
       <PanelContainer>
         <Panel>
           <List>
-            <Participant>
-              <MyName>{name} (you)</MyName>
-              {me.viewerMode ? (
-                <FaRegEye size={20} />
-              ) : (
-                showParticipantVote(me.vote)
-              )}
-            </Participant>
+            {loading ? (
+              <Skeleton height={30} />
+            ) : (
+              <Participant>
+                <MyName viewerMode={me.viewerMode}>
+                  {imHost && <OwnerIcon size={12} />}
+                  {name}
+                </MyName>
 
-            {participantsList.map(({ name, vote, viewerMode, id }, key) => (
-              <Participant key={key}>
-                <Name>{name}</Name>
-                {showParticipantsOptions({ vote, viewerMode, id })}
+                {me.viewerMode ? (
+                  <ViewerModeIcon size={20} />
+                ) : (
+                  showParticipantVote(me.vote)
+                )}
               </Participant>
-            ))}
+            )}
+
+            {loading ? (
+              <Skeleton height={25} count={5} />
+            ) : (
+              participantsList.map(({ name, vote, viewerMode, id }, key) => (
+                <Participant key={key}>
+                  <Name viewerMode={viewerMode}>
+                    {id === hostId && <OwnerIcon size={12} />}
+                    {name}
+                  </Name>
+                  {showParticipantsOptions({ vote, viewerMode, id })}
+                </Participant>
+              ))
+            )}
           </List>
 
           {imHost && (
             <ButtonContainer>
-              <StartVoting
-                loading={loading}
-                onClick={() => setStartVoting(!isVoting)}
-              >
-                {isVoting ? 'Finish voting' : 'Start voting'}
-              </StartVoting>
+              {loading ? (
+                <Skeleton width={260} height={50} />
+              ) : (
+                <StartVoting
+                  loading={loading}
+                  onClick={() => setStartVoting(!isVoting)}
+                >
+                  {isVoting
+                    ? i18n.t('buttons.finishVoting')
+                    : i18n.t('buttons.startVoting')}
+                </StartVoting>
+              )}
             </ButtonContainer>
           )}
         </Panel>
 
         <ButtonContainer>
-          {imHost ? (
-            <DeleteRoom
-              loading={loading}
-              onClick={handleDeleteRoom}
-              variant="danger"
-            >
-              Delete room
-            </DeleteRoom>
+          {loading ? (
+            <Skeleton width={200} height={25} />
           ) : (
-            <DeleteRoom
-              loading={loading}
-              onClick={handleExitRoom}
-              variant="danger"
-            >
-              Exit room
-            </DeleteRoom>
+            <>
+              {imHost ? (
+                <DeleteRoom
+                  loading={loading}
+                  onClick={handleDeleteRoom}
+                  variant="danger"
+                >
+                  {i18n.t('buttons.deleteRoom')}
+                </DeleteRoom>
+              ) : (
+                <DeleteRoom
+                  loading={loading}
+                  onClick={handleExitRoom}
+                  variant="danger"
+                >
+                  {i18n.t('buttons.exitRoom')}
+                </DeleteRoom>
+              )}
+            </>
           )}
         </ButtonContainer>
       </PanelContainer>

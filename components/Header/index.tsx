@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { firebaseAnalytics } from '../../services/firebase'
 
 import Link from 'next/link'
 
@@ -17,46 +18,63 @@ import {
   OptionsIcon,
   LinkIcon,
 } from './styles'
+import { i18n } from '../../translate/i18n'
+import { returnInviteLink } from '../../utils'
+// import { usePersistedState } from '../../hooks'
+// import { DefaultTheme } from 'styled-components'
+// import { DEFAULT_THEME_OBJ, STORAGE_THEME_KEY } from '../../constants'
+import Skeleton from 'react-loading-skeleton'
 
 interface HeaderProps {
-  showRoomTitle?: boolean
   roomTitle?: string
   roomId?: string | string[]
   setToggleModal?: React.Dispatch<React.SetStateAction<boolean>>
+  isLoading?: boolean
 }
 
 const Header: FC<HeaderProps> = ({
-  showRoomTitle,
   roomTitle,
   roomId,
   setToggleModal,
+  isLoading,
 }) => {
-  const minPokerURL =
-    process.env.NODE_ENV !== 'production'
-      ? process.env.NEXT_PUBLIC_MIN_POKER_DEV_URL
-      : process.env.NEXT_PUBLIC_MIN_PRD_URL
-  const inviteLink = `${minPokerURL}/invitation/${roomId}`
+  const inviteLink = returnInviteLink(roomId)
+
+  // const { getStoredItem } = usePersistedState()
+  // const storedTheme: DefaultTheme = getStoredItem(STORAGE_THEME_KEY)
+
+  // const { title: themeTitle } = storedTheme ?? DEFAULT_THEME_OBJ
 
   return (
     <Container>
       <Link href="/">
         <TitleContainer>
-          {/* <MinText>min</MinText>
-          <Title>POKER</Title> */}
-          <HeaderImage src="/minPoker3.png" />
+          {/* <HeaderImage
+            src={
+              themeTitle === 'dark' ? '/minPoker3_teste.png' : '/minPoker3.png'
+            }
+          /> */}
+          <HeaderImage src="/minPoker.png" />
         </TitleContainer>
       </Link>
-      {showRoomTitle && (
+      {roomTitle && (
         <OptionsContainer>
           <CopyToClipboard
             text={inviteLink}
-            onCopy={() =>
-              Toast({ message: 'The invitation was copied to your clipboard.' })
-            }
+            onCopy={() => {
+              firebaseAnalytics().logEvent('invitation_link_copied')
+              Toast({ message: i18n.t('toast.invitationLinkCopied') })
+            }}
           >
             <RoomTitleContainer>
-              <RoomTitle>{roomTitle}</RoomTitle>
-              <LinkIcon size={26} />
+              {isLoading ? (
+                <Skeleton width={150} height={20} />
+              ) : (
+                <>
+                  <RoomTitle>{roomTitle}</RoomTitle>
+                  <LinkIcon size={26} />
+                </>
+              )}
             </RoomTitleContainer>
           </CopyToClipboard>
           <Options onClick={() => setToggleModal(true)}>

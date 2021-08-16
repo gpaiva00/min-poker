@@ -10,9 +10,8 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  /* ${({ theme }) => `padding: 0 ${theme.margins.normal}`}; */
   padding: ${({ theme }) => theme.margins.normal};
-  padding-bottom: ${({ theme }) => theme.margins.medium};
+  padding-bottom: ${({ theme }) => theme.margins.normal};
 `
 
 export const Title = styled.h1`
@@ -40,7 +39,11 @@ export const Options = styled.div`
   cursor: pointer;
 
   &:hover {
-    color: ${({ theme }) => lighten(LIGHTEN_AMOUNT_LOW, theme.colors.text)};
+    color: ${({ theme }) => theme.colors.lightButtonHover};
+  }
+
+  @media (max-width: 768px) {
+    margin-left: ${({ theme }) => theme.margins.normal};
   }
 `
 
@@ -52,12 +55,15 @@ export const TitleContainer = styled.div`
 export const HeaderImage = styled.img`
   position: absolute;
   top: 0;
-
-  width: 190px;
+  width: 175px;
   margin-top: ${({ theme }) => theme.margins.small};
 
+  background: white;
+  padding: 5px;
+  border-radius: 6px;
+
   @media (max-width: 768px) {
-    width: 150px;
+    width: 120px;
   }
 `
 
@@ -69,7 +75,7 @@ export const RoomTitleContainer = styled.div`
 
   &:hover {
     ${LinkIcon} {
-      color: ${({ theme }) => lighten(LIGHTEN_AMOUNT_HIGH, theme.colors.text)};
+      color: ${({ theme }) => theme.colors.lightButtonHover};
     }
   }
 `

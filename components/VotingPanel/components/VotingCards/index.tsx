@@ -5,6 +5,8 @@ import { FiCoffee } from 'react-icons/fi'
 
 import { CardsContainer, Title, TitleContainer } from './styles'
 import { DefaultCard } from '../'
+import { ANIMATION_DURATION, DELAY_DURATION } from '../../../../constants'
+import { i18n } from '../../../../translate/i18n'
 
 interface VotingCardsProps {
   handleVoteClick(id: string): void
@@ -78,9 +80,9 @@ const VotingCards: FC<VotingCardsProps> = ({
         <motion.h1
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ ease: 'easeInOut', duration: 1 }}
+          transition={{ ease: 'easeInOut', duration: ANIMATION_DURATION }}
         >
-          <Title>Choose an option</Title>
+          <Title>{i18n.t('titles.chooseAnOption')}</Title>
         </motion.h1>
       </TitleContainer>
 
@@ -89,7 +91,11 @@ const VotingCards: FC<VotingCardsProps> = ({
           <motion.div
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ ease: 'easeInOut', duration: 0.5, delay: 0.5 }}
+            transition={{
+              ease: 'easeInOut',
+              duration: ANIMATION_DURATION,
+              delay: DELAY_DURATION,
+            }}
           >
             <DefaultCard
               handleVoteClick={handleCardClick}

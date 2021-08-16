@@ -1,12 +1,13 @@
 import styled from 'styled-components'
+import { BiMoon } from 'react-icons/bi'
 
 export const Container = styled.div`
- position: absolute;
- bottom: 0;
+  position: absolute;
+  bottom: 0;
 
- width: 100%;
- text-align: center;
- padding: 10px;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
 `
 
 export const Credits = styled.p`
@@ -17,5 +18,5 @@ export const Credits = styled.p`
 `
 
 export const Name = styled.a`
-  color: ${({ theme }) => theme.colors.text}
+  color: ${({ theme }) => theme.colors.darkText};
 `

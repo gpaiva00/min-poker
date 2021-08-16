@@ -10,9 +10,11 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@loadable/component": "^5.15.0",
+    "feeder-react-feedback": "^0.0.6",
     "firebase": "^8.3.2",
     "framer-motion": "^4.0.3",
-    "i18next": "^20.1.0",
+    "i18next": "^20.3.2",
     "next": "10.0.9",
     "next-images": "^1.7.0",
     "polished": "^4.1.1",
@@ -20,7 +22,9 @@
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "17.0.2",
     "react-firebase-hooks": "^3.0.3",
+    "react-i18next": "^11.11.1",
     "react-icons": "^4.2.0",
+    "react-loading-skeleton": "^2.2.0",
     "react-switch": "^6.0.0",
     "react-toastify": "^7.0.3",
     "regenerator-runtime": "^0.13.7",
