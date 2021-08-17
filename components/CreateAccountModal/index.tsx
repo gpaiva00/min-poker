@@ -32,6 +32,8 @@ const CreateAccountModal: FC<CreateAccountModalProps> = ({
 
       storeItem(STORAGE_TOKEN_KEY, accessToken)
 
+      console.warn('googleData', { name, email, imageUrl })
+
       const { email: returnedEmail } = await createUser({
         name,
         avatarURL: imageUrl,
@@ -65,7 +67,7 @@ const CreateAccountModal: FC<CreateAccountModalProps> = ({
           {i18n.t('descriptions.createAccountToAccessRoom')}
         </Description>
 
-        <Button onClick={handleSignIn}>Entrar</Button>
+        <Button onClick={createUser}>Entrar</Button>
 
         <GoogleLogin
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}

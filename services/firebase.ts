@@ -102,8 +102,8 @@ export const findUserByEmail = async (userEmail: string) => {
       .where('email', '==', userEmail)
       .get()
 
-    const user: IUserProps = userRef.docs.shift().data()
-    const userPath = userRef.docs[0].ref.path
+    const user: IUserProps = userRef?.docs?.shift().data()
+    const userPath = userRef?.docs[0]?.ref?.path
 
     return { user, userRef, userPath }
   } catch (error) {
