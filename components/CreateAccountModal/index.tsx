@@ -17,6 +17,16 @@ const CreateAccountModal: FC<CreateAccountModalProps> = ({
 }) => {
   // const [userName, setUserName] = useState(originalUserName)
 
+  const handleSignIn = googleUser => {
+    console.log('signIn', googleUser)
+    // salvar usuário no banco de dados
+  }
+
+  const handleSignInError = error => {
+    // mostrar modal de erro
+    console.log('signInError', error)
+  }
+
   return (
     <Modal
       height="400"
@@ -33,8 +43,8 @@ const CreateAccountModal: FC<CreateAccountModalProps> = ({
         <GoogleLogin
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
           buttonText={i18n.t('buttons.signInWithGoogle')}
-          onSuccess={() => {}}
-          onFailure={() => {}}
+          onSuccess={handleSignIn}
+          onFailure={handleSignInError}
           style={{ width: '100%' }}
         />
       </Container>
