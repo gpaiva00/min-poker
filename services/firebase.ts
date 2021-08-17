@@ -63,12 +63,13 @@ export const createRoom = async ({ roomId, roomName, hostId, hostName }) => {
       ],
     }
 
-    await db.collection(ROOM_COLLECTION).add(saveOnDB)
+    await db.collection(ROOM_COLLECTION).doc(roomId).set(saveOnDB)
     await updateRoomHistory({ roomId, userId: hostId, roomName })
   } catch (error) {}
 }
 
 export const createUser = async ({
+  id = idGenerator(),
   name,
   avatarURL,
   email,
@@ -76,17 +77,17 @@ export const createUser = async ({
   const { user } = await findUserByEmail(email)
   if (user) return user
 
-  const userId = idGenerator()
-
   try {
     const user = {
-      id: userId,
+      id,
       name,
       email,
       avatarURL,
     }
 
-    await db.collection(USER_COLLECTION).doc(userId).set(user)
+    await db.collection(USER_COLLECTION).doc(id).set(user)
+    console.warn({ user })
+
     return user
   } catch (error) {
     console.error('Error trying to create user', error)
@@ -102,7 +103,7 @@ export const findUserByEmail = async (userEmail: string) => {
       .where('email', '==', userEmail)
       .get()
 
-    const user: IUserProps = userRef?.docs?.shift().data()
+    const user: IUserProps = userRef?.docs?.shift()?.data()
     const userPath = userRef?.docs[0]?.ref?.path
 
     return { user, userRef, userPath }
