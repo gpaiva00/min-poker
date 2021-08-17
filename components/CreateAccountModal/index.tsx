@@ -1,9 +1,15 @@
 import React, { FC, useState } from 'react'
-import GoogleLogin from 'react-google-login'
+import GoogleLogin, { GoogleLoginResponse } from 'react-google-login'
 
 import { Modal } from '..'
+import { STORAGE_TOKEN_KEY } from '../../constants'
+import { usePersistedState } from '../../hooks'
+import { createUser } from '../../services/firebase'
 import { i18n } from '../../translate/i18n'
+import { IGoogleUserProps } from '../../typings/IUser'
+import Button from '../Button'
 import MinPokerTitle from '../MinPokerTitle'
+import Toast from '../Toast'
 import { Container, Description } from './styles'
 
 interface CreateAccountModalProps {
@@ -15,11 +21,30 @@ const CreateAccountModal: FC<CreateAccountModalProps> = ({
   toggle,
   setToggleModal,
 }) => {
-  // const [userName, setUserName] = useState(originalUserName)
+  const { storeItem } = usePersistedState()
 
-  const handleSignIn = googleUser => {
-    console.log('signIn', googleUser)
-    // salvar usuário no banco de dados
+  const handleSignIn = async (googleUser: GoogleLoginResponse) => {
+    try {
+      const {
+        accessToken,
+        profileObj: { name, email, imageUrl },
+      } = googleUser
+
+      storeItem(STORAGE_TOKEN_KEY, accessToken)
+
+      const { email: returnedEmail } = await createUser({
+        name,
+        avatarURL: imageUrl,
+        email,
+      })
+      console.warn({ returnedEmail })
+    } catch (error) {
+      console.error('Error creating error', error)
+      Toast({
+        type: 'error',
+        message: i18n.t('toast.errorCreatingUser'),
+      })
+    }
   }
 
   const handleSignInError = error => {
@@ -39,6 +64,8 @@ const CreateAccountModal: FC<CreateAccountModalProps> = ({
         <Description>
           {i18n.t('descriptions.createAccountToAccessRoom')}
         </Description>
+
+        <Button onClick={handleSignIn}>Entrar</Button>
 
         <GoogleLogin
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}

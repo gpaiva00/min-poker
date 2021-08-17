@@ -15,7 +15,7 @@ function usePersistedState() {
     return initialState
   }
 
-  const storeItem = (key: string, item: object) => {
+  const storeItem = (key: string, item: object | string) => {
     localStorage.setItem(key, JSON.stringify(item))
   }
 

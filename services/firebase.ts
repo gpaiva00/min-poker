@@ -3,9 +3,16 @@ import 'firebase/auth'
 import 'firebase/analytics'
 import 'firebase/firestore'
 import { DEFAULT_RESULT } from '../constants'
-import { ROOM_COLLECTION, ROOM_HISTORY_COLLECTION } from './constants'
+import {
+  ROOM_COLLECTION,
+  ROOM_HISTORY_COLLECTION,
+  USER_COLLECTION,
+} from './constants'
 import { VerifyIfIsNotParticipantProps } from '../typings/Services'
 import { Participant, RoomHistory, RoomHistoryItems } from '../typings'
+import { idGenerator } from '../utils'
+import { IUserProps } from '../typings/IUser'
+import { ICreateUserProps } from './typings/IUserService'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -59,6 +66,50 @@ export const createRoom = async ({ roomId, roomName, hostId, hostName }) => {
     await db.collection(ROOM_COLLECTION).add(saveOnDB)
     await updateRoomHistory({ roomId, userId: hostId, roomName })
   } catch (error) {}
+}
+
+export const createUser = async ({
+  name,
+  avatarURL,
+  email,
+}: ICreateUserProps): Promise<IUserProps> => {
+  const { user } = await findUserByEmail(email)
+  if (user) return user
+
+  const userId = idGenerator()
+
+  try {
+    const user = {
+      id: userId,
+      name,
+      email,
+      avatarURL,
+    }
+
+    await db.collection(USER_COLLECTION).doc(userId).set(user)
+    return user
+  } catch (error) {
+    console.error('Error trying to create user', error)
+  }
+}
+
+export const findUserByEmail = async (userEmail: string) => {
+  await authenticateAnonymously()
+
+  try {
+    const userRef = await db
+      .collection(USER_COLLECTION)
+      .where('email', '==', userEmail)
+      .get()
+
+    const user: IUserProps = userRef.docs.shift().data()
+    const userPath = userRef.docs[0].ref.path
+
+    return { user, userRef, userPath }
+  } catch (error) {
+    console.error('Cannot find user', error)
+    throw new Error('Cannot find user.')
+  }
 }
 
 export const updateRoom = async ({
