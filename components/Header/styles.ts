@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import Avatar from 'react-avatar'
 
 import { ImCog } from 'react-icons/im'
+import { Button as OriginalButton } from '..'
 
 export const Container = styled.div`
   display: flex;
@@ -50,4 +51,9 @@ export const UserAvatar = styled(Avatar)`
   cursor: pointer;
   /* box-shadow: 0px 0px 13px -6px #000000; */
   box-shadow: 0px 5px 15px 1px rgba(178, 178, 178, 0.74);
+`
+
+export const SignInButton = styled(OriginalButton)`
+  width: 100px;
+  height: 50px;
 `

@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { HeaderImage } from '../Header/styles'
 import Button from '../../components/Button'
 interface PanelProps {
   imHost: boolean
@@ -71,12 +70,6 @@ export const ImageContainer = styled.div`
 
   width: 100%;
   margin-bottom: ${({ theme }) => theme.margins.m};
-`
-
-export const MinPokerImage = styled(HeaderImage)`
-  position: relative;
-  width: 300px;
-  opacity: 0.2;
 `
 
 export const CardsContainer = styled.div`

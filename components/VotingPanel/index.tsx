@@ -7,11 +7,9 @@ import {
   InfoContainer,
   InfoText,
   InfoTextContainer,
-  MinPokerImage,
   Panel,
   PlayStopButton,
   PlayStopButtonText,
-  StartVoting,
 } from './styles'
 
 import { FaPlay, FaStop } from 'react-icons/fa'

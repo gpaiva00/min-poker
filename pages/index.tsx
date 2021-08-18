@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 
 import { PageContainer } from '../styles/Home.styles'
 
@@ -12,8 +12,11 @@ import { DEFAULT_PARTICIPANT, STORAGE_KEY_USER } from '../constants'
 
 import { UserInfo } from '../typings'
 import { MainContainer } from '../styles/global'
+import AccountModal from '../components/AccountModal'
 
 const Home: FC = () => {
+  const [toggleAccountModal, setToggleAccountModal] = useState(false)
+
   const { storeItem, getStoredItem } = usePersistedState()
 
   const userInfo: UserInfo = getStoredItem(
@@ -24,7 +27,16 @@ const Home: FC = () => {
   return (
     <MainContainer>
       <main>
-        <Header showOptions={false} />
+        <AccountModal
+          toggle={toggleAccountModal}
+          setToggleModal={setToggleAccountModal}
+        />
+
+        <Header
+          showOptions={false}
+          setToggleAccountModal={setToggleAccountModal}
+        />
+
         <LatestRooms userInfo={userInfo} />
 
         <PageContainer>

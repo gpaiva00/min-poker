@@ -41,11 +41,12 @@ export const authenticateAnonymously = () => {
   return firebase.auth().signInAnonymously()
 }
 
-export const createRoom = async ({ roomId, roomName, hostId, hostName }) => {
+export const createRoom = async ({ roomName, hostId }): Promise<string> => {
   await authenticateAnonymously()
+  const roomId = idGenerator()
 
   try {
-    const saveOnDB = {
+    const room = {
       created: firebase.firestore.FieldValue.serverTimestamp(),
       id: roomId,
       name: roomName,
@@ -53,19 +54,14 @@ export const createRoom = async ({ roomId, roomName, hostId, hostName }) => {
       isVoting: false,
       showResults: false,
       results: DEFAULT_RESULT,
-      participants: [
-        {
-          vote: '',
-          name: hostName,
-          id: hostId,
-          viewerMode: false,
-        },
-      ],
     }
 
-    await db.collection(ROOM_COLLECTION).doc(roomId).set(saveOnDB)
+    await db.collection(ROOM_COLLECTION).doc(roomId).set(room)
     await updateRoomHistory({ roomId, userId: hostId, roomName })
-  } catch (error) {}
+    return roomId
+  } catch (error) {
+    console.error('Error creating room', error)
+  }
 }
 
 export const createUser = async ({
@@ -86,8 +82,6 @@ export const createUser = async ({
     }
 
     await db.collection(USER_COLLECTION).doc(id).set(user)
-    console.warn({ user })
-
     return user
   } catch (error) {
     console.error('Error trying to create user', error)

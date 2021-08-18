@@ -1,16 +1,20 @@
 import { useState } from 'react'
+import { STORAGE_TOKEN_KEY } from '../constants'
 
 export const useToken = () => {
+  const isRendered = typeof window !== 'undefined'
+
   const getToken = () => {
-    const tokenString = localStorage.getItem('token')
+    if (!isRendered) return ''
+    const tokenString = localStorage.getItem(STORAGE_TOKEN_KEY)
     const userToken = JSON.parse(tokenString)
     return userToken?.token
   }
 
-  const [token, setToken] = useState(getToken())
+  const [token, setToken] = useState<string>(getToken())
 
   const saveToken = (token: string) => {
-    localStorage.setItem('token', JSON.stringify({ token }))
+    localStorage.setItem(STORAGE_TOKEN_KEY, JSON.stringify({ token }))
     setToken(token)
   }
 

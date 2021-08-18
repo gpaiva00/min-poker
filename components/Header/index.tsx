@@ -2,27 +2,36 @@ import React, { FC } from 'react'
 import Link from 'next/link'
 import MinPokerTitle from '../MinPokerTitle'
 
+import { signIn, useSession, getSession } from 'next-auth/client'
+
 import {
   Container,
   OptionsContainer,
   Options,
   OptionsIcon,
   UserAvatar,
+  SignInButton,
 } from './styles'
 interface HeaderProps {
   setToggleOptionsModal?: React.Dispatch<React.SetStateAction<boolean>>
   setToggleAccountModal?: React.Dispatch<React.SetStateAction<boolean>>
   isLoading?: boolean
   showOptions?: boolean
-  userName?: string
 }
 
 const Header: FC<HeaderProps> = ({
   showOptions = false,
   setToggleOptionsModal,
   setToggleAccountModal,
-  userName,
 }) => {
+  const [session, loading] = useSession()
+
+  console.warn({ session })
+
+  const handleSignIn = async () => {
+    signIn()
+  }
+
   return (
     <Container>
       <Link href="/">
@@ -35,10 +44,17 @@ const Header: FC<HeaderProps> = ({
             <OptionsIcon size={26} />
           </Options>
         )}
-        {userName && (
+        {!session && (
+          <SignInButton loading={loading} onClick={handleSignIn}>
+            Entrar
+          </SignInButton>
+        )}
+
+        {session && (
           <UserAvatar
             onClick={() => setToggleAccountModal(true)}
-            name={userName}
+            name={session.user.name}
+            src={session.user.image}
             size="50"
             color="black"
             round
@@ -47,6 +63,14 @@ const Header: FC<HeaderProps> = ({
       </OptionsContainer>
     </Container>
   )
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      session: await getSession(context),
+    },
+  }
 }
 
 export default Header

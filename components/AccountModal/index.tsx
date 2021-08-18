@@ -1,4 +1,5 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
+import { useSession, signOut } from 'next-auth/client'
 
 import { Modal } from '..'
 import { i18n } from '../../translate/i18n'
@@ -9,19 +10,21 @@ import { Container, Button } from './styles'
 interface AccountModalProps {
   toggle: boolean
   setToggleModal: React.Dispatch<React.SetStateAction<boolean>>
-  userName: string
-  isLoading: boolean
-  handleSaveRoomOptions({ userName }): any
 }
 
-const AccountModal: FC<AccountModalProps> = ({
-  toggle,
-  setToggleModal,
-  userName: originalUserName,
-  isLoading,
-  handleSaveRoomOptions,
-}) => {
-  const [userName, setUserName] = useState(originalUserName)
+const AccountModal: FC<AccountModalProps> = ({ toggle, setToggleModal }) => {
+  const [session, loading] = useSession()
+  const originalUsername = session?.user?.name
+
+  const [userName, setUserName] = useState(originalUsername)
+
+  const handleSignOut = () => {
+    signOut()
+  }
+
+  useEffect(() => {
+    setUserName(originalUsername)
+  }, [originalUsername])
 
   return (
     <Modal
@@ -31,26 +34,25 @@ const AccountModal: FC<AccountModalProps> = ({
       title="Perfil"
     >
       <Container>
-        <UserAvatar name={userName} size="60" color="black" round />
+        <UserAvatar
+          name={userName}
+          src={session?.user?.image}
+          size="60"
+          color="black"
+          round
+        />
         <InputContainer>
           <Label>{i18n.t('labels.yourName')}</Label>
           <Input
-            placeholder={originalUserName}
+            placeholder={originalUsername}
             value={userName}
             onInput={event => setUserName(event.target.value)}
           />
         </InputContainer>
-        <Button
-          loading={isLoading}
-          onClick={() =>
-            handleSaveRoomOptions({
-              userName: userName.length ? userName : originalUserName,
-            })
-          }
-        >
+        <Button loading={loading} onClick={() => {}}>
           {i18n.t('buttons.save')}
         </Button>
-        <Button loading={isLoading} variant="danger" onClick={() => {}}>
+        <Button loading={loading} variant="danger" onClick={handleSignOut}>
           {i18n.t('buttons.exit')}
         </Button>
       </Container>

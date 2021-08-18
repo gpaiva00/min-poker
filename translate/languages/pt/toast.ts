@@ -2,6 +2,7 @@ export default {
   optionsUpdated: 'Opções salvas com sucesso',
   invitationLinkCopied: 'Link do convite copiado',
   typeValidRoomName: 'Nome da sala inválido',
+  errorSignIn: 'Erro ao fazer login. Tente mais tarde',
   errorCreatingRoom: 'Erro ao criar a sala. Tente mais tarde',
   errorCreatingUser: 'Erro ao criar o usuário. Tente mais tarde',
   errorDeletingRoom: 'Erro ao deletar a sala. Tente mais tarde',

@@ -1,4 +1,5 @@
 import React, { FC, useEffect } from 'react'
+import { Provider as AuthProvider } from 'next-auth/client'
 
 import { AppProps } from 'next/app'
 
@@ -39,37 +40,45 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   }, [])
 
   return (
-    <AnimateSharedLayout>
-      <Feedback
-        email={true}
-        emailRequired={false}
-        feedbackTypes={['Geral', 'Bug', 'Ideia']}
-        projectName="minPOKER"
-        submitButtonMsg={i18n.t('buttons.sendFeedback')}
-        postSubmitButtonMsg={i18n.t('buttons.thanks')}
-        projectId={process.env.NEXT_PUBLIC_FEEDBACK_PROJECT_ID}
-      />
-      <ThemeProvider theme={lightTheme}>
-        <GlobalStyle />
-        <SkeletonTheme
-          color={lightTheme.colors.lightSmoke}
-          highlightColor={lightTheme.colors.smoke}
-        >
-          <Component {...pageProps} />
-        </SkeletonTheme>
-        <ToastContainer
-          position="bottom-center"
-          autoClose={5000}
-          hideProgressBar
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable={false}
-          pauseOnHover
+    <AuthProvider
+      options={{
+        clientMaxAge: 0,
+        keepAlive: 0,
+      }}
+      session={pageProps.session}
+    >
+      <AnimateSharedLayout>
+        <Feedback
+          email={true}
+          emailRequired={false}
+          feedbackTypes={['Geral', 'Bug', 'Ideia']}
+          projectName="minPOKER"
+          submitButtonMsg={i18n.t('buttons.sendFeedback')}
+          postSubmitButtonMsg={i18n.t('buttons.thanks')}
+          projectId={process.env.NEXT_PUBLIC_FEEDBACK_PROJECT_ID}
         />
-      </ThemeProvider>
-    </AnimateSharedLayout>
+        <ThemeProvider theme={lightTheme}>
+          <GlobalStyle />
+          <SkeletonTheme
+            color={lightTheme.colors.lightSmoke}
+            highlightColor={lightTheme.colors.smoke}
+          >
+            <Component {...pageProps} />
+          </SkeletonTheme>
+          <ToastContainer
+            position="bottom-center"
+            autoClose={5000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable={false}
+            pauseOnHover
+          />
+        </ThemeProvider>
+      </AnimateSharedLayout>
+    </AuthProvider>
   )
 }
 

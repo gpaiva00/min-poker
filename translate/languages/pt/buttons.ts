@@ -11,5 +11,6 @@ export default {
   confirm: 'Confirmar',
   sendFeedback: 'Enviar Feedback',
   thanks: 'Obrigado!',
+  signInWithGithub: 'Entrar com Github',
   signInWithGoogle: 'Entrar com Google',
 }

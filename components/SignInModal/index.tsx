@@ -4,24 +4,26 @@ import GoogleLogin, { GoogleLoginResponse } from 'react-google-login'
 import { Modal } from '..'
 import { STORAGE_TOKEN_KEY } from '../../constants'
 import { usePersistedState } from '../../hooks'
+import { useToken } from '../../hooks/useToken'
 import { createUser } from '../../services/firebase'
 import { i18n } from '../../translate/i18n'
-import { IGoogleUserProps } from '../../typings/IUser'
 import Button from '../Button'
 import MinPokerTitle from '../MinPokerTitle'
 import Toast from '../Toast'
 import { Container, Description } from './styles'
 
-interface CreateAccountModalProps {
+interface SignInModalProps {
   toggle: boolean
   setToggleModal: React.Dispatch<React.SetStateAction<boolean>>
+  setHostId: React.Dispatch<React.SetStateAction<string>>
 }
 
-const CreateAccountModal: FC<CreateAccountModalProps> = ({
+const SignInModal: FC<SignInModalProps> = ({
   toggle,
   setToggleModal,
+  setHostId,
 }) => {
-  const { storeItem } = usePersistedState()
+  const { setToken } = useToken()
 
   const handleSignIn = async (googleUser: GoogleLoginResponse) => {
     try {
@@ -29,8 +31,6 @@ const CreateAccountModal: FC<CreateAccountModalProps> = ({
         accessToken,
         profileObj: { googleId, name, email, imageUrl },
       } = googleUser
-
-      storeItem(STORAGE_TOKEN_KEY, accessToken)
 
       console.warn('googleData', { name, email, imageUrl })
 
@@ -40,7 +40,11 @@ const CreateAccountModal: FC<CreateAccountModalProps> = ({
         avatarURL: imageUrl,
         email,
       })
+
       console.warn({ returnedEmail })
+      setHostId(googleId)
+      setToken(accessToken)
+      setToggleModal(false)
     } catch (error) {
       console.error('Error creating error', error)
       Toast({
@@ -92,4 +96,4 @@ const CreateAccountModal: FC<CreateAccountModalProps> = ({
   )
 }
 
-export default CreateAccountModal
+export default SignInModal

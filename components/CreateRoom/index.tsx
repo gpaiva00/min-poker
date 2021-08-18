@@ -1,22 +1,17 @@
 import React, { FC, useState } from 'react'
-
+import { useSession } from 'next-auth/client'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/router'
 
-import { generateNickName, idGenerator, validateInputValue } from '../../utils'
+import { validateInputValue } from '../../utils'
 import { createRoom, firebaseAnalytics } from '../../services/firebase'
-import {
-  ANIMATION_DURATION,
-  STORAGE_KEY_USER,
-  STORAGE_TOKEN_KEY,
-} from '../../constants'
+import { ANIMATION_DURATION } from '../../constants'
 import { i18n } from '../../translate/i18n'
 
 import { InstructionText, InputContainer } from './styles'
 import { Input, Button, Toast } from '..'
 import { UserInfo } from '../../typings'
-import { usePersistedState } from '../../hooks'
-import CreateAccountModal from '../CreateAccountModal'
+import SignInModal from '../SignInModal'
 
 interface CreateRoomProps {
   userInfo: UserInfo
@@ -24,18 +19,16 @@ interface CreateRoomProps {
 }
 
 const CreateRoom: FC<CreateRoomProps> = ({ userInfo, storeItem }) => {
+  const [hostId, setHostId] = useState('')
   const [inputValue, setInputValue] = useState('')
   const [loading, setLoading] = useState(false)
-  const [toggleCreateAccountModal, setToggleCreateAccountModal] = useState(
-    false
-  )
+  const [toggleSignInModal, setToggleSignInModal] = useState(false)
 
-  const { getStoredItem } = usePersistedState()
+  const [session] = useSession()
   const router = useRouter()
 
   const handleCreateRoom = async () => {
     setLoading(true)
-    let hostName: string, hostId: string
 
     if (!validateInputValue(inputValue)) {
       setLoading(false)
@@ -46,27 +39,14 @@ const CreateRoom: FC<CreateRoomProps> = ({ userInfo, storeItem }) => {
     }
 
     try {
-      if (!getStoredItem(STORAGE_TOKEN_KEY)) {
-        setToggleCreateAccountModal(true)
-        setLoading(false)
+      if (!session) {
+        router.push('/signin')
         return
-        // throw new Error()
       }
-      // if (!userInfo.userId) {
-      //   hostName = generateNickName()
-      //   hostId = idGenerator()
 
-      //   storeItem(STORAGE_KEY_USER, { name: hostName, userId: hostId })
-      // } else {
-      //   const { name, userId } = userInfo
-      //   hostName = name
-      //   hostId = userId
-      // }
-
-      const roomId = idGenerator()
       const roomName = inputValue
+      const roomId = await createRoom({ roomName, hostId })
 
-      await createRoom({ roomId, roomName, hostId, hostName })
       setLoading(false)
       firebaseAnalytics().logEvent('create_room')
       router.push(`voting/${roomId}`)
@@ -86,9 +66,10 @@ const CreateRoom: FC<CreateRoomProps> = ({ userInfo, storeItem }) => {
 
   return (
     <>
-      <CreateAccountModal
-        toggle={toggleCreateAccountModal}
-        setToggleModal={setToggleCreateAccountModal}
+      <SignInModal
+        toggle={toggleSignInModal}
+        setToggleModal={setToggleSignInModal}
+        setHostId={setHostId}
       />
 
       <motion.p
