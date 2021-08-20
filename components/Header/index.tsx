@@ -1,8 +1,8 @@
 import React, { FC } from 'react'
-import Link from 'next/link'
 import MinPokerTitle from '../MinPokerTitle'
 
-import { signIn, useSession, getSession } from 'next-auth/client'
+import { useSession, getSession } from 'next-auth/client'
+import { useRouter } from 'next/router'
 
 import {
   Container,
@@ -17,26 +17,29 @@ interface HeaderProps {
   setToggleAccountModal?: React.Dispatch<React.SetStateAction<boolean>>
   isLoading?: boolean
   showOptions?: boolean
+  user: {
+    name: string
+    image: string
+  }
+  loading?: boolean
 }
 
 const Header: FC<HeaderProps> = ({
   showOptions = false,
   setToggleOptionsModal,
   setToggleAccountModal,
+  user,
+  loading,
 }) => {
-  const [session, loading] = useSession()
-
-  console.warn({ session })
+  const router = useRouter()
 
   const handleSignIn = async () => {
-    signIn()
+    router.push(`/signin?redirectTo=${router.asPath}`)
   }
 
   return (
     <Container>
-      <Link href="/">
-        <MinPokerTitle />
-      </Link>
+      <MinPokerTitle />
 
       <OptionsContainer>
         {showOptions && (
@@ -44,17 +47,17 @@ const Header: FC<HeaderProps> = ({
             <OptionsIcon size={26} />
           </Options>
         )}
-        {!session && (
+        {!user.name && (
           <SignInButton loading={loading} onClick={handleSignIn}>
             Entrar
           </SignInButton>
         )}
 
-        {session && (
+        {user.name && (
           <UserAvatar
             onClick={() => setToggleAccountModal(true)}
-            name={session.user.name}
-            src={session.user.image}
+            name={user.name}
+            src={user.image}
             size="50"
             color="black"
             round

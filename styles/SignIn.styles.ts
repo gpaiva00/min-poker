@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Button as OriginalButton } from '../components'
 import { Text } from '../components/Button/styles'
+import OriginalMinPokerTitle from '../components/MinPokerTitle'
 
 export const PageContainer = styled.div`
   display: flex;
@@ -41,4 +42,8 @@ export const ButtonsContainer = styled.div`
   height: 150px;
   width: 340px;
   margin-top: ${({ theme }) => theme.margins.m};
+`
+
+export const MinPokerTitle = styled(OriginalMinPokerTitle)`
+  padding-top: ${({ theme }) => theme.margins.m};
 `

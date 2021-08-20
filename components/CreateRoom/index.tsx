@@ -11,15 +11,14 @@ import { i18n } from '../../translate/i18n'
 import { InstructionText, InputContainer } from './styles'
 import { Input, Button, Toast } from '..'
 import { UserInfo } from '../../typings'
-import SignInModal from '../SignInModal'
 
 interface CreateRoomProps {
-  userInfo: UserInfo
-  storeItem: (key: string, item: object) => void
+  // userInfo: UserInfo
+  // storeItem: (key: string, item: object) => void
 }
 
-const CreateRoom: FC<CreateRoomProps> = ({ userInfo, storeItem }) => {
-  const [hostId, setHostId] = useState('')
+const CreateRoom: FC<CreateRoomProps> = () => {
+  // const [hostId, setHostId] = useState('')
   const [inputValue, setInputValue] = useState('')
   const [loading, setLoading] = useState(false)
   const [toggleSignInModal, setToggleSignInModal] = useState(false)
@@ -45,7 +44,10 @@ const CreateRoom: FC<CreateRoomProps> = ({ userInfo, storeItem }) => {
       }
 
       const roomName = inputValue
-      const roomId = await createRoom({ roomName, hostId })
+      const roomId = await createRoom({
+        roomName,
+        hostId: session?.user?.email,
+      })
 
       setLoading(false)
       firebaseAnalytics().logEvent('create_room')
@@ -66,12 +68,6 @@ const CreateRoom: FC<CreateRoomProps> = ({ userInfo, storeItem }) => {
 
   return (
     <>
-      <SignInModal
-        toggle={toggleSignInModal}
-        setToggleModal={setToggleSignInModal}
-        setHostId={setHostId}
-      />
-
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

@@ -38,7 +38,7 @@ const OptionsModal: FC<OptionsModalProps> = ({
 
   return (
     <Modal
-      height="380"
+      height={380}
       toggle={toggle}
       setToggleModal={setToggleModal}
       title={i18n.t('titles.options')}

@@ -18,8 +18,10 @@ import { DefaultTitle } from '../../styles/global'
 import { Button } from '..'
 
 interface RoomTitleProps {
-  roomId: string
-  roomName: string
+  room: {
+    id: string
+    name: string
+  }
   isLoading: boolean
   imHost: boolean
   handleDeleteRoom(): void
@@ -27,14 +29,13 @@ interface RoomTitleProps {
 }
 
 const RoomTitle: FC<RoomTitleProps> = ({
-  roomId,
-  roomName,
+  room,
   isLoading,
   handleDeleteRoom,
   handleExitRoom,
   imHost,
 }) => {
-  const inviteLink = returnInviteLink(roomId)
+  const inviteLink = returnInviteLink(room.id)
 
   return (
     <Container>
@@ -50,7 +51,7 @@ const RoomTitle: FC<RoomTitleProps> = ({
             }}
           >
             <TitleContainer>
-              <Title>{roomName}</Title>
+              <Title>{room.name}</Title>
               <LinkIcon size={26} />
             </TitleContainer>
           </CopyToClipboard>

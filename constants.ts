@@ -1,4 +1,4 @@
-import { RoomHistory } from './typings'
+import { RoomHistory, UserInfo } from './typings'
 import { Participant, Result, Room } from './typings/Room'
 
 export const STORAGE_KEY_USER = '@minPoker'
@@ -26,6 +26,13 @@ export const RESULTS_TEXT = {
 
 export const DEFAULT_THEME_OBJ = {
   title: 'light',
+}
+
+export const DEFAULT_USER: UserInfo = {
+  userId: '',
+  email: '',
+  name: '',
+  image: '',
 }
 
 export const DEFAULT_RESULT: Result = {

@@ -1,6 +1,6 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { signIn } from 'next-auth/client'
+import { signIn, useSession } from 'next-auth/client'
 import { motion } from 'framer-motion'
 import { FaGithub, FaGoogle } from 'react-icons/fa'
 
@@ -10,32 +10,55 @@ import {
   ButtonsContainer,
   SignInButton,
   ButtonText,
+  MinPokerTitle,
 } from '../../styles/SignIn.styles'
 
 import { ANIMATION_DURATION } from '../../constants'
 import { MainContainer } from '../../styles/global'
-import MinPokerTitle from '../../components/MinPokerTitle'
 import { i18n } from '../../translate/i18n'
 import { Toast } from '../../components'
+import { createUserIfNotExist } from '../../services/firebase'
 
-interface SignInProps {
-  redirectTo?: string
-}
+const SignIn: FC = () => {
+  const [isLoading, setIsLoading] = useState(false)
 
-const SignIn: FC<SignInProps> = ({ redirectTo = '/' }) => {
   const router = useRouter()
+  const [session] = useSession()
+
+  const redirectTo: string = router.query?.redirectTo || '/'
+
+  // console.warn('signInRedirect', redirectTo)
 
   const handleSignIn = async (provider: string) => {
+    setIsLoading(true)
     try {
-      // TODO find user by email to register if not exist
-
       await signIn(provider, { redirect: false })
-      router.push(redirectTo)
     } catch (error) {
+      setIsLoading(false)
       console.error('Error trying to sign in', error)
       Toast({ type: 'error', message: i18n.t('toast.errorSignIn') })
     }
   }
+
+  useEffect(() => {
+    const createUser = async () => {
+      // console.warn({ user: session?.user })
+
+      if (!session) return
+      setIsLoading(true)
+
+      await createUserIfNotExist({
+        email: session?.user?.email,
+        name: session?.user?.name,
+        avatarURL: session?.user?.image,
+      })
+
+      router.push(redirectTo)
+      setIsLoading(false)
+    }
+
+    createUser()
+  }, [session])
 
   return (
     <MainContainer>
@@ -58,11 +81,17 @@ const SignIn: FC<SignInProps> = ({ redirectTo = '/' }) => {
             transition={{ ease: 'easeInOut', duration: ANIMATION_DURATION }}
           >
             <ButtonsContainer>
-              <SignInButton onClick={() => handleSignIn('google')}>
+              <SignInButton
+                loading={isLoading}
+                onClick={() => handleSignIn('google')}
+              >
                 <FaGoogle size="20" />
                 <ButtonText>{i18n.t('buttons.signInWithGoogle')}</ButtonText>
               </SignInButton>
-              <SignInButton onClick={() => handleSignIn('github')}>
+              <SignInButton
+                loading={isLoading}
+                onClick={() => handleSignIn('github')}
+              >
                 <FaGithub size="20" />
                 <ButtonText>{i18n.t('buttons.signInWithGithub')}</ButtonText>
               </SignInButton>

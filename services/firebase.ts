@@ -2,16 +2,22 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/analytics'
 import 'firebase/firestore'
+
 import { DEFAULT_RESULT } from '../constants'
 import {
   ROOM_COLLECTION,
   ROOM_HISTORY_COLLECTION,
   USER_COLLECTION,
+  USER_ROOM_COLLECTION,
 } from './constants'
-import { VerifyIfIsNotParticipantProps } from '../typings/Services'
-import { Participant, RoomHistory, RoomHistoryItems } from '../typings'
-import { idGenerator } from '../utils'
-import { IUserProps } from '../typings/IUser'
+import { VerifyIfIsParticipantProps } from '../typings/Services'
+import {
+  IUserProps,
+  Participant,
+  RoomHistory,
+  RoomHistoryItems,
+} from '../typings'
+import { generateFakeEmail, idGenerator } from '../utils'
 import { ICreateUserProps } from './typings/IUserService'
 
 const firebaseConfig = {
@@ -25,14 +31,18 @@ const firebaseConfig = {
 }
 
 let db: firebase.firestore.Firestore = null
+let app = null
 
 if (!firebase.apps.length) {
   try {
-    firebase.initializeApp(firebaseConfig)
+    app = firebase.initializeApp(firebaseConfig)
     db = firebase.firestore()
   } catch (error) {
-    console.error('Error initializing firebase', error.code, error.message)
+    console.error(error.code, error.message)
   }
+} else {
+  app = firebase.app()
+  db = firebase.firestore(app)
 }
 
 export const firebaseAnalytics = firebase.analytics
@@ -64,20 +74,23 @@ export const createRoom = async ({ roomName, hostId }): Promise<string> => {
   }
 }
 
-export const createUser = async ({
+export const createUserIfNotExist = async ({
   id = idGenerator(),
   name,
   avatarURL,
   email,
 }: ICreateUserProps): Promise<IUserProps> => {
-  const { user } = await findUserByEmail(email)
+  await authenticateAnonymously()
+  const userEmail = email || generateFakeEmail(name)
+
+  const { user } = await findUserByEmail(userEmail)
   if (user) return user
 
   try {
     const user = {
       id,
       name,
-      email,
+      email: userEmail,
       avatarURL,
     }
 
@@ -88,13 +101,11 @@ export const createUser = async ({
   }
 }
 
-export const findUserByEmail = async (userEmail: string) => {
-  await authenticateAnonymously()
-
+export const findUserByEmail = async (email: string) => {
   try {
     const userRef = await db
       .collection(USER_COLLECTION)
-      .where('email', '==', userEmail)
+      .where('email', '==', email)
       .get()
 
     const user: IUserProps = userRef?.docs?.shift()?.data()
@@ -102,7 +113,7 @@ export const findUserByEmail = async (userEmail: string) => {
 
     return { user, userRef, userPath }
   } catch (error) {
-    console.error('Cannot find user', error)
+    console.error('Cannot find user', error.message)
     throw new Error('Cannot find user.')
   }
 }
@@ -187,13 +198,36 @@ export const getRoomFromId = async (roomId: string | string[]) => {
       .where('id', '==', roomId)
       .get()
 
-    const room = roomRef.docs.shift().data()
-    const roomPath = roomRef.docs[0].ref.path
+    const room = roomRef?.docs?.shift()?.data()
+    const roomPath = roomRef?.docs[0]?.ref?.path
 
     return { room, roomRef, roomPath }
   } catch (error) {
-    console.error('Cannot find room', error)
+    console.error('Cannot find room', error.message)
     throw new Error('Cannot find room.')
+  }
+}
+
+export const getUserRoomFromIds = async (
+  roomId: string | string[],
+  userId: string
+) => {
+  await authenticateAnonymously()
+
+  try {
+    const userRoomRef = await db
+      .collection(USER_ROOM_COLLECTION)
+      .where('userId', '==', userId)
+      .where('roomId', '==', roomId)
+      .get()
+
+    const userRoom = userRoomRef?.docs?.shift()?.data()
+    const userRoomPath = userRoomRef?.docs[0]?.ref?.path
+
+    return { room: userRoom, userRoomRef, roomPath: userRoomPath }
+  } catch (error) {
+    console.error('Cannot find user room', error)
+    throw new Error('Cannot find user room.')
   }
 }
 
@@ -225,7 +259,7 @@ export const getRoomHistoryFromUserId = async (userId: string | string[]) => {
         roomHistory: {} as RoomHistory,
       }
 
-    const roomHistory: RoomHistory = roomHistoryRef?.docs?.shift().data()
+    const roomHistory: RoomHistory = roomHistoryRef?.docs?.shift()?.data()
     const roomHistoryPath = roomHistoryRef?.docs[0]?.ref?.path
 
     return { roomHistory, roomHistoryRef, roomHistoryPath }
@@ -235,19 +269,13 @@ export const getRoomHistoryFromUserId = async (userId: string | string[]) => {
   }
 }
 
-export const verifyIfIsNotParticipant = async ({
-  room,
+export const verifyIfIsParticipant = async ({
   userId,
   roomId,
-}: VerifyIfIsNotParticipantProps) => {
-  let myRoom = room
+}: VerifyIfIsParticipantProps) => {
+  const { room } = await getUserRoomFromIds(roomId, userId)
 
-  if (!room) {
-    const { room } = await getRoomFromId(roomId)
-    myRoom = room
-  }
-
-  return myRoom.participants.findIndex(({ id }) => id === userId) === -1
+  return !!room
 }
 
 export const updateRoomHistory = async ({ roomId, userId, roomName }) => {
@@ -290,30 +318,32 @@ export const updateRoomHistory = async ({ roomId, userId, roomName }) => {
   }
 }
 
-export const enterRoom = async ({ roomId, userName, userId }) => {
+export const enterRoom = async ({ roomId, userId }) => {
+  if (!roomId || !userId) return
+
   try {
-    const { room, roomPath } = await getRoomFromId(roomId)
+    const { room } = await getRoomFromId(roomId)
 
-    if (verifyIfIsNotParticipant({ room, userId })) {
-      const newParticipants: Participant[] = [
-        ...room.participants,
-        {
-          id: userId,
-          name: userName,
-          vote: '',
-          viewerMode: false,
-        },
-      ]
+    console.warn('enter room Room', { room, roomId })
 
-      await db.doc(roomPath).update({
-        ...room,
-        participants: newParticipants,
-      })
+    const isParticipant = await verifyIfIsParticipant({ roomId, userId })
+    const userRoomId = idGenerator()
+
+    if (!isParticipant) {
+      const userRoom = {
+        id: userRoomId,
+        userId,
+        roomId,
+        vote: '',
+        viewerMode: false,
+      }
+
+      await db.collection(USER_ROOM_COLLECTION).doc(userRoomId).set(userRoom)
     }
 
     await updateRoomHistory({ roomId, userId, roomName: room.name })
   } catch (error) {
-    console.error('Cannot enter room', error)
+    console.error('Cannot enter room', error.message)
     throw new Error('Cannot enter room. Try later.')
   }
 }

@@ -19,7 +19,7 @@ const AccountModal: FC<AccountModalProps> = ({ toggle, setToggleModal }) => {
   const [userName, setUserName] = useState(originalUsername)
 
   const handleSignOut = () => {
-    signOut()
+    signOut({ callbackUrl: '/' })
   }
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const AccountModal: FC<AccountModalProps> = ({ toggle, setToggleModal }) => {
 
   return (
     <Modal
-      height="400"
+      height={400}
       toggle={toggle}
       setToggleModal={setToggleModal}
       title="Perfil"
@@ -53,7 +53,7 @@ const AccountModal: FC<AccountModalProps> = ({ toggle, setToggleModal }) => {
           {i18n.t('buttons.save')}
         </Button>
         <Button loading={loading} variant="danger" onClick={handleSignOut}>
-          {i18n.t('buttons.exit')}
+          {i18n.t('buttons.signOut')}
         </Button>
       </Container>
     </Modal>

@@ -1,28 +1,15 @@
 import React, { FC, useState } from 'react'
-
-import { PageContainer } from '../styles/Home.styles'
+import { useSession } from 'next-auth/client'
 
 import { Footer, Header, LatestRooms } from '../components'
-
-import { CreateRoom } from '../components'
-
-import usePersistedState from '../hooks/usePersistedState'
-
-import { DEFAULT_PARTICIPANT, STORAGE_KEY_USER } from '../constants'
-
-import { UserInfo } from '../typings'
-import { MainContainer } from '../styles/global'
 import AccountModal from '../components/AccountModal'
+import { CreateRoom } from '../components'
+import { PageContainer } from '../styles/Home.styles'
+import { MainContainer } from '../styles/global'
 
 const Home: FC = () => {
   const [toggleAccountModal, setToggleAccountModal] = useState(false)
-
-  const { storeItem, getStoredItem } = usePersistedState()
-
-  const userInfo: UserInfo = getStoredItem(
-    STORAGE_KEY_USER,
-    DEFAULT_PARTICIPANT
-  )
+  const [session, loading] = useSession()
 
   return (
     <MainContainer>
@@ -35,12 +22,17 @@ const Home: FC = () => {
         <Header
           showOptions={false}
           setToggleAccountModal={setToggleAccountModal}
+          loading={loading}
+          user={{
+            name: session?.user?.name,
+            image: session?.user?.image,
+          }}
         />
 
-        <LatestRooms userInfo={userInfo} />
+        <LatestRooms />
 
         <PageContainer>
-          <CreateRoom userInfo={userInfo} storeItem={storeItem} />
+          <CreateRoom />
         </PageContainer>
         <Footer />
       </main>

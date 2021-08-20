@@ -3,12 +3,11 @@ import Rodal from 'rodal'
 import 'rodal/lib/rodal.css'
 
 import { Title, Header, CloseIcon } from './styles'
-
 interface ModalProps {
   toggle: boolean
   title: string
   setToggleModal: React.Dispatch<React.SetStateAction<boolean>>
-  height?: '250' | '380' | '400' | '480'
+  height?: 250 | 380 | 400 | 480
 }
 
 const Modal: FC<ModalProps> = ({
@@ -16,7 +15,7 @@ const Modal: FC<ModalProps> = ({
   title,
   children,
   setToggleModal,
-  height = '300',
+  height = 300,
 }) => (
   <Rodal
     animation="slideUp"
@@ -24,7 +23,7 @@ const Modal: FC<ModalProps> = ({
     onClose={() => {}}
     showCloseButton={false}
     height={height}
-    width="340"
+    width={340}
   >
     <Header>
       <Title>{title}</Title>

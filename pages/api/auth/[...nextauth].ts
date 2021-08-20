@@ -23,7 +23,7 @@ export default NextAuth({
       clientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
       clientSecret: process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET,
       // https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
-      scope: 'read:user',
+      scope: 'read:user,user:email',
     }),
     Providers.Google({
       clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
