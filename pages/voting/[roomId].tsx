@@ -20,7 +20,7 @@ import {
   STORAGE_KEY_USER,
 } from '../../constants'
 import { i18n } from '../../translate/i18n'
-import { calculateVotingResult, validateRoomId, getUserInfo } from '../../utils'
+import { calculateVotingResult, useUserInfo, validateRoomId } from '../../utils'
 import OptionsModal from '../../components/OptionsModal'
 import RemoveParticipantModal from '../../components/RemoveParticipantModal'
 import {
@@ -37,13 +37,10 @@ import {
 } from '../../services/firebase'
 import { MainContainer } from '../../styles/global'
 import AccountModal from '../../components/AccountModal'
-import { useSession } from 'next-auth/client'
 
 const Voting: FC = () => {
-  const [me, setMe] = useState<Participant>(DEFAULT_PARTICIPANT)
   const [room, setRoom] = useState<Room>(DEFAULT_ROOM)
   const [isVoting, setIsVoting] = useState(false)
-  const [session, loading] = useSession()
 
   const [toggleOptionsModal, setToggleOptionsModal] = useState(false)
   const [toggleAccountModal, setToggleAccountModal] = useState(false)
@@ -55,9 +52,8 @@ const Voting: FC = () => {
   const router = useRouter()
   const { roomId } = router.query
 
-  const userInfo = getUserInfo(session)
+  const { userInfo, session, loading } = useUserInfo()
   const imHost = room.hostId === userInfo?.email
-  console.warn({ room: room.hostId, user: userInfo.email })
 
   const handleDeleteRoom = async () => {
     try {
@@ -281,11 +277,11 @@ const Voting: FC = () => {
   useEffect(() => {
     setIsLoading(true)
     const verifyParticipant = async () => {
-      console.warn({
-        user: userInfo,
-        userEmail: !!userInfo.email,
-        roomId: !!roomId,
-      })
+      // console.warn({
+      //   user: userInfo,
+      //   userEmail: !!userInfo.email,
+      //   roomId: !!roomId,
+      // })
 
       if (!session) return router.push(`/signin?redirectTo=${router.asPath}`)
 
@@ -298,8 +294,6 @@ const Voting: FC = () => {
         userId: userInfo.email,
         roomId,
       })
-
-      console.warn({ isParticipant })
 
       if (!isParticipant) {
         router.push(`/invitation/${roomId}`)
@@ -318,10 +312,6 @@ const Voting: FC = () => {
           .shift()
 
         setRoom(updatedRoom)
-        // const me = updatedRoom.participants.find(
-        //   ({ id }) => id === userInfo.userId
-        // )
-        // setMe(me ? me : DEFAULT_PARTICIPANT)
         setIsLoading(false)
       },
       error: () => {
@@ -329,7 +319,7 @@ const Voting: FC = () => {
       },
     })
     return unsubscribe
-  }, [roomId, session])
+  }, [roomId, userInfo, session])
 
   return (
     <MainContainer>
@@ -377,18 +367,18 @@ const Voting: FC = () => {
             handleRemoveParticipant={handleShowConfirmModal}
             room={room}
             imHost={imHost}
-            me={me}
+            me={userInfo}
             userInfo={userInfo}
             loading={isLoading}
           /> */}
-          {/* <VotingPanel
+          <VotingPanel
             setStartVoting={handleStartVoting}
             handleVoteClick={handleVoteClick}
             room={room}
-            me={me}
+            me={userInfo}
             imHost={imHost}
             loading={isLoading}
-          /> */}
+          />
         </PageContainer>
       </main>
     </MainContainer>

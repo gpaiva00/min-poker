@@ -13,18 +13,16 @@ import { ANIMATION_DURATION, DELAY_DURATION } from '../../constants'
 import { i18n } from '../../translate/i18n'
 import { RoomHistory } from '../../typings'
 import { DEFAULT_ROOM_HISTORY } from '../../constants'
-import { getUserInfo, sortRoomHistoryByDate } from '../../utils'
+import { sortRoomHistoryByDate, useUserInfo } from '../../utils'
 import { DefaultTitle } from '../../styles/global'
-import { useSession } from 'next-auth/client'
 
 const LatestRooms: FC = () => {
+  const { userInfo, session, loading } = useUserInfo()
+
   const [roomHistory, setRoomHistory] = useState<RoomHistory>(
     DEFAULT_ROOM_HISTORY
   )
-  const [session, loading] = useSession()
   const [isLoading, setIsLoading] = useState(loading)
-
-  const userInfo = getUserInfo(session)
 
   useEffect(() => {
     setIsLoading(true)
@@ -57,7 +55,7 @@ const LatestRooms: FC = () => {
     } catch {
       setIsLoading(false)
     }
-  }, [session, setRoomHistory])
+  }, [userInfo, setRoomHistory])
 
   return (
     <Container>

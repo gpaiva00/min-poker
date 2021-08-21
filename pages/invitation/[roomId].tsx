@@ -1,19 +1,15 @@
 import React, { FC, useEffect, useState } from 'react'
-import { useSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
 
-import { DEFAULT_USER } from '../../constants'
-import { UserInfo } from '../../typings/UserInfo'
 import { enterRoom } from '../../services/firebase'
-import { getUserInfo } from '../../utils'
+import { useUserInfo } from '../../utils'
 
 const Invitation: FC = () => {
   const [message, setMessage] = useState('Loading...')
-  const [session, loading] = useSession()
   const router = useRouter()
   const { roomId } = router.query
 
-  const userInfo = getUserInfo(session)
+  const { userInfo, session } = useUserInfo()
 
   useEffect(() => {
     const verifyRoomId = async () => {

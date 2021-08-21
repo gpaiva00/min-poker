@@ -6,6 +6,9 @@ import { i18n } from '../../translate/i18n'
 import { UserAvatar } from '../Header/styles'
 import { Input, InputContainer, Label } from '../Modal/styles'
 import { Container, Button } from './styles'
+import { updateUser } from '../../services/firebase'
+import Toast from '../Toast'
+import { useUserInfo } from '../../hooks/useUserInfo'
 
 interface AccountModalProps {
   toggle: boolean
@@ -13,43 +16,49 @@ interface AccountModalProps {
 }
 
 const AccountModal: FC<AccountModalProps> = ({ toggle, setToggleModal }) => {
-  const [session, loading] = useSession()
-  const originalUsername = session?.user?.name
-
-  const [userName, setUserName] = useState(originalUsername)
+  const {
+    userInfo: { email, name: originalUserName, image },
+    loading,
+  } = useUserInfo()
+  const [userName, setUserName] = useState('')
 
   const handleSignOut = () => {
     signOut({ callbackUrl: '/' })
   }
 
+  const handleUpdateUser = async () => {
+    try {
+      await updateUser({ name: userName, email })
+      Toast({ message: i18n.t('toast.profileUpdated') })
+      setToggleModal(false)
+    } catch (error) {
+      Toast({ type: 'error', message: i18n.t('toast.errorUpdatingUser') })
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
-    setUserName(originalUsername)
-  }, [originalUsername])
+    setUserName(originalUserName)
+  }, [originalUserName])
 
   return (
     <Modal
       height={400}
       toggle={toggle}
       setToggleModal={setToggleModal}
-      title="Perfil"
+      title={i18n.t('titles.profile')}
     >
       <Container>
-        <UserAvatar
-          name={userName}
-          src={session?.user?.image}
-          size="60"
-          color="black"
-          round
-        />
+        <UserAvatar name={userName} src={image} size="60" color="black" round />
         <InputContainer>
           <Label>{i18n.t('labels.yourName')}</Label>
           <Input
-            placeholder={originalUsername}
+            placeholder={originalUserName}
             value={userName}
             onInput={event => setUserName(event.target.value)}
           />
         </InputContainer>
-        <Button loading={loading} onClick={() => {}}>
+        <Button loading={loading} onClick={handleUpdateUser}>
           {i18n.t('buttons.save')}
         </Button>
         <Button loading={loading} variant="danger" onClick={handleSignOut}>

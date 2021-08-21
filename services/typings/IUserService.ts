@@ -4,3 +4,8 @@ export interface ICreateUserProps {
   email: string
   avatarURL: string
 }
+
+export interface IUpdateUserProps {
+  name: string
+  email: string
+}

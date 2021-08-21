@@ -1,5 +1,6 @@
 export default {
   optionsUpdated: 'Opções salvas com sucesso',
+  profileUpdated: 'Perfil atualizado com sucesso',
   invitationLinkCopied: 'Link do convite copiado',
   typeValidRoomName: 'Nome da sala inválido',
   errorSignIn: 'Erro ao fazer login. Tente mais tarde',
@@ -10,6 +11,7 @@ export default {
   errorCalculatingResults: 'Erro ao calcular os resultados. Tente novamente',
   errorToStartVoting: 'Erro ao iniciar a votação. Tente novamente',
   errorChangingName: 'Erro ao atualizar o seu nome. Tente novamente',
+  errorUpdatingUser: 'Erro ao atualizar o usuário. Tente novamente',
   errorSettingVote: 'Erro ao computar seu voto. Tente novamente',
   errorRemovingParticipantFromRoom:
     'Erro ao remover o participante. Tente novamente',

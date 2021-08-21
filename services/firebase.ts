@@ -18,7 +18,7 @@ import {
   RoomHistoryItems,
 } from '../typings'
 import { generateFakeEmail, idGenerator } from '../utils'
-import { ICreateUserProps } from './typings/IUserService'
+import { ICreateUserProps, IUpdateUserProps } from './typings/IUserService'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -98,6 +98,25 @@ export const createUserIfNotExist = async ({
     return user
   } catch (error) {
     console.error('Error trying to create user', error)
+  }
+}
+
+export const updateUser = async ({
+  name,
+  email,
+}: IUpdateUserProps): Promise<IUserProps> => {
+  try {
+    const { user } = await findUserByEmail(email)
+    user.name = name
+
+    await db.collection(USER_COLLECTION).doc(user.id).update(user)
+    // await db.doc(roomPath).update({
+    //   ...updateRoom,
+    //   participants: newParticipants,
+    // })
+    return user
+  } catch (error) {
+    console.error('Error trying to update user', error)
   }
 }
 
