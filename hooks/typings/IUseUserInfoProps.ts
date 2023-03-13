@@ -1,8 +1,10 @@
 import { Session } from 'next-auth'
-import { UserInfo } from '../../typings'
+import { Dispatch, SetStateAction } from 'react'
+import { IUserProps } from '../../typings'
 
 export interface IUseUserInfoProps {
   loading: boolean
-  userInfo: UserInfo
+  userInfo: IUserProps
   session: Session
+  // setUserInfo: Dispatch<SetStateAction<IUserProps>>
 }

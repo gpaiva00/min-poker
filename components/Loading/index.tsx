@@ -11,7 +11,7 @@ const LoadingIcon = styled(AiOutlineLoading)`
     color === 'primary' ? theme.colors.lightText : theme.colors[color]};
 `
 
-const Loading: FC<LoadingProps> = ({ size = 20, color }) => (
+const Loading: FC<LoadingProps> = ({ size = 20, color = 'primary' }) => (
   <motion.div
     initial={{ rotate: 0 }}
     animate={{ rotate: 359 }}

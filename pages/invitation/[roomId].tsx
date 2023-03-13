@@ -1,37 +1,41 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { enterRoom } from '../../services/firebase'
+import { enterRoom } from '../../services/room'
 import { useUserInfo } from '../../utils'
+import { i18n } from '../../translate/i18n'
 
 const Invitation: FC = () => {
-  const [message, setMessage] = useState('Loading...')
+  const [message, setMessage] = useState(i18n.t('descriptions.loading'))
   const router = useRouter()
   const { roomId } = router.query
 
   const { userInfo, session } = useUserInfo()
 
   useEffect(() => {
-    const verifyRoomId = async () => {
+    const verifyParticipant = async () => {
       try {
-        if (!roomId) return
+        if (!roomId || !userInfo.email) return
 
-        if (!session) {
-          router.push(`/signin?redirectTo=/voting/${roomId}`)
-          return
-        }
+        if (!session) return router.push(`/signin?redirectTo=/voting/${roomId}`)
 
-        await enterRoom({ roomId, userId: userInfo.email })
+        setTimeout(async () => {
+          await enterRoom({
+            roomId,
+            userId: userInfo.email,
+            userName: userInfo.name,
+          })
 
-        router.push(`/voting/${roomId}`)
+          router.push(`/voting/${roomId}`)
+        }, 1000)
       } catch (error) {
         console.error('Error trying to set new participant', error)
         setMessage(error.message)
       }
     }
 
-    verifyRoomId()
-  }, [roomId])
+    verifyParticipant()
+  }, [roomId, userInfo])
 
   return <p>{message}</p>
 }

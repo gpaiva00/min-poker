@@ -4,7 +4,7 @@ export default {
   finishVoting: 'Encerrar',
   deleteRoom: 'Excluir sala',
   save: 'Salvar',
-  exitRoom: 'Sair da sala',
+  leaveRoom: 'Sair da sala',
   signOut: 'Sair da conta',
   cancel: 'Cancelar',
   remove: 'Remover',

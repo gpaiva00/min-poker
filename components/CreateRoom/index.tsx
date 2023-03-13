@@ -1,29 +1,24 @@
 import React, { FC, useState } from 'react'
-import { useSession } from 'next-auth/client'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/router'
 
-import { validateInputValue } from '../../utils'
-import { createRoom, firebaseAnalytics } from '../../services/firebase'
+import { useUserInfo, validateInputValue } from '../../utils'
+import { firebaseAnalytics } from '../../services/firebase'
 import { ANIMATION_DURATION } from '../../constants'
 import { i18n } from '../../translate/i18n'
 
 import { InstructionText, InputContainer } from './styles'
 import { Input, Button, Toast } from '..'
-import { UserInfo } from '../../typings'
+import { createRoom } from '../../services/room'
 
-interface CreateRoomProps {
-  // userInfo: UserInfo
-  // storeItem: (key: string, item: object) => void
-}
-
-const CreateRoom: FC<CreateRoomProps> = () => {
-  // const [hostId, setHostId] = useState('')
+const CreateRoom: FC = () => {
+  const {
+    session,
+    userInfo: { email: userEmail },
+  } = useUserInfo()
   const [inputValue, setInputValue] = useState('')
   const [loading, setLoading] = useState(false)
-  const [toggleSignInModal, setToggleSignInModal] = useState(false)
 
-  const [session] = useSession()
   const router = useRouter()
 
   const handleCreateRoom = async () => {
@@ -46,7 +41,7 @@ const CreateRoom: FC<CreateRoomProps> = () => {
       const roomName = inputValue
       const roomId = await createRoom({
         roomName,
-        hostId: session?.user?.email,
+        hostId: userEmail,
       })
 
       setLoading(false)

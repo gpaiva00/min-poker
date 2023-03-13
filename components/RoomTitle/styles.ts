@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { BsLink } from 'react-icons/bs'
-import Button from '../Button'
 import { DefaultTitle } from '../../styles/global'
 
 export const LinkIcon = styled(BsLink)`

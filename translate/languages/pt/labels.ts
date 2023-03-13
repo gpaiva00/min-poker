@@ -1,5 +1,6 @@
 export default {
   roomName: 'Nome da sala',
   yourName: 'Seu nome',
-  viewerMode: 'Modo visualização',
+  yourNameInThisRoom: 'Seu nome nesta sala',
+  viewerMode: 'Modo espectador',
 }

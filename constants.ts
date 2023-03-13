@@ -1,4 +1,4 @@
-import { RoomHistory, UserInfo } from './typings'
+import { IUserProps, RoomHistory, UserInfo } from './typings'
 import { Participant, Result, Room } from './typings/Room'
 
 export const STORAGE_KEY_USER = '@minPoker'
@@ -28,11 +28,19 @@ export const DEFAULT_THEME_OBJ = {
   title: 'light',
 }
 
-export const DEFAULT_USER: UserInfo = {
-  userId: '',
+export const DEFAULT_USER: IUserProps = {
+  id: '',
   email: '',
   name: '',
   image: '',
+  viewerMode: false,
+  imHost: false,
+  vote: '',
+}
+
+export const DEFAULT_USER_ROOM = {
+  roomId: '',
+  participants: [],
 }
 
 export const DEFAULT_RESULT: Result = {
@@ -82,6 +90,7 @@ export const DEFAULT_PARTICIPANT: Participant = {
   name: '',
   vote: '',
   viewerMode: false,
+  imHost: false,
 }
 
 export const CARDS_TO_VOTE = [

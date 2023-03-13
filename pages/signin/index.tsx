@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { signIn, useSession } from 'next-auth/client'
 import { motion } from 'framer-motion'
 import { FaGithub, FaGoogle } from 'react-icons/fa'
+import { createUserIfNotExist } from '../../services/user'
 
 import {
   PageContainer,
@@ -17,7 +18,6 @@ import { ANIMATION_DURATION } from '../../constants'
 import { MainContainer } from '../../styles/global'
 import { i18n } from '../../translate/i18n'
 import { Toast } from '../../components'
-import { createUserIfNotExist } from '../../services/firebase'
 
 const SignIn: FC = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -26,8 +26,6 @@ const SignIn: FC = () => {
   const [session] = useSession()
 
   const redirectTo: string = router.query?.redirectTo || '/'
-
-  // console.warn('signInRedirect', redirectTo)
 
   const handleSignIn = async (provider: string) => {
     setIsLoading(true)
@@ -42,8 +40,6 @@ const SignIn: FC = () => {
 
   useEffect(() => {
     const createUser = async () => {
-      // console.warn({ user: session?.user })
-
       if (!session) return
       setIsLoading(true)
 

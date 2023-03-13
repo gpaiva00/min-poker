@@ -9,4 +9,5 @@ export default {
   confirmRemoveParticipant: 'Tem certeza que deseja remover esse participante?',
   createAccountToAccessRoom: 'Crie uma conta para acessar essa sala.',
   enterWithAccount: 'Entre com sua conta para continuar',
+  loading: 'Carregando...',
 }

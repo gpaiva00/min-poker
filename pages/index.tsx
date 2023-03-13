@@ -1,15 +1,19 @@
 import React, { FC, useState } from 'react'
-import { useSession } from 'next-auth/client'
 
 import { Footer, Header, LatestRooms } from '../components'
 import AccountModal from '../components/AccountModal'
 import { CreateRoom } from '../components'
 import { PageContainer } from '../styles/Home.styles'
 import { MainContainer } from '../styles/global'
+import { useUserInfo } from '../utils'
 
 const Home: FC = () => {
   const [toggleAccountModal, setToggleAccountModal] = useState(false)
-  const [session, loading] = useSession()
+  const {
+    userInfo: { name, image },
+    session,
+    loading,
+  } = useUserInfo()
 
   return (
     <MainContainer>
@@ -23,9 +27,10 @@ const Home: FC = () => {
           showOptions={false}
           setToggleAccountModal={setToggleAccountModal}
           loading={loading}
+          session={session}
           user={{
-            name: session?.user?.name,
-            image: session?.user?.image,
+            name,
+            image,
           }}
         />
 

@@ -7,7 +7,7 @@ import {
   Item,
   ItemsContainer,
 } from './styles'
-import { streamRoomHistory } from '../../services/firebase'
+import { streamRoomHistory } from '../../services/roomHistory'
 import Link from 'next/link'
 import { ANIMATION_DURATION, DELAY_DURATION } from '../../constants'
 import { i18n } from '../../translate/i18n'
@@ -83,7 +83,7 @@ const LatestRooms: FC = () => {
           {isLoading && <Skeleton width={150} height={16} />}
 
           {roomHistory.history.map((roomHistory, key) => (
-            <Link key={key} href={`voting/${roomHistory.roomId}`}>
+            <Link key={key} href={`invitation/${roomHistory.roomId}`}>
               <Item>
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}

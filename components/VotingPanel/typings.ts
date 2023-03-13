@@ -1,10 +1,9 @@
-import { Participant, Room } from '../../typings'
+import { IUserProps, Room } from '../../typings'
 
 export interface VotingPanelProps {
   room: Room
   handleVoteClick(id: string): void
   setStartVoting: React.Dispatch<React.SetStateAction<boolean>>
-  me: Participant
+  me: IUserProps
   loading: boolean
-  imHost: boolean
 }

@@ -6,16 +6,9 @@ import { i18n } from '../../translate/i18n'
 import { returnInviteLink } from '../../utils'
 import Skeleton from 'react-loading-skeleton'
 import Toast from '../Toast'
-import {
-  LinkIcon,
-  DeleteButtonContainer,
-  DeleteRoom,
-  Container,
-  Title,
-  TitleContainer,
-} from './styles'
-import { DefaultTitle } from '../../styles/global'
-import { Button } from '..'
+import { LinkIcon, Container, Title, TitleContainer } from './styles'
+// import { DefaultTitle } from '../../styles/global'
+// import { Button } from '..'
 
 interface RoomTitleProps {
   room: {
@@ -23,18 +16,9 @@ interface RoomTitleProps {
     name: string
   }
   isLoading: boolean
-  imHost: boolean
-  handleDeleteRoom(): void
-  handleExitRoom(): void
 }
 
-const RoomTitle: FC<RoomTitleProps> = ({
-  room,
-  isLoading,
-  handleDeleteRoom,
-  handleExitRoom,
-  imHost,
-}) => {
+const RoomTitle: FC<RoomTitleProps> = ({ room, isLoading }) => {
   const inviteLink = returnInviteLink(room.id)
 
   return (
@@ -55,31 +39,6 @@ const RoomTitle: FC<RoomTitleProps> = ({
               <LinkIcon size={26} />
             </TitleContainer>
           </CopyToClipboard>
-          <>
-            {isLoading ? (
-              <Skeleton width={200} height={25} />
-            ) : (
-              <>
-                {imHost ? (
-                  <Button
-                    loading={isLoading}
-                    onClick={handleDeleteRoom}
-                    variant="danger"
-                  >
-                    {i18n.t('buttons.deleteRoom')}
-                  </Button>
-                ) : (
-                  <Button
-                    loading={isLoading}
-                    onClick={handleExitRoom}
-                    variant="danger"
-                  >
-                    {i18n.t('buttons.exitRoom')}
-                  </Button>
-                )}
-              </>
-            )}
-          </>
         </>
       )}
     </Container>

@@ -54,6 +54,6 @@ export const UserAvatar = styled(Avatar)`
 `
 
 export const SignInButton = styled(OriginalButton)`
-  width: 100px;
-  height: 50px;
+  width: 85px;
+  height: 40px;
 `

@@ -17,6 +17,7 @@ export const calculateVotingResult = (
   try {
     const { results, votesSum, votesQuantity } = participants.reduce(
       (acc, curr) => {
+        // TODO aceitar esses votos, mostrar na tela mas usar no cálculo
         if (
           !curr.vote.length ||
           curr.vote === 'question' ||

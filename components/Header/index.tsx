@@ -4,6 +4,7 @@ import MinPokerTitle from '../MinPokerTitle'
 import { useSession, getSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
 
+import theme from '../../styles/themes/light'
 import {
   Container,
   OptionsContainer,
@@ -12,6 +13,8 @@ import {
   UserAvatar,
   SignInButton,
 } from './styles'
+import Loading from '../Loading'
+import { Session } from 'next-auth'
 interface HeaderProps {
   setToggleOptionsModal?: React.Dispatch<React.SetStateAction<boolean>>
   setToggleAccountModal?: React.Dispatch<React.SetStateAction<boolean>>
@@ -22,6 +25,7 @@ interface HeaderProps {
     image: string
   }
   loading?: boolean
+  session: Session
 }
 
 const Header: FC<HeaderProps> = ({
@@ -30,6 +34,7 @@ const Header: FC<HeaderProps> = ({
   setToggleAccountModal,
   user,
   loading,
+  session,
 }) => {
   const router = useRouter()
 
@@ -47,13 +52,14 @@ const Header: FC<HeaderProps> = ({
             <OptionsIcon size={26} />
           </Options>
         )}
-        {!user.name && (
+        {loading && <Loading color={theme.colors.primary} />}
+        {!loading && !session && (
           <SignInButton loading={loading} onClick={handleSignIn}>
             Entrar
           </SignInButton>
         )}
 
-        {user.name && (
+        {session && (
           <UserAvatar
             onClick={() => setToggleAccountModal(true)}
             name={user.name}

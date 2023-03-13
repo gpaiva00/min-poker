@@ -3,6 +3,7 @@ export interface Participant {
   id?: string
   vote?: string
   viewerMode?: boolean
+  imHost?: boolean
 }
 
 export interface RoomRef {
@@ -14,7 +15,6 @@ export interface Room {
   hostId: string
   isVoting: boolean
   showResults?: boolean
-  participants: Participant[]
   ref?: RoomRef
   results: Result
 }

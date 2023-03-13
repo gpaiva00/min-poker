@@ -11,76 +11,45 @@ import {
   VotingPanel,
 } from '../../components'
 
-import { Participant, Room, UserInfo } from '../../typings'
+import { Room } from '../../typings'
 
 import {
   DEFAULT_PARTICIPANT,
   DEFAULT_ROOM,
   DEFAULT_USER,
-  STORAGE_KEY_USER,
+  DEFAULT_USER_ROOM,
 } from '../../constants'
 import { i18n } from '../../translate/i18n'
-import { calculateVotingResult, useUserInfo, validateRoomId } from '../../utils'
+import { calculateVotingResult } from '../../utils'
 import OptionsModal from '../../components/OptionsModal'
 import RemoveParticipantModal from '../../components/RemoveParticipantModal'
-import {
-  deleteRoom,
-  deleteRoomHistoryRegister,
-  exitRoom,
-  firebaseAnalytics,
-  removeParticipant,
-  streamRoomById,
-  updateRoom,
-  updateRoomHistory,
-  updateVote,
-  verifyIfIsParticipant,
-} from '../../services/firebase'
+import { firebaseAnalytics, removeParticipant } from '../../services/firebase'
 import { MainContainer } from '../../styles/global'
 import AccountModal from '../../components/AccountModal'
+import { streamRoomById, updateRoom } from '../../services/room'
+import { updateRoomHistory } from '../../services/roomHistory'
+import {
+  streamUserRoomByRoomId,
+  updateUserRoom,
+  verifyIfIsParticipant,
+} from '../../services/userRoom'
+import { IUserRoomProps } from '../../services/typings/IUserRoom'
+import { useUserInfo } from '../../hooks'
 
 const Voting: FC = () => {
   const [room, setRoom] = useState<Room>(DEFAULT_ROOM)
+  const [meInThisRoom, setMeInThisRoom] = useState(DEFAULT_PARTICIPANT)
+  const [userRoom, setUserRoom] = useState<IUserRoomProps>(DEFAULT_USER_ROOM)
   const [isVoting, setIsVoting] = useState(false)
-
   const [toggleOptionsModal, setToggleOptionsModal] = useState(false)
   const [toggleAccountModal, setToggleAccountModal] = useState(false)
   const [toggleConfirmModal, setToggleConfirmModal] = useState(false)
-
   const [participantIdToRemove, setParticipantIdToRemove] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
+  const { userInfo, session, loading } = useUserInfo()
   const router = useRouter()
   const { roomId } = router.query
-
-  const { userInfo, session, loading } = useUserInfo()
-  const imHost = room.hostId === userInfo?.email
-
-  const handleDeleteRoom = async () => {
-    try {
-      setTimeout(() => {
-        deleteRoom(room.id)
-        deleteRoomHistoryRegister({ roomId, userId: userInfo.userId })
-      }, 200)
-      firebaseAnalytics().logEvent('delete_room')
-      router.push('/')
-    } catch (error) {
-      Toast({
-        type: 'error',
-        message: i18n.t('toast.errorDeletingRoom'),
-      })
-    }
-  }
-
-  const handleExitRoom = async () => {
-    try {
-      await exitRoom(room.id, userInfo.userId)
-      deleteRoomHistoryRegister({ roomId, userId: userInfo.userId })
-      firebaseAnalytics().logEvent('exit_room')
-      router.push('/')
-    } catch (error) {
-      Toast({ type: 'error', message: i18n.t('toast.errorExitingRoom') })
-    }
-  }
 
   const handleStartVoting = async () => {
     try {
@@ -93,16 +62,16 @@ const Voting: FC = () => {
         showResults,
       }
 
-      let newParticipant = null
-
       if (!isVoting) {
-        newParticipant = {
-          vote: '',
-        }
+        await updateUserRoom({
+          userId: me.email,
+          roomId,
+          dataToChange: { vote: '' },
+        })
       }
 
       if (showResults) {
-        const calculateResult = calculateVotingResult(room.participants)
+        const calculateResult = calculateVotingResult(userRoom.participants)
 
         if (!calculateResult)
           return Toast({
@@ -111,7 +80,6 @@ const Voting: FC = () => {
           })
 
         const { average, results: items } = calculateResult
-        console.warn({ calculateResult })
 
         newRoom.results = {
           average,
@@ -119,14 +87,10 @@ const Voting: FC = () => {
         }
       }
 
-      await updateRoom({
-        room,
-        newParticipant,
-        newRoom,
-      })
+      await updateRoom(newRoom)
 
       firebaseAnalytics().logEvent('handle_start_voting', {
-        totalParticipants: room.participants.length,
+        totalParticipants: userRoom.participants.length,
       })
 
       setIsVoting(!isVoting)
@@ -139,96 +103,12 @@ const Voting: FC = () => {
     }
   }
 
-  const handleSaveRoomOptions = async ({ roomName, viewerMode }) => {
-    try {
-      // const newUserInfo = {
-      //   ...userInfo,
-      //   name: userName || userInfo.name,
-      //   viewerMode,
-      // }
-
-      // storeItem(STORAGE_KEY_USER, newUserInfo)
-
-      // const newParticipant: Participant = {
-      //   name: userInfo.name || userInfo.name,
-      //   viewerMode,
-      //   vote: viewerMode ? '' : me.vote,
-      // }
-
-      const newRoom = {
-        ...room,
-        name: roomName,
-      }
-
-      await updateRoom({
-        room,
-        userId: userInfo.userId,
-        newRoom,
-      })
-
-      firebaseAnalytics().logEvent('room_options_saved')
-
-      Toast({ message: i18n.t('toast.optionsUpdated') })
-    } catch (error) {
-      Toast({
-        type: 'error',
-        message: i18n.t('toast.errorChangingName'),
-      })
-      console.error('Error trying to change name', error)
-    }
-
-    setToggleOptionsModal(false)
-  }
-
-  const handleSaveUserData = async ({ userName }) => {
-    try {
-      const newUserInfo = {
-        ...userInfo,
-        name: userName,
-      }
-
-      storeItem(STORAGE_KEY_USER, newUserInfo)
-      // TODO dividir as funcs de salvar options e dados do usuário
-      // Criar também uma collection para salvar os dados do usuário
-
-      // const newParticipant: Participant = {
-      //   name: userName || userInfo.name,
-      //   viewerMode,
-      //   vote: viewerMode ? '' : me.vote,
-      // }
-
-      // const newRoom = {
-      //   ...room,
-      //   name: roomName,
-      // }
-
-      await updateRoom({
-        room,
-        userId: userInfo.userId,
-        newRoom,
-        newParticipant,
-      })
-
-      firebaseAnalytics().logEvent('room_options_saved')
-
-      Toast({ message: i18n.t('toast.optionsUpdated') })
-    } catch (error) {
-      Toast({
-        type: 'error',
-        message: i18n.t('toast.errorChangingName'),
-      })
-      console.error('Error trying to change name', error)
-    }
-
-    setToggleOptionsModal(false)
-  }
-
   const handleVoteClick = async (voteId: string) => {
     try {
-      await updateVote({
+      await updateUserRoom({
         roomId: room.id,
-        voteId,
-        userId: userInfo.userId,
+        dataToChange: { vote: voteId },
+        userId: me.email,
       })
 
       firebaseAnalytics().logEvent('vote_click', {
@@ -274,21 +154,26 @@ const Voting: FC = () => {
     }, 1500)
   }
 
+  console.warn({ room })
+
   useEffect(() => {
     setIsLoading(true)
     const verifyParticipant = async () => {
-      // console.warn({
-      //   user: userInfo,
+      // console.warn('enterRoom', {
+      //   // session: !!session,
       //   userEmail: !!userInfo.email,
-      //   roomId: !!roomId,
+      //   // roomId: !!roomId,
+      //   // userName: userInfo.name,
       // })
 
       if (!session) return router.push(`/signin?redirectTo=${router.asPath}`)
 
-      if (!userInfo.email || !roomId) {
+      if (!roomId) {
         router.push('/')
         return
       }
+
+      if (!userInfo.email) return
 
       const isParticipant = await verifyIfIsParticipant({
         userId: userInfo.email,
@@ -299,27 +184,65 @@ const Voting: FC = () => {
         router.push(`/invitation/${roomId}`)
         return
       }
+
+      setMeInThisRoom({
+        ...meInThisRoom,
+        imHost: room.hostId === userInfo.email,
+      })
     }
 
     verifyParticipant()
 
     updateRoomHistory({ roomId, userId: userInfo.email, roomName: room.name })
 
-    const unsubscribe = streamRoomById(roomId, {
+    const roomStream = streamRoomById(roomId, {
       next: querySnapshot => {
         const updatedRoom: Room = querySnapshot.docs
           .map(docSnapshot => docSnapshot.data())
           .shift()
 
         setRoom(updatedRoom)
+      },
+      error: () => {
+        setIsLoading(false)
+      },
+    })
+
+    const userRoomStream = streamUserRoomByRoomId(roomId, {
+      next: querySnapshot => {
+        const updatedUserRoom: IUserRoomProps = querySnapshot.docs
+          .map(docSnapshot => docSnapshot.data())
+          .shift()
+
+        setUserRoom(updatedUserRoom)
+
+        const findMe = updatedUserRoom.participants.find(
+          participant => participant.id === userInfo.email
+        )
+        console.warn('findMe', findMe)
+        // TODO não está atualizando o componente depois que setta o meInThisRoom
+        // TODO talvez seja melhor entra na sala com o voto zerado
+        setMeInThisRoom({
+          ...meInThisRoom,
+          viewerMode: findMe?.viewerMode,
+          vote: findMe?.vote,
+          name: findMe?.name,
+        })
+
+        console.warn({ meInThisRoom })
+
         setIsLoading(false)
       },
       error: () => {
         setIsLoading(false)
       },
     })
-    return unsubscribe
-  }, [roomId, userInfo, session])
+
+    return () => {
+      roomStream
+      userRoomStream
+    }
+  }, [roomId, userInfo])
 
   return (
     <MainContainer>
@@ -328,58 +251,60 @@ const Voting: FC = () => {
           toggle={toggleOptionsModal}
           setToggleModal={setToggleOptionsModal}
           room={room}
-          userInfo={userInfo}
-          handleSaveRoomOptions={handleSaveRoomOptions}
+          me={meInThisRoom}
           loading={isLoading}
         />
+
         <RemoveParticipantModal
           toggle={toggleConfirmModal}
           setToggleModal={setToggleConfirmModal}
           handlePressConfirm={handleRemoveParticipant}
           loading={isLoading}
         />
+
         <AccountModal
           toggle={toggleAccountModal}
           setToggleModal={setToggleAccountModal}
+          roomId={roomId}
+          me={meInThisRoom}
         />
 
         <Header
           setToggleOptionsModal={setToggleOptionsModal}
           setToggleAccountModal={setToggleAccountModal}
           loading={isLoading || loading}
-          showOptions={imHost}
+          showOptions={true}
+          session={session}
           user={{
-            name: userInfo.name,
+            name: meInThisRoom.name,
             image: userInfo.image,
           }}
         />
 
-        <RoomTitle
-          isLoading={isLoading}
-          room={room}
-          imHost={imHost}
-          handleDeleteRoom={handleDeleteRoom}
-          handleExitRoom={handleExitRoom}
-        />
+        {!isLoading && (
+          <>
+            <RoomTitle isLoading={isLoading} room={room} />
 
-        <PageContainer>
-          {/* <ParticipantsPanel
-            handleRemoveParticipant={handleShowConfirmModal}
-            room={room}
-            imHost={imHost}
-            me={userInfo}
-            userInfo={userInfo}
-            loading={isLoading}
-          /> */}
-          <VotingPanel
-            setStartVoting={handleStartVoting}
-            handleVoteClick={handleVoteClick}
-            room={room}
-            me={userInfo}
-            imHost={imHost}
-            loading={isLoading}
-          />
-        </PageContainer>
+            <PageContainer>
+              {/* <ParticipantsPanel
+                handleRemoveParticipant={handleShowConfirmModal}
+                room={room}
+                imHost={imHost}
+                me={userInfo}
+                userInfo={userInfo}
+                loading={isLoading}
+              /> */}
+
+              <VotingPanel
+                setStartVoting={handleStartVoting}
+                handleVoteClick={handleVoteClick}
+                room={room}
+                me={meInThisRoom}
+                loading={isLoading}
+              />
+            </PageContainer>
+          </>
+        )}
       </main>
     </MainContainer>
   )

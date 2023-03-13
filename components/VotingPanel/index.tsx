@@ -18,12 +18,12 @@ import { i18n } from '../../translate/i18n'
 
 import { Waiting, VotingCards } from './components'
 import ResultCards from './components/ResultCards'
+import { IUserProps } from '../../typings'
 
 const VotingPanel: FC<VotingPanelProps> = ({
   room,
   me,
   handleVoteClick,
-  imHost,
   setStartVoting,
 }) => {
   const { isVoting, showResults, results } = room
@@ -59,8 +59,8 @@ const VotingPanel: FC<VotingPanelProps> = ({
       <InfoTextContainer>
         <InfoText>{renderInfoText()}</InfoText>
       </InfoTextContainer>
-      <Panel imHost={imHost}>
-        {imHost && (
+      <Panel imHost={me.imHost}>
+        {me.imHost && (
           <ButtonContainer>
             <PlayStopButton onClick={() => setStartVoting(!isVoting)}>
               {isVoting ? <FaStop size={20} /> : <FaPlay size={20} />}
