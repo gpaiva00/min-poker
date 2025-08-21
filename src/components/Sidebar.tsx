@@ -126,7 +126,7 @@ export function Sidebar({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center sm:-space-x-1">
             <img
-              src="src/assets/img/logo.png"
+              src="/logo.png"
               alt="minPoker"
               className="h-auto w-10 sm:h-8 sm:w-8"
             />
