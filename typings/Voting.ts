@@ -1,5 +1,5 @@
-import firebase from 'firebase'
+import firebase from 'firebase/firestore'
 
 export interface CalculateVotingProps {
-  roomRef: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
+  roomRef: firebase.DocumentReference<firebase.DocumentData>
 }

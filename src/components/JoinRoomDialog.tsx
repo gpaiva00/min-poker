@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Users, Shuffle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
