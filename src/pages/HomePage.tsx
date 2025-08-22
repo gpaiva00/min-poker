@@ -136,7 +136,7 @@ export function HomePage() {
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <img
-                  src="src/assets/img/logo.png"
+                  src="/logo.png"
                   alt="logo"
                   className="h-24 w-24 mx-auto"
                 />
