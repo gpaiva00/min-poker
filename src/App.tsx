@@ -3,10 +3,12 @@ import { Routes, Route } from 'react-router-dom'
 import { HomePage } from '@/pages/HomePage'
 import { PrivacyPolicyPage } from '@/pages/PrivacyPolicyPage'
 import { TermsOfServicePage } from '@/pages/TermsOfServicePage'
-import { Analytics } from '@vercel/analytics/next'
+import { inject } from '@vercel/analytics'
 import { CookieBanner } from '@/components/CookieBanner'
 
 function App() {
+  inject()
+
   return (
     <div className='App min-h-screen flex flex-col'>
       <div className='flex-1'>
@@ -18,7 +20,6 @@ function App() {
         </Routes>
       </div>
       <CookieBanner />
-      <Analytics />
     </div>
   )
 }
