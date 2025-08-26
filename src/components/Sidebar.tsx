@@ -13,6 +13,7 @@ import {
 import { Room, LocalUserData } from "@/types";
 import { generateFunnyName } from "@/lib/utils";
 import { RoomListItem } from "@/components/RoomListItem";
+import { Footer } from "./Footer";
 
 interface SidebarProps {
   ownedRooms: Room[];
@@ -303,6 +304,9 @@ export function Sidebar({
           </>
         )}
       </div>
+
+      <Footer />
+
     </div>
   );
 }
