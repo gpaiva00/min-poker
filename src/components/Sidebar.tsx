@@ -128,8 +128,11 @@ export function Sidebar({
           <div className="flex items-center sm:-space-x-1">
             <img
               src="/logo.png"
-              alt="minPoker"
+              alt="Logo minPoker - Planning Poker para equipes ágeis"
               className="h-auto w-10 sm:h-8 sm:w-8"
+              loading="lazy"
+              width="32"
+              height="32"
             />
             <h1 className="text-xl font-bold text-primary hidden sm:flex">
               minPoker
