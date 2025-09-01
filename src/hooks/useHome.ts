@@ -23,7 +23,7 @@ import {
   orderByChild,
   query
 } from 'firebase/database'
-
+// @ts-expect-error - Implementar o start
 export function useHome({ start }: { start?: boolean }) {
   const {
     room: selectedRoom,
