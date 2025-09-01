@@ -5,9 +5,7 @@ import { JoinRoomDialog } from '@/components/JoinRoomDialog'
 import { useHome } from '@/hooks/useHome'
 import { Button } from '@/components/ui/button'
 import {
-  BadgeQuestionMark,
   BlocksIcon,
-  CircleQuestionMark,
   HeartIcon,
   InfoIcon,
   MessageCircleQuestionIcon
