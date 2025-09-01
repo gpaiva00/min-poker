@@ -4,6 +4,14 @@ import { VotingArea } from '@/components/VotingArea'
 import { JoinRoomDialog } from '@/components/JoinRoomDialog'
 import { useHome } from '@/hooks/useHome'
 import { Button } from '@/components/ui/button'
+import {
+  BadgeQuestionMark,
+  BlocksIcon,
+  CircleQuestionMark,
+  HeartIcon,
+  InfoIcon,
+  MessageCircleQuestionIcon
+} from 'lucide-react'
 
 export function HomePage({ start }: { start?: boolean }) {
   const {
@@ -128,7 +136,7 @@ export function HomePage({ start }: { start?: boolean }) {
                   <img
                     src='/logo.png'
                     alt='Logo do minPoker - Ferramenta de Planning Poker online gratuita para equipes ágeis realizarem estimativas colaborativas'
-                    className='h-24 w-24 mx-auto mb-6'
+                    className='h-24 w-24 mx-auto'
                     loading='lazy'
                     width='96'
                     height='96'
@@ -214,156 +222,83 @@ export function HomePage({ start }: { start?: boolean }) {
                   </div>
                 </section> */}
 
-                {/* How it Works Section */}
+                {/* Navigation Links Section */}
                 <section className='mb-12'>
-                  <h2 className='text-2xl font-semibold mb-6 text-center '>
-                    Como Funciona o minPoker
-                  </h2>
-                  <div className='bg-gradient-to-r from-primary/10 to-blue-50 rounded-lg p-6 border border-primary/10'>
-                    <div className='grid md:grid-cols-3 gap-6'>
-                      <div className='text-center'>
-                        <div className='bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold'>
-                          1
+                  <div className='grid md:grid-cols-2 gap-6 max-w-3xl mx-auto'>
+                    <a
+                      href='/how-it-works'
+                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                    >
+                      <div className='flex items-center mb-3'>
+                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
+                          <InfoIcon />
                         </div>
-                        <h3 className='font-semibold mb-2 '>
-                          Crie ou Entre em uma Sala
+                        <h3 className='text-lg font-semibold'>
+                          Como Funciona o minPoker
                         </h3>
-                        <p className='text-gray-600 text-sm'>
-                          O Scrum Master ou facilitador cria uma sala e
-                          compartilha o código com a equipe
-                        </p>
                       </div>
-                      <div className='text-center'>
-                        <div className='bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold'>
-                          2
-                        </div>
-                        <h3 className='font-semibold mb-2 '>
-                          Vote nas Estimativas
-                        </h3>
-                        <p className='text-gray-600 text-sm'>
-                          Cada membro seleciona uma carta representando sua
-                          estimativa para a user story
-                        </p>
-                      </div>
-                      <div className='text-center'>
-                        <div className='bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold'>
-                          3
-                        </div>
-                        <h3 className='font-semibold mb-2 '>
-                          Revele e Discuta
-                        </h3>
-                        <p className='text-gray-600 text-sm'>
-                          Os votos são revelados simultaneamente e a equipe
-                          discute as diferenças para chegar ao consenso
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </section>
+                      <p className='text-gray-500 text-sm'>
+                        Descubra o passo a passo para usar nossa ferramenta de
+                        Planning Poker e como ela pode melhorar suas estimativas
+                        ágeis.
+                      </p>
+                    </a>
 
-                {/* Features Section */}
-                <section className='mb-12'>
-                  <h2 className='text-2xl font-semibold mb-6 text-center '>
-                    Recursos do minPoker
-                  </h2>
-                  <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                    <div className='bg-white rounded-lg p-4 border border-gray-100 shadow-sm'>
-                      <div className='text-2xl mb-2'>🚀</div>
-                      <h3 className='font-semibold mb-2'>Tempo Real</h3>
-                      <p className='text-gray-500 text-sm'>
-                        Sincronização instantânea entre todos os participantes.
+                    <a
+                      href='/features'
+                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                    >
+                      <div className='flex items-center mb-3'>
+                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
+                          <BlocksIcon />
+                        </div>
+                        <h3 className='text-lg font-semibold'>
+                          Recursos do minPoker
+                        </h3>
+                      </div>
+                      <p className='text-gray-600 text-sm'>
+                        Explore todas as funcionalidades disponíveis: votação
+                        anônima, salas privadas, sincronização em tempo real e
+                        muito mais.
                       </p>
-                    </div>
-                    <div className='bg-white rounded-lg p-4 border border-gray-100 shadow-sm'>
-                      <div className='text-2xl mb-2'>🔒</div>
-                      <h3 className='font-semibold mb-2'>Salas Privadas</h3>
-                      <p className='text-gray-500 text-sm'>
-                        Controle total sobre quem participa das sessões.
-                      </p>
-                    </div>
-                    <div className='bg-white rounded-lg p-4 border border-gray-100 shadow-sm'>
-                      <div className='text-2xl mb-2'>🔄</div>
-                      <h3 className='font-semibold mb-2'>
-                        Revelação Automática
-                      </h3>
-                      <p className='text-gray-500 text-sm'>
-                        Revelação automática dos votos após a conclusão da
-                        sessão.
-                      </p>
-                    </div>
-                    <div className='bg-white rounded-lg p-4 border border-gray-100 shadow-sm'>
-                      <div className='text-2xl mb-2'>🎨</div>
-                      <h3 className='font-semibold mb-2'>
-                        Interface Intuitiva
-                      </h3>
-                      <p className='text-gray-500 text-sm'>
-                        Design limpo e fácil de usar para todas as idades.
-                      </p>
-                    </div>
-                    <div className='bg-white rounded-lg p-4 border border-gray-100 shadow-sm'>
-                      <div className='text-2xl mb-2'>⚡</div>
-                      <h3 className='font-semibold mb-2'>Sem Instalação</h3>
-                      <p className='text-gray-500 text-sm'>
-                        Acesse diretamente pelo navegador, sem downloads.
-                      </p>
-                    </div>
-                    <div className='bg-white rounded-lg p-4 border border-gray-100 shadow-sm'>
-                      <div className='text-2xl mb-2'>💰</div>
-                      <h3 className='font-semibold mb-2'>
-                        Totalmente Gratuito
-                      </h3>
-                      <p className='text-gray-500 text-sm'>
-                        Sem limites de uso, participantes ou sessões.
-                      </p>
-                    </div>
-                  </div>
-                </section>
+                    </a>
 
-                {/* FAQ Section */}
-                <section className='mb-8'>
-                  <h2 className='text-2xl font-semibold mb-6 text-center '>
-                    Perguntas Frequentes
-                  </h2>
-                  <div className='space-y-4'>
-                    <div className='bg-white rounded-lg p-6 border border-gray-100 shadow-sm'>
-                      <h3 className='font-semibold mb-2 '>
-                        Quantas pessoas podem participar de uma sessão?
-                      </h3>
-                      <p className='text-gray-500'>
-                        Não há limite de participantes. O minPoker suporta desde
-                        equipes pequenas até grandes organizações com múltiplas
-                        equipes.
+                    <a
+                      href='/benefits'
+                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                    >
+                      <div className='flex items-center mb-3'>
+                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
+                          <HeartIcon />
+                        </div>
+                        <h3 className='text-lg font-semibold'>
+                          Benefícios do Planning Poker
+                        </h3>
+                      </div>
+                      <p className='text-gray-600 text-sm'>
+                        Entenda como o Planning Poker melhora a precisão das
+                        estimativas, promove colaboração e otimiza o processo
+                        ágil.
                       </p>
-                    </div>
-                    <div className='bg-white rounded-lg p-6 border border-gray-100 shadow-sm'>
-                      <h3 className='font-semibold mb-2 '>
-                        Preciso criar uma conta para usar?
-                      </h3>
-                      <p className='text-gray-500'>
-                        Não! Você pode começar a usar imediatamente. Basta
-                        inserir seu nome e criar ou entrar em uma sala.
+                    </a>
+
+                    <a
+                      href='/faq'
+                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                    >
+                      <div className='flex items-center mb-3'>
+                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
+                          <MessageCircleQuestionIcon />
+                        </div>
+                        <h3 className='text-lg font-semibold'>
+                          Perguntas Frequentes
+                        </h3>
+                      </div>
+                      <p className='text-gray-600 text-sm'>
+                        Encontre respostas para as dúvidas mais comuns sobre o
+                        uso do minPoker e suas funcionalidades.
                       </p>
-                    </div>
-                    <div className='bg-white rounded-lg p-6 border border-gray-100 shadow-sm'>
-                      <h3 className='font-semibold mb-2 '>
-                        Os dados das sessões são salvos?
-                      </h3>
-                      <p className='text-gray-500'>
-                        As sessões são temporárias e focadas na colaboração em
-                        tempo real. Recomendamos documentar os resultados em
-                        suas ferramentas de gestão de projeto.
-                      </p>
-                    </div>
-                    <div className='bg-white rounded-lg p-6 border border-gray-100 shadow-sm'>
-                      <h3 className='font-semibold mb-2 '>
-                        Posso personalizar as cartas de votação?
-                      </h3>
-                      <p className='text-gray-500'>
-                        Atualmente utilizamos a sequência de Fibonacci padrão
-                        (1, 2, 3, 5, 8, 13, 21, 34, 55, 89), que é amplamente
-                        aceita na comunidade ágil.
-                      </p>
-                    </div>
+                    </a>
                   </div>
                 </section>
               </div>
