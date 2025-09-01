@@ -17,6 +17,7 @@ function App() {
           <Route path='/room/:roomId' element={<HomePage />} />
           <Route path='/privacy-policy' element={<PrivacyPolicyPage />} />
           <Route path='/terms-of-service' element={<TermsOfServicePage />} />
+          <Route path='/start' element={<HomePage start />} />
         </Routes>
       </div>
       <CookieBanner />
