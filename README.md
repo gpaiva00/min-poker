@@ -30,17 +30,19 @@ Um aplicativo web de Planning Poker baseado na sequência de Fibonacci, com inte
 
 ### Pré-requisitos
 
-- Node.js 18+ 
+- Node.js 18+
 - Yarn (recomendado) ou npm
 
 ### Passos para rodar localmente
 
 1. **Clone o repositório** (se aplicável) ou navegue até o diretório do projeto:
+
    ```bash
    cd new-min-poker
    ```
 
 2. **Instale as dependências:**
+
    ```bash
    yarn install
    # ou
@@ -48,6 +50,7 @@ Um aplicativo web de Planning Poker baseado na sequência de Fibonacci, com inte
    ```
 
 3. **Execute o projeto em modo de desenvolvimento:**
+
    ```bash
    yarn dev
    # ou
@@ -92,6 +95,7 @@ Um aplicativo web de Planning Poker baseado na sequência de Fibonacci, com inte
 ### Configurações da Sala
 
 O dono da sala pode:
+
 - Renomear a sala (clique no ícone de edição ao lado do nome)
 - Configurar revelação automática/manual
 - Ajustar o tempo de delay para revelação
@@ -156,8 +160,9 @@ export const FIBONACCI_SEQUENCE = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
 ## 📱 Responsividade
 
 O aplicativo é totalmente responsivo e funciona bem em:
+
 - Desktop (1200px+)
-- Tablet (768px - 1199px)  
+- Tablet (768px - 1199px)
 - Mobile (320px - 767px)
 
 ## 🤝 Contribuição
