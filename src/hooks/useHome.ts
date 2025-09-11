@@ -340,7 +340,6 @@ export function useHome({ start }: { start?: boolean }) {
         }
         unsubscribe()
       })
-      console.log('handleJoinRoomByCode', userData)
       if (!userData.name) {
         setShowJoinDialog(true)
       } else {

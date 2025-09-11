@@ -154,7 +154,6 @@ export function useRoom() {
 
   const vote = useCallback(
     async (value: number | null): Promise<void> => {
-      console.log('vote', value)
       if (!room || !currentUser) return
 
       try {
@@ -231,7 +230,7 @@ export function useRoom() {
 
       try {
         await updateParticipantViewMode(room.id, currentUser.id, enabled)
-        console.log('toggleViewMode', enabled)
+
         if (enabled === true) {
           await vote(null)
         }

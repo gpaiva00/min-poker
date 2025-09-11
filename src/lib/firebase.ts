@@ -152,9 +152,22 @@ export async function leaveRoom(roomId: string, userId: string): Promise<void> {
       const currentParticipants = Array.isArray(room.participants)
         ? room.participants
         : []
+
       const updatedParticipants = currentParticipants.filter(
         p => p.id !== userId
       )
+
+      // Remove o voto de currentRound do usuário que saiu
+      if (room.currentRound) {
+        const currentVotes = Array.isArray(room.currentRound.votes)
+          ? room.currentRound.votes
+          : []
+        const updatedVotes = currentVotes.filter(v => v.userId !== userId)
+        room.currentRound.votes = updatedVotes
+        await update(roomRef, {
+          currentRound: room.currentRound
+        })
+      }
 
       // Se a sala ficar vazia após o usuário sair, criar notificação de remoção
       if (updatedParticipants.length === 0) {
@@ -220,7 +233,7 @@ export async function submitVote(
           // Atualiza o voto existente
           updatedVotes[existingVoteIndex] = vote
         }
-      } else {
+      } else if (value !== null) {
         updatedVotes.push(vote)
       }
 

@@ -54,6 +54,7 @@ export function RoomHeader({
   const isOwner =
     room.participants.find(p => p.name === currentUser)?.isOwner || false
   const roomUrl = `${window.location.origin}/room/${room.id}`
+  const currentRound = room?.currentRound
 
   function handleSaveName() {
     if (newName.trim() && newName !== room.name) {
@@ -150,6 +151,7 @@ export function RoomHeader({
             {/* Modo Visualização */}
             <Toggle
               variant='outline'
+              disabled={currentRound?.isRevealed}
               pressed={
                 room.participants.find(p => p.name === currentUser)?.viewMode ||
                 false

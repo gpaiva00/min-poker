@@ -50,7 +50,7 @@ export function VotingArea({
           return validVotes.length > 0
         })()
       : false
-  console.log({ atLeastOneVoted })
+
   useEffect(() => {
     if (userVote) {
       setSelectedValue(userVote.value)
