@@ -297,13 +297,24 @@ export function useHome({ start }: { start?: boolean }) {
     setPendingRoomName('')
   }
 
-  function handleRoomSelect(roomId: string) {
+  async function handleRoomSelect(roomId: string) {
     // Encontrar a sala e conectar a ela
     const room =
       userRooms.find(r => r.id === roomId) ||
       participatedRooms.find(r => r.id === roomId)
     if (room) {
-      joinExistingRoom(roomId, userData.userId, userData.name)
+      const success = await joinExistingRoom(
+        roomId,
+        userData.userId,
+        userData.name
+      )
+      if (success) {
+        // Persistir histórico de salas participadas
+        setParticipatedRoomIds(prev => {
+          const next = new Set([...(prev ?? []), roomId])
+          return Array.from(next)
+        })
+      }
     }
   }
 
@@ -343,7 +354,18 @@ export function useHome({ start }: { start?: boolean }) {
       if (!userData.name) {
         setShowJoinDialog(true)
       } else {
-        await joinExistingRoom(roomId, userData.userId, userData.name)
+        const success = await joinExistingRoom(
+          roomId,
+          userData.userId,
+          userData.name
+        )
+        if (success) {
+          // Persistir histórico de salas participadas
+          setParticipatedRoomIds(prev => {
+            const next = new Set([...(prev ?? []), roomId])
+            return Array.from(next)
+          })
+        }
       }
     },
     [userData.name, userData.userId]

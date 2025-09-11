@@ -487,29 +487,18 @@ export async function getRoomsByOwnerId(ownerId: string): Promise<Room[]> {
   const _query = query(roomsRef, orderByChild('ownerId'), equalTo(ownerId))
   const rooms: Room[] = []
   try {
-    onValue(
-      _query,
-      snapshot => {
-        if (snapshot.exists()) {
-          // snapshot.val() retorna todos os dados como um objeto JavaScript.
-          // Você pode iterar sobre eles para acessar cada room.
-          snapshot.val()
-          // Para iterar sobre cada room individualmente:
-          snapshot.forEach(childSnapshot => {
-            // const roomKey = childSnapshot.key; // O ID da room (ex: roomId1)
-            const roomData = childSnapshot.val() // Os dados da room
-            rooms.push(roomData)
-          })
-        }
-      },
-      error => {
-        console.error('Erro ao buscar rooms:', error)
-      }
-    )
+    const snapshot = await get(_query)
+    if (snapshot.exists()) {
+      // Para iterar sobre cada room individualmente:
+      snapshot.forEach(childSnapshot => {
+        const roomKey = childSnapshot.key // O ID da room
+        const roomData = childSnapshot.val() // Os dados da room
+        rooms.push({ ...roomData, id: roomKey })
+      })
+    }
     return rooms
   } catch (error) {
-    console.warn('Erro geral ao sincronizar com Firebase:', error)
-
+    console.error('Erro ao buscar rooms:', error)
     return []
   }
 }
@@ -526,10 +515,10 @@ export async function getRoomsByIds(
     try {
       const roomRef = ref(db, `rooms/${roomId}`)
       const snapshot = await get(roomRef)
-      const room = snapshot.val() as Room
+      const roomData = snapshot.val()
 
-      if (room) {
-        rooms.push(room)
+      if (roomData) {
+        rooms.push({ ...roomData, id: roomId })
       } else {
         notFoundIds.push(roomId)
       }
