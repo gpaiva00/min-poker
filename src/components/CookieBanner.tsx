@@ -25,8 +25,8 @@ export function CookieBanner() {
   if (!isVisible) return null
 
   return (
-    <div className='fixed bottom-4 right-4 bg-gray-950 text-white p-4 shadow-lg z-50 rounded-lg'>
-      <div className='max-w-2xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4'>
+    <div className='fixed bottom-4 right-4 z-50 rounded-lg bg-gray-950 p-4 text-white shadow-lg'>
+      <div className='mx-auto flex max-w-2xl flex-col items-start justify-between gap-4 md:flex-row md:items-center'>
         <div className='flex-1'>
           <p className='text-sm font-light'>
             Este site utiliza cookies para melhorar sua experiência.
@@ -54,7 +54,7 @@ export function CookieBanner() {
           </Button>
           <button
             onClick={handleDecline}
-            className='p-1 hover:bg-gray-800 rounded transition-colors'
+            className='rounded p-1 transition-colors hover:bg-gray-800'
             aria-label='Fechar banner'
           >
             <X size={16} />

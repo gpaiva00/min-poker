@@ -213,7 +213,13 @@ export async function submitVote(
       const updatedVotes = [...currentVotes]
 
       if (existingVoteIndex >= 0) {
-        updatedVotes[existingVoteIndex] = vote
+        if (value === null) {
+          // Remove o voto em si
+          updatedVotes.splice(existingVoteIndex, 1)
+        } else {
+          // Atualiza o voto existente
+          updatedVotes[existingVoteIndex] = vote
+        }
       } else {
         updatedVotes.push(vote)
       }
@@ -395,6 +401,35 @@ export async function updateParticipantName(
         participant.id === userId
           ? { ...participant, name: newName }
           : participant
+      )
+
+      await update(roomRef, {
+        participants: updatedParticipants,
+        lastActivity: Date.now()
+      })
+    },
+    { onlyOnce: true }
+  )
+}
+
+export async function updateParticipantViewMode(
+  roomId: string,
+  userId: string,
+  viewMode: boolean
+): Promise<void> {
+  const roomRef = ref(db, `rooms/${roomId}`)
+
+  onValue(
+    roomRef,
+    async snapshot => {
+      const room = snapshot.val() as Room
+      if (!room) return
+
+      const currentParticipants = Array.isArray(room.participants)
+        ? room.participants
+        : []
+      const updatedParticipants = currentParticipants.map(participant =>
+        participant.id === userId ? { ...participant, viewMode } : participant
       )
 
       await update(roomRef, {

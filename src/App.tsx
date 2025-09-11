@@ -14,7 +14,7 @@ function App() {
   inject()
 
   return (
-    <div className='App min-h-screen flex flex-col'>
+    <div className='App flex min-h-screen flex-col'>
       <div className='flex-1'>
         <Routes>
           <Route path='/' element={<HomePage />} />

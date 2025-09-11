@@ -41,7 +41,8 @@ export function useHome({ start }: { start?: boolean }) {
     updateSettings,
     updateUserName,
     deleteCurrentRoom,
-    clearRemovedState
+    clearRemovedState,
+    toggleViewMode
   } = useRoom()
 
   const { roomId } = useParams()
@@ -440,6 +441,7 @@ export function useHome({ start }: { start?: boolean }) {
     handleUpdateRoom,
     handleCloseJoinDialog,
     handleRoomSelect,
-    updateUserName
+    updateUserName,
+    toggleViewMode
   }
 }

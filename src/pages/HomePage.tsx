@@ -39,7 +39,8 @@ export function HomePage({ start }: { start?: boolean }) {
     handleUpdateRoom,
     handleWasRemovedAction,
     updateUserName,
-    handleCloseJoinDialog
+    handleCloseJoinDialog,
+    toggleViewMode
   } = useHome({ start })
 
   return (
@@ -58,20 +59,20 @@ export function HomePage({ start }: { start?: boolean }) {
         }
       />
 
-      <div className='flex-1 flex flex-col'>
+      <div className='flex flex-1 flex-col'>
         {loading && (
-          <div className='flex-1 flex items-center justify-center'>
+          <div className='flex flex-1 items-center justify-center'>
             <div className='text-center text-gray-500'>
-              <div className='text-2xl mb-2'>Carregando...</div>
+              <div className='mb-2 text-2xl'>Carregando...</div>
             </div>
           </div>
         )}
 
         {wasDeleted && (
-          <div className='flex-1 flex items-center justify-center'>
-            <div className='text-center bg-[#FEECDC] p-8 rounded-lg '>
-              <div className='text-6xl mb-4'>⚠️</div>
-              <h2 className='text-2xl font-semibold mb-2'>Sala excluída</h2>
+          <div className='flex flex-1 items-center justify-center'>
+            <div className='rounded-lg bg-[#FEECDC] p-8 text-center'>
+              <div className='mb-4 text-6xl'>⚠️</div>
+              <h2 className='mb-2 text-2xl font-semibold'>Sala excluída</h2>
               <p className='mb-4'>A sala foi excluída pelo administrador.</p>
               <Button onClick={handleWasRemovedAction}>Voltar ao início</Button>
             </div>
@@ -79,10 +80,10 @@ export function HomePage({ start }: { start?: boolean }) {
         )}
 
         {wasRemoved && (
-          <div className='flex-1 flex items-center justify-center'>
-            <div className='text-center bg-[#FEECDC] p-8 rounded-lg '>
-              <div className='text-6xl mb-4'>⚠️</div>
-              <h2 className='text-2xl font-semibold mb-2'>Removido da Sala</h2>
+          <div className='flex flex-1 items-center justify-center'>
+            <div className='rounded-lg bg-[#FEECDC] p-8 text-center'>
+              <div className='mb-4 text-6xl'>⚠️</div>
+              <h2 className='mb-2 text-2xl font-semibold'>Removido da Sala</h2>
               <p className='mb-4'>
                 Você foi removido da sala pelo administrador.
               </p>
@@ -92,12 +93,12 @@ export function HomePage({ start }: { start?: boolean }) {
         )}
 
         {error && (
-          <div className='flex-1 flex items-center justify-center'>
+          <div className='flex flex-1 items-center justify-center'>
             <div className='text-center text-red-500'>
-              <div className='text-2xl mb-2'>Erro: {error}</div>
+              <div className='mb-2 text-2xl'>Erro: {error}</div>
               <button
                 onClick={() => window.location.reload()}
-                className='px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600'
+                className='rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600'
               >
                 Recarregar
               </button>
@@ -114,6 +115,7 @@ export function HomePage({ start }: { start?: boolean }) {
               onRemoveParticipant={handleRemoveParticipant}
               onLeaveRoom={handleLeaveRoom}
               onDeleteRoom={handleDeleteRoom}
+              onToggleViewMode={toggleViewMode}
             />
             <VotingArea
               room={selectedRoom}
@@ -128,21 +130,21 @@ export function HomePage({ start }: { start?: boolean }) {
           !error &&
           !wasRemoved && (
             <div className='flex-1 overflow-y-auto'>
-              <div className='max-w-4xl mx-auto px-6 py-8'>
+              <div className='mx-auto max-w-4xl px-6 py-8'>
                 {/* Hero Section */}
-                <div className='text-center mb-12'>
+                <div className='mb-12 text-center'>
                   <img
                     src='/logo.png'
                     alt='Logo do minPoker - Ferramenta de Planning Poker online gratuita para equipes ágeis realizarem estimativas colaborativas'
-                    className='h-24 w-24 mx-auto'
+                    className='mx-auto h-24 w-24'
                     loading='lazy'
                     width='96'
                     height='96'
                   />
-                  <h1 className='text-4xl font-bold mb-4 text-primary'>
+                  <h1 className='mb-4 text-4xl font-bold text-primary'>
                     minPoker | Planning Poker Online
                   </h1>
-                  <h2 className='text-gray-500 font-light max-w-2xl mx-auto text-lg'>
+                  <h2 className='mx-auto max-w-2xl text-lg font-light text-gray-500'>
                     Crie uma nova sala ou entre em uma existente para começar
                     suas sessões de Planning Poker com sua equipe.
                   </h2>
@@ -222,20 +224,20 @@ export function HomePage({ start }: { start?: boolean }) {
 
                 {/* Navigation Links Section */}
                 <section className='mb-12'>
-                  <div className='grid md:grid-cols-2 gap-6 max-w-3xl mx-auto'>
+                  <div className='mx-auto grid max-w-3xl gap-6 md:grid-cols-2'>
                     <a
                       href='/how-it-works'
-                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                      className='group block rounded-lg border border-gray-100 bg-gray-100 p-6 transition-colors hover:bg-primary/10'
                     >
-                      <div className='flex items-center mb-3'>
-                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
+                      <div className='mb-3 flex items-center'>
+                        <div className='mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white transition-transform'>
                           <InfoIcon />
                         </div>
                         <h3 className='text-lg font-semibold'>
                           Como Funciona o minPoker
                         </h3>
                       </div>
-                      <p className='text-gray-500 text-sm'>
+                      <p className='text-sm text-gray-500'>
                         Descubra o passo a passo para usar nossa ferramenta de
                         Planning Poker e como ela pode melhorar suas estimativas
                         ágeis.
@@ -244,17 +246,17 @@ export function HomePage({ start }: { start?: boolean }) {
 
                     <a
                       href='/features'
-                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                      className='group block rounded-lg border border-gray-100 bg-gray-100 p-6 transition-colors hover:bg-primary/10'
                     >
-                      <div className='flex items-center mb-3'>
-                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
+                      <div className='mb-3 flex items-center'>
+                        <div className='mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white transition-transform'>
                           <BlocksIcon />
                         </div>
                         <h3 className='text-lg font-semibold'>
                           Recursos do minPoker
                         </h3>
                       </div>
-                      <p className='text-gray-600 text-sm'>
+                      <p className='text-sm text-gray-600'>
                         Explore todas as funcionalidades disponíveis: votação
                         anônima, salas privadas, sincronização em tempo real e
                         muito mais.
@@ -263,17 +265,17 @@ export function HomePage({ start }: { start?: boolean }) {
 
                     <a
                       href='/benefits'
-                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                      className='group block rounded-lg border border-gray-100 bg-gray-100 p-6 transition-colors hover:bg-primary/10'
                     >
-                      <div className='flex items-center mb-3'>
-                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
+                      <div className='mb-3 flex items-center'>
+                        <div className='mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white transition-transform'>
                           <HeartIcon />
                         </div>
                         <h3 className='text-lg font-semibold'>
                           Benefícios do Planning Poker
                         </h3>
                       </div>
-                      <p className='text-gray-600 text-sm'>
+                      <p className='text-sm text-gray-600'>
                         Entenda como o Planning Poker melhora a precisão das
                         estimativas, promove colaboração e otimiza o processo
                         ágil.
@@ -282,17 +284,17 @@ export function HomePage({ start }: { start?: boolean }) {
 
                     <a
                       href='/faq'
-                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                      className='group block rounded-lg border border-gray-100 bg-gray-100 p-6 transition-colors hover:bg-primary/10'
                     >
-                      <div className='flex items-center mb-3'>
-                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
+                      <div className='mb-3 flex items-center'>
+                        <div className='mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white transition-transform'>
                           <MessageCircleQuestionIcon />
                         </div>
                         <h3 className='text-lg font-semibold'>
                           Perguntas Frequentes
                         </h3>
                       </div>
-                      <p className='text-gray-600 text-sm'>
+                      <p className='text-sm text-gray-600'>
                         Encontre respostas para as dúvidas mais comuns sobre o
                         uso do minPoker e suas funcionalidades.
                       </p>

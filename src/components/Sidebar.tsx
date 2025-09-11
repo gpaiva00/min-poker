@@ -121,10 +121,10 @@ export function Sidebar({
   )
 
   return (
-    <div className='w-16 sm:w-80 bg-white border-r border-gray-100 flex flex-col h-full'>
+    <div className='flex h-full w-16 flex-col border-r border-gray-100 bg-white sm:w-80'>
       {/* Header */}
-      <div className='flex items-center justify-center sm:inline-block pt-6 sm:px-4 sm:py-6'>
-        <div className='flex items-center justify-between mb-4'>
+      <div className='flex items-center justify-center pt-6 sm:inline-block sm:px-4 sm:py-6'>
+        <div className='mb-4 flex items-center justify-between'>
           <div className='flex items-center sm:-space-x-1'>
             <img
               src='/logo.png'
@@ -134,11 +134,11 @@ export function Sidebar({
               width='32'
               height='32'
             />
-            <h1 className='text-xl font-bold text-primary hidden sm:flex'>
+            <h1 className='hidden text-xl font-bold text-primary sm:flex'>
               minPoker
             </h1>
           </div>
-          <div className='items-center space-x-2 hidden sm:flex'>
+          <div className='hidden items-center space-x-2 sm:flex'>
             <Dialog
               open={isCreateDialogOpen}
               onOpenChange={setIsCreateDialogOpen}
@@ -168,7 +168,7 @@ export function Sidebar({
                       onKeyDown={e => e.key === 'Enter' && handleCreateRoom()}
                     />
                   </div>
-                  <Button onClick={handleCreateRoom} className='w-full '>
+                  <Button onClick={handleCreateRoom} className='w-full'>
                     Criar Sala
                   </Button>
                 </div>
@@ -205,12 +205,12 @@ export function Sidebar({
                       onKeyDown={e => e.key === 'Enter' && handleJoinRoom()}
                     />
                     {joinError && (
-                      <p className='text-sm text-red-500 mt-1'>{joinError}</p>
+                      <p className='mt-1 text-sm text-red-500'>{joinError}</p>
                     )}
                   </div>
                   <div className='text-xs text-gray-500'>
                     <p>Você pode colar:</p>
-                    <ul className='list-disc list-inside mt-1 space-y-1'>
+                    <ul className='mt-1 list-inside list-disc space-y-1'>
                       <li>Link completo da sala</li>
                       <li>Apenas o código da sala</li>
                     </ul>
@@ -245,28 +245,31 @@ export function Sidebar({
                   <DialogTitle>Você</DialogTitle>
                 </DialogHeader>
                 <div className='space-y-4'>
-                  <label className='text-sm font-medium'>Seu nome</label>
-                  <div className='flex space-x-2'>
-                    <Input
-                      value={userName}
-                      onChange={e => setUserName(e.target.value)}
-                      onBlur={handleSubmit}
-                      onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-                      placeholder='Digite seu nome'
-                    />
-                    <Button
-                      variant='outline'
-                      size='icon'
-                      onClick={handleGenerateRandomName}
-                      title='Gerar nome aleatório'
-                    >
-                      <Shuffle className='h-4 w-4' />
-                    </Button>
+                  <div>
+                    <label className='text-sm font-medium'>Seu nome</label>
+                    <div className='flex space-x-2'>
+                      <Input
+                        value={userName}
+                        onChange={e => setUserName(e.target.value)}
+                        onBlur={handleSubmit}
+                        onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+                        placeholder='Digite seu nome'
+                      />
+                      <Button
+                        variant='outline'
+                        size='icon'
+                        onClick={handleGenerateRandomName}
+                        title='Gerar nome aleatório'
+                      >
+                        <Shuffle className='h-4 w-4' />
+                      </Button>
+                    </div>
                   </div>
+
                   <Button
                     onClick={handleSubmit}
                     className='w-full'
-                    disabled={!userName.trim()}
+                    disabled={!userName.trim() || userName === userData.name}
                   >
                     Salvar Nome
                   </Button>
@@ -278,10 +281,10 @@ export function Sidebar({
       </div>
 
       {/* Rooms List */}
-      <div className='flex-1 overflow-y-auto px-4 space-y-4'>
+      <div className='flex-1 space-y-4 overflow-y-auto px-4'>
         {/* Todas as salas */}
         {!ownedRooms.length && !filteredParticipated.length ? (
-          <div className='p-4 text-center text-gray-500 font-light'>
+          <div className='p-4 text-center font-light text-gray-500'>
             <p>As salas aparecerão aqui</p>
           </div>
         ) : (
