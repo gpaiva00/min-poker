@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { RotateCcw, Eye, EyeOff, Check } from 'lucide-react'
+import { RotateCcw, Eye, Check } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Room } from '@/types'
