@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react'
+import { renderHook } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useRoom } from '../useRoom'
 // import * as firebase from '../../lib/firebase'
@@ -79,9 +79,9 @@ describe('useRoom', () => {
       global.document = dom.window.document
       global.window = dom.window as any
     }
-    
+
     const { result } = renderHook(() => useRoom())
-    
+
     expect(result.current.room).toBeNull()
     expect(result.current.currentUser).toBeNull()
     expect(result.current.loading).toBe(false)
