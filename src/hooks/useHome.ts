@@ -68,17 +68,13 @@ export function useHome({ start }: { start?: boolean }) {
     string[]
   >('minPoker_participatedRooms', [])
 
-  const isOwner = currentUser?.isOwner || false
-  const isViewModeActive = currentUser?.viewMode || false
-  const shouldOwnerVote = !isViewModeActive || !isOwner
-
   const allVoted =
     selectedRoom?.currentRound &&
     selectedRoom?.participants &&
     selectedRoom?.currentRound.votes
       ? (() => {
           const requiredVoters = selectedRoom?.participants.filter(
-            p => p.id !== selectedRoom.ownerId || shouldOwnerVote
+            p => !p.viewMode
           )
           const validVotes = selectedRoom?.currentRound?.votes.filter(
             v => v.value !== null
