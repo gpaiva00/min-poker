@@ -1,20 +1,17 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
+import { JSDOM } from 'jsdom'
 
-// Configuração do DOM para garantir que document e window estejam disponíveis
-if (typeof document === 'undefined') {
-  const { JSDOM } = require('jsdom')
-  const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
-    url: 'http://localhost',
-    pretendToBeVisual: true,
-    resources: 'usable'
-  })
+// Configurar DOM para os testes
+const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+  url: 'http://localhost',
+  pretendToBeVisual: true,
+  resources: 'usable'
+})
 
-  global.document = dom.window.document
-  global.window = dom.window as any
-  global.navigator = dom.window.navigator
-  global.HTMLElement = dom.window.HTMLElement
-}
+global.window = dom.window as any
+global.document = dom.window.document
+global.navigator = dom.window.navigator
 
 // Mock do localStorage
 const localStorageMock = {

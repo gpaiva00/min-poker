@@ -312,7 +312,7 @@ export function VotingArea({
 
       {/* View Mode Indicator */}
       {!currentRound.isRevealed && isViewModeActive && (
-        <div className='border-t border-blue-200 bg-blue-50 px-4 py-[38px]'>
+        <div className='border-t border-blue-200 bg-blue-50 px-4 py-[34px]'>
           <div className='text-center text-sm text-blue-700'>
             <Eye className='mr-2 inline h-4 w-4' />
             Modo Visualização ativo - Você não precisa votar
