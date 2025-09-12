@@ -107,7 +107,8 @@ export function VotingArea({
   }
 
   function getVoteResults() {
-    if (!currentRound || !currentRound.isRevealed) return null
+    if (!currentRound || !currentRound.isRevealed || !currentRound.votes)
+      return null
 
     const votes = currentRound.votes.filter(v => v.value !== null)
     const average =

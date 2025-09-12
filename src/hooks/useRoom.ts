@@ -146,6 +146,7 @@ export function useRoom() {
 
       setRoom(null)
       setCurrentUser(null)
+      window.location.href = '/'
     } catch (err) {
       setError('Erro ao sair da sala')
       console.error('Erro ao sair da sala:', err)

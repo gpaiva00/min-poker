@@ -23,6 +23,7 @@ import {
   orderByChild,
   query
 } from 'firebase/database'
+
 // @ts-expect-error - Implementar o start
 export function useHome({ start }: { start?: boolean }) {
   const {
@@ -184,17 +185,25 @@ export function useHome({ start }: { start?: boolean }) {
     return unsubscribe
   }, [userData.userId, selectedRoom])
 
+  // Redirecionar automaticamente se for removido da sala
+  useEffect(() => {
+    if (wasRemoved) {
+      window.location.href = '/'
+    }
+  }, [wasRemoved])
+
   // Handle room URL parameter
   useEffect(() => {
     if (roomId && !selectedRoom) {
-      setPendingRoomId(roomId)
+      const rid = roomId as string
+      setPendingRoomId(rid)
 
       // Buscar o nome real da sala
-      const unsubscribe = listenToRoom(roomId, roomData => {
+      const unsubscribe = listenToRoom(rid, roomData => {
         if (roomData) {
           setPendingRoomName(roomData.name)
         } else {
-          setPendingRoomName(`Sala ${roomId.slice(0, 6)}`)
+          setPendingRoomName(`Sala ${rid.slice(0, 6)}`)
         }
         unsubscribe()
       })
@@ -202,7 +211,24 @@ export function useHome({ start }: { start?: boolean }) {
       if (!userData.name) {
         setShowJoinDialog(true)
       } else {
-        joinExistingRoom(roomId, userData.name, userData.userId)
+        // Tentar ingressar; se falhar (sala inexistente), redirecionar para home
+        async function tryJoin() {
+          const success = await joinExistingRoom(
+            rid,
+            userData.userId,
+            userData.name
+          )
+          if (success) {
+            // Persistir histórico de salas participadas ao acessar via link direto
+            setParticipatedRoomIds(prev => {
+              const next = new Set([...(prev ?? []), rid])
+              return Array.from(next)
+            })
+          } else {
+            window.location.href = '/'
+          }
+        }
+        tryJoin()
       }
     }
   }, [roomId, selectedRoom, userData.name, userData.userId, joinExistingRoom])
@@ -337,7 +363,7 @@ export function useHome({ start }: { start?: boolean }) {
   const handleJoinRoomByCode = useCallback(
     async (roomId: string) => {
       // Navegar para a URL da sala, que irá acionar o fluxo de ingresso
-      window.history.pushState({}, '', `/${roomId}`)
+      window.history.pushState({}, '', `/room/${roomId}`)
 
       // Definir o roomId pendente e mostrar o diálogo
       setPendingRoomId(roomId)

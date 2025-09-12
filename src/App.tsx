@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useParams } from 'react-router-dom'
+import { inject } from '@vercel/analytics'
 
 import { HomePage } from '@/pages/HomePage'
 import { HowItWorksPage } from '@/pages/HowItWorksPage'
@@ -7,8 +8,13 @@ import { BenefitsPage } from '@/pages/BenefitsPage'
 import { FAQPage } from '@/pages/FAQPage'
 import { PrivacyPolicyPage } from '@/pages/PrivacyPolicyPage'
 import { TermsOfServicePage } from '@/pages/TermsOfServicePage'
-import { inject } from '@vercel/analytics'
 import { CookieBanner } from '@/components/CookieBanner'
+
+function RoomLegacyRoute() {
+  const { roomId } = useParams()
+  if (!roomId) return <Navigate to='/' replace />
+  return <Navigate to={`/room/${roomId}`} replace />
+}
 
 function App() {
   inject()
@@ -18,6 +24,7 @@ function App() {
       <div className='flex-1'>
         <Routes>
           <Route path='/' element={<HomePage />} />
+          <Route path='/:roomId' element={<RoomLegacyRoute />} />
           <Route path='/room/:roomId' element={<HomePage />} />
           <Route path='/how-it-works' element={<HowItWorksPage />} />
           <Route path='/features' element={<FeaturesPage />} />
