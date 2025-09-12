@@ -8,6 +8,7 @@ import { cn, FIBONACCI_SEQUENCE } from '@/lib/utils'
 interface VotingAreaProps {
   room: Room
   currentUser: string
+  countdown: number | null
   onVote: (value: number) => void
   onStartNewRound: () => void
   onRevealVotes: () => void
@@ -16,12 +17,12 @@ interface VotingAreaProps {
 export function VotingArea({
   room,
   currentUser,
+  countdown,
   onVote,
   onStartNewRound,
   onRevealVotes
 }: VotingAreaProps) {
   const [selectedValue, setSelectedValue] = useState<number | null>(null)
-  const [countdown, setCountdown] = useState<number | null>(null)
 
   const currentUserData = room?.participants?.find(p => p.name === currentUser)
   const isOwner = currentUserData?.isOwner || false
@@ -31,17 +32,6 @@ export function VotingArea({
   )
   const isViewModeActive = currentUserData?.viewMode || false
   const shouldOwnerVote = !isViewModeActive || !isOwner
-
-  const allVoted =
-    currentRound && room?.participants && currentRound.votes
-      ? (() => {
-          const requiredVoters = room.participants.filter(
-            p => p.id !== room.ownerId || shouldOwnerVote
-          )
-          const validVotes = currentRound.votes.filter(v => v.value !== null)
-          return validVotes.length === requiredVoters.length
-        })()
-      : false
 
   const atLeastOneVoted =
     currentRound && room?.participants && currentRound.votes
@@ -58,46 +48,6 @@ export function VotingArea({
       setSelectedValue(null)
     }
   }, [userVote])
-
-  useEffect(() => {
-    if (
-      allVoted &&
-      room?.settings?.autoReveal &&
-      currentRound &&
-      !currentRound.isRevealed
-    ) {
-      const timer = setTimeout(() => {
-        onRevealVotes()
-      }, room?.settings?.revealDelay || 3000)
-
-      // Countdown visual
-      let countdownValue = Math.ceil(
-        (room?.settings?.revealDelay || 3000) / 1000
-      )
-      setCountdown(countdownValue)
-
-      const countdownTimer = setInterval(() => {
-        countdownValue -= 1
-        setCountdown(countdownValue)
-        if (countdownValue <= 0) {
-          clearInterval(countdownTimer)
-          setCountdown(null)
-        }
-      }, 1000)
-
-      return () => {
-        clearTimeout(timer)
-        clearInterval(countdownTimer)
-        setCountdown(null)
-      }
-    }
-  }, [
-    allVoted,
-    room?.settings?.autoReveal,
-    room?.settings?.revealDelay,
-    currentRound,
-    onRevealVotes
-  ])
 
   function handleVote(value: number) {
     if (!currentRound || currentRound.isRevealed) return

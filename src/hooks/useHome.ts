@@ -61,10 +61,31 @@ export function useHome({ start }: { start?: boolean }) {
     }
   )
 
+  const [countdown, setCountdown] = useState<number | null>(null)
+
   // IDs de salas em que o usuário participou (histórico)
   const [participatedRoomIds, setParticipatedRoomIds] = useLocalStorage<
     string[]
   >('minPoker_participatedRooms', [])
+
+  const isOwner = currentUser?.isOwner || false
+  const isViewModeActive = currentUser?.viewMode || false
+  const shouldOwnerVote = !isViewModeActive || !isOwner
+
+  const allVoted =
+    selectedRoom?.currentRound &&
+    selectedRoom?.participants &&
+    selectedRoom?.currentRound.votes
+      ? (() => {
+          const requiredVoters = selectedRoom?.participants.filter(
+            p => p.id !== selectedRoom.ownerId || shouldOwnerVote
+          )
+          const validVotes = selectedRoom?.currentRound?.votes.filter(
+            v => v.value !== null
+          )
+          return validVotes.length === requiredVoters.length
+        })()
+      : false
 
   // Garantir que userData sempre tenha um userId válido
   useEffect(() => {
@@ -123,17 +144,17 @@ export function useHome({ start }: { start?: boolean }) {
         const { rooms, notFoundIds } = await getRoomsByIds(participatedRoomIds)
         if (!isMounted) return
 
-        // Remover duplicatas e ordenar por lastActivity (mais recente primeiro), se disponível
-        const uniqueMap = new Map<string, Room>()
+        // Remover duplicatas e ordenar por createdAt (ordem de criação)
+        const uniqueRooms = new Map<string, Room>()
         rooms.forEach(r => {
-          uniqueMap.set(r.id, r)
+          uniqueRooms.set(r.id, r)
         })
-        const uniqueRooms = Array.from(uniqueMap.values()).sort((a, b) => {
-          const aTs = (a as any).lastActivity ?? 0
-          const bTs = (b as any).lastActivity ?? 0
-          return bTs - aTs
-        })
-        setParticipatedRooms(uniqueRooms)
+        // const uniqueRooms = Array.from(uniqueMap.values()).sort((a, b) => {
+        //   const aTs = (a as any).createdAt ?? 0
+        //   const bTs = (b as any).createdAt ?? 0
+        //   return aTs - bTs
+        // })
+        setParticipatedRooms(Array.from(uniqueRooms.values()))
 
         // Limpar IDs que não existem mais
         if (notFoundIds.length > 0) {
@@ -233,20 +254,45 @@ export function useHome({ start }: { start?: boolean }) {
     }
   }, [roomId, selectedRoom, userData.name, userData.userId, joinExistingRoom])
 
-  // Handle para criar uma sala automaticamente
-  // useEffect(() => {
-  //   const roomName = `Sala de ${userData.name}`
-  //   const roomAlreadyExists = userRooms.some(room => room.name === roomName)
+  // Inicia o countdown quando todas as pessoas votaram e se a sala está configurada para o autoReveal
+  useEffect(() => {
+    if (
+      allVoted &&
+      selectedRoom?.settings?.autoReveal &&
+      selectedRoom?.currentRound &&
+      !selectedRoom?.currentRound.isRevealed
+    ) {
+      const timer = setTimeout(() => {
+        handleRevealVotes()
+      }, selectedRoom?.settings?.revealDelay || 3000)
 
-  //   async function createAutomaticRoom() {
-  //     console.log({ roomAlreadyExists })
-  //     if (start && !roomAlreadyExists) {
-  //       await handleCreateRoom(roomName)
-  //     }
-  //   }
+      // Countdown visual
+      let countdownValue = Math.ceil(
+        (selectedRoom?.settings?.revealDelay || 3000) / 1000
+      )
+      setCountdown(countdownValue)
 
-  //   createAutomaticRoom()
-  // }, [start, userData.name, userRooms])
+      const countdownTimer = setInterval(() => {
+        countdownValue -= 1
+        setCountdown(countdownValue)
+        if (countdownValue <= 0) {
+          clearInterval(countdownTimer)
+          setCountdown(null)
+        }
+      }, 1000)
+
+      return () => {
+        clearTimeout(timer)
+        clearInterval(countdownTimer)
+        setCountdown(null)
+      }
+    }
+  }, [
+    allVoted,
+    selectedRoom?.settings?.autoReveal,
+    selectedRoom?.settings?.revealDelay,
+    selectedRoom?.currentRound
+  ])
 
   async function handleCreateRoom(roomName: string) {
     // Validar dados antes de criar a sala
@@ -470,6 +516,7 @@ export function useHome({ start }: { start?: boolean }) {
     wasDeleted,
     loading,
     error,
+    countdown,
 
     // Setters
     setUserData,

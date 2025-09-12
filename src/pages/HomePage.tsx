@@ -26,6 +26,7 @@ export function HomePage({ start }: { start?: boolean }) {
     participatedRooms,
     userData,
     setUserData,
+    countdown,
     handleCreateRoom,
     handleJoinRoom,
     handleJoinRoomByCode,
@@ -111,6 +112,7 @@ export function HomePage({ start }: { start?: boolean }) {
             <RoomHeader
               room={selectedRoom}
               currentUser={userData.name}
+              countdown={countdown}
               onUpdateRoom={handleUpdateRoom}
               onRemoveParticipant={handleRemoveParticipant}
               onLeaveRoom={handleLeaveRoom}
@@ -120,6 +122,7 @@ export function HomePage({ start }: { start?: boolean }) {
             <VotingArea
               room={selectedRoom}
               currentUser={currentUser.name}
+              countdown={countdown}
               onVote={handleVote}
               onStartNewRound={handleStartNewRound}
               onRevealVotes={handleRevealVotes}

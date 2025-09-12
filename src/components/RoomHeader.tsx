@@ -27,6 +27,7 @@ import { Toggle } from './ui/toggle'
 interface RoomHeaderProps {
   room: Room
   currentUser: string
+  countdown: number | null
   onUpdateRoom: (room: Room) => void
   onRemoveParticipant: (userId: string) => void
   onDeleteRoom?: () => void
@@ -37,6 +38,7 @@ interface RoomHeaderProps {
 export function RoomHeader({
   room,
   currentUser,
+  countdown,
   onUpdateRoom,
   onRemoveParticipant,
   onDeleteRoom,
@@ -151,7 +153,7 @@ export function RoomHeader({
             {/* Modo Visualização */}
             <Toggle
               variant='outline'
-              disabled={currentRound?.isRevealed}
+              disabled={currentRound?.isRevealed || countdown !== null}
               pressed={
                 room.participants.find(p => p.name === currentUser)?.viewMode ||
                 false
