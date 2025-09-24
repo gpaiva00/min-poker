@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { RoomHeader } from '../RoomHeader'
-import { Room, User } from '../../types'
+import { Room } from '../../types'
 
 const mockRoom: Room = {
   id: 'room-1',
