@@ -4,15 +4,10 @@ import { VotingArea } from '@/components/VotingArea'
 import { JoinRoomDialog } from '@/components/JoinRoomDialog'
 import { useHome } from '@/hooks/useHome'
 import { Button } from '@/components/ui/button'
-import {
-  BlocksIcon,
-  HeartIcon,
-  InfoIcon,
-  MessageCircleQuestionIcon
-} from 'lucide-react'
+import { InfoIcon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { detectInputType } from '@/lib/utils'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Alert, AlertTitle } from '@/components/ui/alert'
 
 export function HomePage({ start }: { start?: boolean }) {
   const {
