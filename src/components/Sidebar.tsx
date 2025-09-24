@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus, Shuffle, LogIn, User } from 'lucide-react'
+import { Shuffle, User, HomeIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,6 +14,7 @@ import { Room, LocalUserData } from '@/types'
 import { generateFunnyName } from '@/lib/utils'
 import { RoomListItem } from '@/components/RoomListItem'
 import { Footer } from './Footer'
+import { Link } from 'react-router-dom'
 
 interface SidebarProps {
   ownedRooms: Room[]
@@ -25,6 +26,7 @@ interface SidebarProps {
   userData: LocalUserData
   onUpdateUserData: (data: LocalUserData) => void
   onUpdateUserName?: (newName: string) => Promise<void>
+  setRoom: (room: Room | null) => void
 }
 
 export function Sidebar({
@@ -32,65 +34,13 @@ export function Sidebar({
   participatedRooms,
   selectedRoomId,
   onRoomSelect,
-  onCreateRoom,
-  onJoinRoomByCode,
   userData,
   onUpdateUserData,
-  onUpdateUserName
+  onUpdateUserName,
+  setRoom
 }: SidebarProps) {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false)
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false)
-  const [newRoomName, setNewRoomName] = useState('')
-  const [roomCode, setRoomCode] = useState('')
   const [userName, setUserName] = useState(userData.name)
-  const [joinError, setJoinError] = useState('')
-
-  // Contar salas criadas pelo usuário
-  const ownedRoomsCount = ownedRooms.filter(
-    room => room.ownerId === userData.userId
-  ).length
-
-  function handleCreateRoom() {
-    if (!newRoomName.trim()) return
-
-    if (ownedRoomsCount >= 3) {
-      alert('Você pode criar no máximo 3 salas simultaneamente')
-      return
-    }
-
-    onCreateRoom(newRoomName.trim())
-    setNewRoomName('')
-    setIsCreateDialogOpen(false)
-  }
-
-  function handleJoinRoom() {
-    if (!roomCode.trim()) {
-      setJoinError('Por favor, insira um código ou link de sala')
-      return
-    }
-
-    setJoinError('')
-
-    // Extrair o ID da sala do código ou link
-    let roomId = roomCode.trim()
-
-    // Se for um link completo, extrair apenas o ID da sala
-    if (roomId.includes('/')) {
-      const parts = roomId.split('/')
-      roomId = parts[parts.length - 1]
-    }
-
-    // Validar se o ID tem um formato válido (pelo menos 6 caracteres)
-    if (roomId.length < 6) {
-      setJoinError('Código de sala inválido')
-      return
-    }
-
-    onJoinRoomByCode(roomId)
-    setRoomCode('')
-    setIsJoinDialogOpen(false)
-  }
 
   function handleSubmit() {
     if (userName.trim() && userName !== userData.name) {
@@ -121,11 +71,11 @@ export function Sidebar({
   )
 
   return (
-    <div className='flex h-full w-16 flex-col border-r border-gray-100 bg-white sm:w-80'>
+    <div className='flex h-full w-16 flex-col border-r border-gray-100 bg-white sm:w-72'>
       {/* Header */}
       <div className='flex items-center justify-center pt-6 sm:inline-block sm:px-4 sm:py-6'>
         <div className='mb-4 flex items-center justify-between'>
-          <div className='flex items-center sm:-space-x-1'>
+          <Link to='/' className='flex items-center sm:-space-x-1'>
             <img
               src='/logo.png'
               alt='Logo minPoker - Planning Poker para equipes ágeis'
@@ -137,94 +87,11 @@ export function Sidebar({
             <h1 className='hidden text-xl font-bold text-primary sm:flex'>
               minPoker
             </h1>
-          </div>
+          </Link>
           <div className='hidden items-center space-x-2 sm:flex'>
-            <Dialog
-              open={isCreateDialogOpen}
-              onOpenChange={setIsCreateDialogOpen}
-            >
-              <DialogTrigger asChild>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  disabled={ownedRoomsCount >= 3}
-                  title={`Nova Sala (${ownedRoomsCount}/3)`}
-                  className='hover:bg-gray-100'
-                >
-                  <Plus className='h-5 w-5' />
-                </Button>
-              </DialogTrigger>
-              <DialogContent aria-describedby='criar nova sala'>
-                <DialogHeader>
-                  <DialogTitle>Criar Nova Sala</DialogTitle>
-                </DialogHeader>
-                <div className='space-y-4'>
-                  <div>
-                    <label className='text-sm font-medium'>Nome da sala</label>
-                    <Input
-                      value={newRoomName}
-                      onChange={e => setNewRoomName(e.target.value)}
-                      placeholder='Digite o nome da sala'
-                      onKeyDown={e => e.key === 'Enter' && handleCreateRoom()}
-                    />
-                  </div>
-                  <Button onClick={handleCreateRoom} className='w-full'>
-                    Criar Sala
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            <Dialog open={isJoinDialogOpen} onOpenChange={setIsJoinDialogOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  title='Entrar em Sala'
-                  className='hover:bg-gray-100'
-                >
-                  <LogIn className='h-5 w-5' />
-                </Button>
-              </DialogTrigger>
-              <DialogContent aria-describedby='entrar na sala'>
-                <DialogHeader>
-                  <DialogTitle>Entrar em Sala</DialogTitle>
-                </DialogHeader>
-                <div className='space-y-4'>
-                  <div>
-                    <label className='text-sm font-medium'>
-                      Código ou Link da Sala
-                    </label>
-                    <Input
-                      value={roomCode}
-                      onChange={e => {
-                        setRoomCode(e.target.value)
-                        setJoinError('')
-                      }}
-                      placeholder='Cole o link ou digite o código da sala'
-                      onKeyDown={e => e.key === 'Enter' && handleJoinRoom()}
-                    />
-                    {joinError && (
-                      <p className='mt-1 text-sm text-red-500'>{joinError}</p>
-                    )}
-                  </div>
-                  <div className='text-xs text-gray-500'>
-                    <p>Você pode colar:</p>
-                    <ul className='mt-1 list-inside list-disc space-y-1'>
-                      <li>Link completo da sala</li>
-                      <li>Apenas o código da sala</li>
-                    </ul>
-                  </div>
-                  <Button
-                    onClick={handleJoinRoom}
-                    className='w-full'
-                    disabled={!roomCode.trim()}
-                  >
-                    Entrar na Sala
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <Button variant='ghost' size='icon' onClick={() => setRoom(null)}>
+              <HomeIcon className='h-5 w-5' />
+            </Button>
 
             <Dialog
               open={isSettingsDialogOpen}

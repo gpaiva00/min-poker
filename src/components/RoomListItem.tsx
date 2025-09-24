@@ -28,7 +28,7 @@ export function RoomListItem({
       <div className='flex items-center justify-between'>
         <div className='min-w-0 flex-1'>
           <h3 className='truncate font-medium text-gray-900'>{room.name}</h3>
-          <p className='text-sm font-light text-gray-500'>
+          <p className='text-xs font-normal text-gray-500'>
             {room.participants.length} participante
             {room.participants.length !== 1 ? 's' : ''}
           </p>

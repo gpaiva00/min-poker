@@ -7,7 +7,7 @@ export function Footer() {
     <footer className='border-t border-gray-100 bg-white px-4 py-6'>
       <div className='flex flex-col items-center space-y-2'>
         <div className='flex items-center space-y-2'>
-          <div className='text-xs text-gray-500'>
+          <div className='text-center text-xs text-gray-500'>
             © {currentYear} minPoker. Todos os direitos reservados.
           </div>
         </div>

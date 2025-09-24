@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { useRoom } from '@/hooks/useRoom'
 import { LocalUserData, Room } from '@/types'
-import { generateFunnyName } from '@/lib/utils'
+import { generateFunnyName, detectInputType } from '@/lib/utils'
 import {
   listenToRoom,
   getRoomsByOwnerId,
@@ -43,7 +43,8 @@ export function useHome({ start }: { start?: boolean }) {
     updateUserName,
     deleteCurrentRoom,
     clearRemovedState,
-    toggleViewMode
+    toggleViewMode,
+    setRoom
   } = useRoom()
 
   const { roomId } = useParams()
@@ -52,6 +53,7 @@ export function useHome({ start }: { start?: boolean }) {
   const [pendingRoomName, setPendingRoomName] = useState<string>('')
   const [userRooms, setUserRooms] = useState<Room[]>([])
   const [participatedRooms, setParticipatedRooms] = useState<Room[]>([])
+  const [inputValue, setInputValue] = useState<string>('')
 
   const [userData, setUserData] = useLocalStorage<LocalUserData>(
     'minPoker_userData',
@@ -290,6 +292,23 @@ export function useHome({ start }: { start?: boolean }) {
     selectedRoom?.currentRound
   ])
 
+  function onEnterOrCreateRoom() {
+    if (!inputValue.trim()) {
+      alert(
+        'Por favor, digite um nome para a sala ou cole um código/link de sala existente'
+      )
+      return
+    }
+
+    const { type, value } = detectInputType(inputValue)
+
+    if (type === 'existing_room') {
+      handleJoinRoomByCode(value)
+    } else {
+      handleCreateRoom(value)
+    }
+  }
+
   async function handleCreateRoom(roomName: string) {
     // Validar dados antes de criar a sala
     if (!userData.name || !userData.userId) {
@@ -365,7 +384,9 @@ export function useHome({ start }: { start?: boolean }) {
     setPendingRoomName('')
   }
 
-  async function handleRoomSelect(roomId: string) {
+  async function handleRoomSelect(roomId: string | null) {
+    if (!roomId) return
+
     // Encontrar a sala e conectar a ela
     const room =
       userRooms.find(r => r.id === roomId) ||
@@ -497,6 +518,7 @@ export function useHome({ start }: { start?: boolean }) {
       console.error('Erro ao excluir sala:', error)
     }
   }
+  console.log({ userRooms })
 
   return {
     // Estados
@@ -513,9 +535,13 @@ export function useHome({ start }: { start?: boolean }) {
     loading,
     error,
     countdown,
+    inputValue,
+    ownedRoomsCount: userRooms.length,
 
     // Setters
     setUserData,
+    setRoom,
+    setInputValue,
 
     // Handlers
     handleCreateRoom,
@@ -532,6 +558,7 @@ export function useHome({ start }: { start?: boolean }) {
     handleCloseJoinDialog,
     handleRoomSelect,
     updateUserName,
-    toggleViewMode
+    toggleViewMode,
+    onEnterOrCreateRoom
   }
 }
