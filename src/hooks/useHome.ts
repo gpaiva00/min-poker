@@ -333,6 +333,7 @@ export function useHome({ start }: { start?: boolean }) {
         try {
           const rooms = await getRoomsByOwnerId(userData.userId)
           setUserRooms(rooms)
+          setInputValue('')
         } catch (error) {
           console.error('Erro ao recarregar lista de salas:', error)
           // Mesmo com erro, a sala foi criada, então vamos tentar novamente em breve
@@ -454,6 +455,7 @@ export function useHome({ start }: { start?: boolean }) {
             const next = new Set([...(prev ?? []), roomId])
             return Array.from(next)
           })
+          setInputValue('')
         }
       }
     },
