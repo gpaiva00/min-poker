@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import { RotateCcw, Eye, Check } from 'lucide-react'
+import { RotateCcw, Eye } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { Participant } from '@/components/Participant'
 import { Room } from '@/types'
-import { cn, FIBONACCI_SEQUENCE } from '@/lib/utils'
+import { FIBONACCI_SEQUENCE } from '@/lib/utils'
 
 interface VotingAreaProps {
   room: Room
@@ -117,7 +118,7 @@ export function VotingArea({
                 ? 'Resultados da Votação'
                 : 'Votação em Andamento'}
             </h3>
-            <p className='text-sm font-light'>
+            <p className='text-sm'>
               {currentRound?.votes?.filter(v => v.value !== null).length || 0}{' '}
               de {room?.participants?.length || 0} votaram
             </p>
@@ -126,7 +127,7 @@ export function VotingArea({
           {countdown && (
             <div className='text-center'>
               <div className='text-2xl font-bold text-primary'>{countdown}</div>
-              <div className='text-xs font-light'>Revelando...</div>
+              <div className='text-xs'>Revelando...</div>
             </div>
           )}
 
@@ -188,29 +189,14 @@ export function VotingArea({
                 )
                 const isCurrentUser = participant?.name === currentUser
                 return (
-                  <div
+                  <Participant
                     key={vote.userId}
-                    className={`rounded-lg border p-4 text-center shadow-sm ${
-                      isCurrentUser
-                        ? 'border-primary/20 bg-primary/10'
-                        : 'bg-white'
-                    }`}
-                  >
-                    <div className='mb-2 text-3xl font-bold text-primary'>
-                      {vote.value}
-                    </div>
-                    <div
-                      className={`text-sm ${
-                        isCurrentUser
-                          ? 'font-medium text-primary'
-                          : 'text-gray-600'
-                      }`}
-                    >
-                      {isCurrentUser
-                        ? `${participant?.name} (você)`
-                        : participant?.name}
-                    </div>
-                  </div>
+                    id={participant?.id || ''}
+                    name={participant?.name || ''}
+                    isCurrentUser={isCurrentUser}
+                    mode='results'
+                    voteValue={vote.value}
+                  />
                 )
               }) || []}
             </div>
@@ -228,56 +214,15 @@ export function VotingArea({
                 const isViewModeActive = participant.viewMode || false
 
                 return (
-                  <div
+                  <Participant
                     key={participant.id}
-                    className={cn(
-                      'rounded-lg border p-4 text-center',
-                      isCurrentUser && 'border-primary/20 bg-primary/10',
-                      isViewModeActive && 'border-blue-200 bg-blue-50'
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        'mx-auto mb-2 flex h-16 w-16 items-center justify-center rounded-full',
-                        isViewModeActive ? 'bg-blue-100' : 'bg-primary/20'
-                      )}
-                    >
-                      {isViewModeActive ? (
-                        <Eye className='h-5 w-5 text-blue-600' />
-                      ) : hasVoted ? (
-                        <Check className='h-5 w-5 text-primary' />
-                      ) : (
-                        <div className='text-lg text-primary'>?</div>
-                      )}
-                    </div>
-                    <div
-                      className={cn(
-                        'text-sm font-medium',
-                        isCurrentUser && 'text-primary',
-                        isViewModeActive && 'text-blue-700',
-                        !isCurrentUser && !isViewModeActive && 'text-gray-900'
-                      )}
-                    >
-                      {isCurrentUser
-                        ? `${participant.name} (você)`
-                        : participant.name}
-                    </div>
-                    <div
-                      className={`text-xs font-light ${
-                        isViewModeActive
-                          ? 'text-blue-600'
-                          : hasVoted
-                            ? 'text-primary'
-                            : 'text-gray-500'
-                      }`}
-                    >
-                      {isViewModeActive
-                        ? 'Observando'
-                        : hasVoted
-                          ? 'Votou'
-                          : 'Aguardando'}
-                    </div>
-                  </div>
+                    id={participant.id}
+                    name={participant.name}
+                    isCurrentUser={isCurrentUser}
+                    isViewMode={isViewModeActive}
+                    mode='voting'
+                    hasVoted={hasVoted}
+                  />
                 )
               })}
             </div>

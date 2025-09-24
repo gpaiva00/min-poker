@@ -291,6 +291,7 @@ export function useRoom() {
     deleteCurrentRoom,
     clearRemovedState,
     clearDeletedState,
-    toggleViewMode
+    toggleViewMode,
+    setRoom
   }
 }

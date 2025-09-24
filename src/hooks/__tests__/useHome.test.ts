@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useHome } from '../useHome'
-import { Room, LocalUserData } from '../../types'
+import { LocalUserData } from '../../types'
 
 // Mock do localStorage
 const mockLocalStorage = {

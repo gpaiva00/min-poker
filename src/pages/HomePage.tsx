@@ -4,12 +4,10 @@ import { VotingArea } from '@/components/VotingArea'
 import { JoinRoomDialog } from '@/components/JoinRoomDialog'
 import { useHome } from '@/hooks/useHome'
 import { Button } from '@/components/ui/button'
-import {
-  BlocksIcon,
-  HeartIcon,
-  InfoIcon,
-  MessageCircleQuestionIcon
-} from 'lucide-react'
+import { InfoIcon } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { detectInputType } from '@/lib/utils'
+import { Alert, AlertTitle } from '@/components/ui/alert'
 
 export function HomePage({ start }: { start?: boolean }) {
   const {
@@ -41,7 +39,12 @@ export function HomePage({ start }: { start?: boolean }) {
     handleWasRemovedAction,
     updateUserName,
     handleCloseJoinDialog,
-    toggleViewMode
+    toggleViewMode,
+    setRoom,
+    onEnterOrCreateRoom,
+    inputValue,
+    setInputValue,
+    ownedRoomsCount
   } = useHome({ start })
 
   return (
@@ -55,6 +58,7 @@ export function HomePage({ start }: { start?: boolean }) {
         onJoinRoomByCode={handleJoinRoomByCode}
         userData={userData}
         onUpdateUserData={setUserData}
+        setRoom={setRoom}
         onUpdateUserName={
           selectedRoom && currentUser ? updateUserName : undefined
         }
@@ -133,174 +137,102 @@ export function HomePage({ start }: { start?: boolean }) {
           !error &&
           !wasRemoved && (
             <div className='flex-1 overflow-y-auto'>
-              <div className='mx-auto max-w-4xl px-6 py-8'>
+              <div className='mx-auto flex h-full max-w-xl flex-col items-center justify-center space-y-10'>
                 {/* Hero Section */}
-                <div className='mb-12 text-center'>
+                <section className='w-full text-center'>
                   <img
                     src='/logo.png'
                     alt='Logo do minPoker - Ferramenta de Planning Poker online gratuita para equipes ágeis realizarem estimativas colaborativas'
-                    className='mx-auto h-24 w-24'
+                    className='mx-auto mb-6 h-24 w-24'
                     loading='lazy'
                     width='96'
                     height='96'
                   />
-                  <h1 className='mb-4 text-4xl font-bold text-primary'>
-                    minPoker | Planning Poker Online
+
+                  <h1 className='mb-6 text-2xl font-bold'>
+                    Crie ou entre em uma sala
                   </h1>
-                  <h2 className='mx-auto max-w-2xl text-lg font-light text-gray-500'>
-                    Crie uma nova sala ou entre em uma existente para começar
-                    suas sessões de Planning Poker com sua equipe.
-                  </h2>
-                </div>
 
-                {/* What is Planning Poker Section */}
-                {/* <section className='mb-12'>
-                  <h2 className='text-2xl font-semibold mb-6 text-center '>
-                    O que é Planning Poker?
-                  </h2>
-                  <div className='bg-white rounded-lg shadow-sm p-6 border'>
-                    <p className='text-gray-700 mb-4 leading-relaxed'>
-                      O <strong>Planning Poker</strong> é uma técnica de
-                      estimativa ágil baseada em consenso, amplamente utilizada
-                      em metodologias como Scrum e outras frameworks ágeis. Esta
-                      ferramenta gamificada permite que equipes de
-                      desenvolvimento estimem o esforço necessário para
-                      completar user stories, tarefas ou funcionalidades de
-                      forma colaborativa e precisa.
-                    </p>
-                    <p className='text-gray-700 leading-relaxed'>
-                      Utilizando cartas numeradas (geralmente seguindo a
-                      sequência de Fibonacci: 1, 2, 3, 5, 8, 13, 21), cada
-                      membro da equipe vota simultaneamente, evitando
-                      influências e garantindo estimativas mais objetivas e
-                      democráticas.
-                    </p>
+                  <div className='relative mb-6'>
+                    <Input
+                      placeholder='Digite um nome ou cole o link de uma sala'
+                      value={inputValue}
+                      onChange={e => setInputValue(e.target.value)}
+                      className='w-full'
+                      autoFocus
+                      disabled={loading || ownedRoomsCount === 3}
+                    />
                   </div>
-                </section> */}
 
-                {/* Benefits Section */}
-                {/* <section className='mb-12'>
-                  <h2 className='text-2xl font-semibold mb-6 text-center '>
-                    Benefícios do Planning Poker
-                  </h2>
-                  <div className='grid md:grid-cols-2 gap-6'>
-                    <div className='bg-blue-50 rounded-lg p-6 border border-blue-100'>
-                      <h3 className='text-lg font-semibold mb-3 text-blue-800'>
-                        🎯 Estimativas Mais Precisas
-                      </h3>
-                      <p className='text-gray-700'>
-                        A combinação de diferentes perspectivas da equipe
-                        resulta em estimativas mais realistas e confiáveis para
-                        o planejamento de sprints.
-                      </p>
-                    </div>
-                    <div className='bg-green-50 rounded-lg p-6 border border-green-100'>
-                      <h3 className='text-lg font-semibold mb-3 text-green-800'>
-                        🤝 Colaboração da Equipe
-                      </h3>
-                      <p className='text-gray-700'>
-                        Promove discussões saudáveis e alinhamento entre
-                        desenvolvedores, testadores, analistas e outros membros
-                        da equipe ágil.
-                      </p>
-                    </div>
-                    <div className='bg-purple-50 rounded-lg p-6 border border-purple-100'>
-                      <h3 className='text-lg font-semibold mb-3 text-purple-800'>
-                        ⚡ Processo Eficiente
-                      </h3>
-                      <p className='text-gray-700'>
-                        Reduz o tempo gasto em reuniões de estimativa, tornando
-                        o processo mais dinâmico e focado nos resultados.
-                      </p>
-                    </div>
-                    <div className='bg-orange-50 rounded-lg p-6 border border-orange-100'>
-                      <h3 className='text-lg font-semibold mb-3 text-orange-800'>
-                        📊 Transparência Total
-                      </h3>
-                      <p className='text-gray-700'>
-                        Todos os votos são revelados simultaneamente, eliminando
-                        vieses e influências externas nas estimativas.
-                      </p>
-                    </div>
-                  </div>
-                </section> */}
+                  <Button
+                    className='w-full'
+                    onClick={onEnterOrCreateRoom}
+                    disabled={
+                      loading || !inputValue.trim() || ownedRoomsCount === 3
+                    }
+                  >
+                    {inputValue.trim() ? (
+                      (() => {
+                        const { type } = detectInputType(inputValue)
+
+                        if (type === 'existing_room') {
+                          return <span>Entrar nesta sala</span>
+                        } else {
+                          return <span>Criar nova sala</span>
+                        }
+                      })()
+                    ) : (
+                      <span>Continuar</span>
+                    )}
+                  </Button>
+
+                  {ownedRoomsCount === 3 && (
+                    <Alert className='mt-6 place-items-start border border-[#efcaa9] bg-[#FEECDC]'>
+                      <InfoIcon className='h-4 w-4' />
+                      <AlertTitle className='text-xs font-medium'>
+                        Ops! Você atingiu o limite de 3 salas criadas.
+                      </AlertTitle>
+                    </Alert>
+                  )}
+                </section>
 
                 {/* Navigation Links Section */}
-                <section className='mb-12'>
-                  <div className='mx-auto grid max-w-3xl gap-6 md:grid-cols-2'>
+                <section className=''>
+                  <div className='flex flex-wrap justify-start gap-4'>
                     <a
                       href='/how-it-works'
-                      className='group block rounded-lg border border-gray-100 bg-gray-100 p-6 transition-colors hover:bg-primary/10'
+                      className='group block space-y-1 rounded-lg border border-gray-100 bg-gray-100 p-2 transition-colors hover:border-primary/10 hover:bg-primary/10'
                     >
-                      <div className='mb-3 flex items-center'>
-                        <div className='mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white transition-transform'>
-                          <InfoIcon />
-                        </div>
-                        <h3 className='text-lg font-semibold'>
-                          Como Funciona o minPoker
-                        </h3>
-                      </div>
-                      <p className='text-sm text-gray-500'>
-                        Descubra o passo a passo para usar nossa ferramenta de
-                        Planning Poker e como ela pode melhorar suas estimativas
-                        ágeis.
-                      </p>
+                      <h3 className='text-xs font-normal'>
+                        Como Funciona o minPoker
+                      </h3>
                     </a>
 
                     <a
                       href='/features'
-                      className='group block rounded-lg border border-gray-100 bg-gray-100 p-6 transition-colors hover:bg-primary/10'
+                      className='group block space-y-1 rounded-lg border border-gray-100 bg-gray-100 p-2 transition-colors hover:border-primary/10 hover:bg-primary/10'
                     >
-                      <div className='mb-3 flex items-center'>
-                        <div className='mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white transition-transform'>
-                          <BlocksIcon />
-                        </div>
-                        <h3 className='text-lg font-semibold'>
-                          Recursos do minPoker
-                        </h3>
-                      </div>
-                      <p className='text-sm text-gray-600'>
-                        Explore todas as funcionalidades disponíveis: votação
-                        anônima, salas privadas, sincronização em tempo real e
-                        muito mais.
-                      </p>
+                      <h3 className='text-xs font-normal'>
+                        Recursos do minPoker
+                      </h3>
                     </a>
 
                     <a
                       href='/benefits'
-                      className='group block rounded-lg border border-gray-100 bg-gray-100 p-6 transition-colors hover:bg-primary/10'
+                      className='group block space-y-1 rounded-lg border border-gray-100 bg-gray-100 p-2 transition-colors hover:border-primary/10 hover:bg-primary/10'
                     >
-                      <div className='mb-3 flex items-center'>
-                        <div className='mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white transition-transform'>
-                          <HeartIcon />
-                        </div>
-                        <h3 className='text-lg font-semibold'>
-                          Benefícios do Planning Poker
-                        </h3>
-                      </div>
-                      <p className='text-sm text-gray-600'>
-                        Entenda como o Planning Poker melhora a precisão das
-                        estimativas, promove colaboração e otimiza o processo
-                        ágil.
-                      </p>
+                      <h3 className='text-xs font-normal'>
+                        Benefícios do Planning Poker
+                      </h3>
                     </a>
 
                     <a
                       href='/faq'
-                      className='group block rounded-lg border border-gray-100 bg-gray-100 p-6 transition-colors hover:bg-primary/10'
+                      className='group block space-y-1 rounded-lg border border-gray-100 bg-gray-100 p-2 transition-colors hover:border-primary/10 hover:bg-primary/10'
                     >
-                      <div className='mb-3 flex items-center'>
-                        <div className='mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white transition-transform'>
-                          <MessageCircleQuestionIcon />
-                        </div>
-                        <h3 className='text-lg font-semibold'>
-                          Perguntas Frequentes
-                        </h3>
-                      </div>
-                      <p className='text-sm text-gray-600'>
-                        Encontre respostas para as dúvidas mais comuns sobre o
-                        uso do minPoker e suas funcionalidades.
-                      </p>
+                      <h3 className='text-xs font-normal'>
+                        Perguntas Frequentes
+                      </h3>
                     </a>
                   </div>
                 </section>
