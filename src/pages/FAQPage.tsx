@@ -1,5 +1,6 @@
+import { Button } from '@/components/ui/button'
 import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
 interface FAQItem {
@@ -142,6 +143,7 @@ function FAQItem({
 }
 
 export function FAQPage() {
+  const navigate = useNavigate()
   const [openItems, setOpenItems] = useState<Set<number>>(new Set())
 
   function toggleItem(index: number) {
@@ -155,23 +157,23 @@ export function FAQPage() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4'>
+    <div className='min-h-screen bg-[#fcfcff] p-6'>
       <div className='mx-auto max-w-4xl'>
-        <div className='mb-8'>
-          <Link
-            to='/'
-            className='inline-flex items-center gap-2 text-blue-600 transition-colors hover:text-blue-800'
+        <div className='mb-6'>
+          <Button
+            variant='ghost'
+            onClick={() => navigate('/')}
+            className='mb-4'
           >
-            <ArrowLeft className='h-4 w-4' />
-            Voltar ao início
-          </Link>
-        </div>
-
-        <div className='rounded-lg bg-white p-8 shadow-lg'>
-          <h1 className='mb-8 text-center text-4xl font-bold text-gray-900'>
+            <ArrowLeft className='mr-2 h-4 w-4' />
+            Voltar
+          </Button>
+          <h1 className='mb-2 text-3xl font-bold text-gray-900'>
             Perguntas Frequentes
           </h1>
+        </div>
 
+        <div className='space-y-8 rounded-lg bg-white p-8 shadow-sm'>
           <div className='mb-8'>
             <p className='text-center text-lg leading-relaxed text-gray-600'>
               Encontre respostas para as dúvidas mais comuns sobre o minPoker e
@@ -200,12 +202,12 @@ export function FAQPage() {
             </p>
             <div className='space-y-2'>
               <p className='text-gray-600'>
-                <strong>Email:</strong> contato@minpoker.com
+                <strong>Email:</strong> gabrielalvesdepaiva@icloud.com
               </p>
-              <p className='text-gray-600'>
+              {/* <p className='text-gray-600'>
                 <strong>GitHub:</strong> Reporte issues ou contribua com o
                 projeto
-              </p>
+              </p> */}
             </div>
           </div>
 

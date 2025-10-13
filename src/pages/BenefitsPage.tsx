@@ -1,33 +1,36 @@
+import { Button } from '@/components/ui/button'
 import {
   ArrowLeft,
-  Target,
+  TrendingUp,
   Users,
   Clock,
-  TrendingUp,
-  Brain,
-  CheckCircle
+  Target,
+  CheckCircle,
+  Brain
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export function BenefitsPage() {
+  const navigate = useNavigate()
+
   return (
-    <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4'>
+    <div className='min-h-screen bg-[#fcfcff] p-6'>
       <div className='mx-auto max-w-4xl'>
-        <div className='mb-8'>
-          <Link
-            to='/'
-            className='inline-flex items-center gap-2 text-blue-600 transition-colors hover:text-blue-800'
+        <div className='mb-6'>
+          <Button
+            variant='ghost'
+            onClick={() => navigate('/')}
+            className='mb-4'
           >
-            <ArrowLeft className='h-4 w-4' />
-            Voltar ao início
-          </Link>
+            <ArrowLeft className='mr-2 h-4 w-4' />
+            Voltar
+          </Button>
+          <h1 className='mb-2 text-3xl font-bold text-gray-900'>
+            Benefícios do minPoker
+          </h1>
         </div>
 
-        <div className='rounded-lg bg-white p-8 shadow-lg'>
-          <h1 className='mb-8 text-center text-4xl font-bold text-gray-900'>
-            Benefícios do Planning Poker
-          </h1>
-
+        <div className='space-y-8 rounded-lg bg-white p-8 shadow-sm'>
           <div className='mb-12'>
             <p className='text-center text-lg leading-relaxed text-gray-600'>
               O Planning Poker é uma das técnicas de estimativa mais eficazes em

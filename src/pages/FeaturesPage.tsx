@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import {
   ArrowLeft,
   Users,
@@ -7,27 +8,29 @@ import {
   Zap,
   Shield
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export function FeaturesPage() {
-  return (
-    <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4'>
-      <div className='mx-auto max-w-4xl'>
-        <div className='mb-8'>
-          <Link
-            to='/'
-            className='inline-flex items-center gap-2 text-blue-600 transition-colors hover:text-blue-800'
-          >
-            <ArrowLeft className='h-4 w-4' />
-            Voltar ao início
-          </Link>
-        </div>
+  const navigate = useNavigate()
 
-        <div className='rounded-lg bg-white p-8 shadow-lg'>
-          <h1 className='mb-8 text-center text-4xl font-bold text-gray-900'>
+  return (
+    <div className='min-h-screen bg-[#fcfcff] p-6'>
+      <div className='mx-auto max-w-4xl'>
+        <div className='mb-6'>
+          <Button
+            variant='ghost'
+            onClick={() => navigate('/')}
+            className='mb-4'
+          >
+            <ArrowLeft className='mr-2 h-4 w-4' />
+            Voltar
+          </Button>
+          <h1 className='mb-2 text-3xl font-bold text-gray-900'>
             Recursos do minPoker
           </h1>
+        </div>
 
+        <div className='space-y-8 rounded-lg bg-white p-8 shadow-sm'>
           <div className='mb-12 grid gap-8 md:grid-cols-2'>
             <div className='rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 p-6'>
               <div className='mb-4 flex items-center gap-3'>
@@ -224,41 +227,6 @@ export function FeaturesPage() {
                   <li>• Preferências de usuário</li>
                   <li>• Estado da sessão atual</li>
                 </ul>
-              </div>
-            </section>
-
-            <section>
-              <h2 className='mb-4 text-2xl font-semibold text-gray-800'>
-                Integração Opcional com Firebase
-              </h2>
-              <p className='mb-4 leading-relaxed text-gray-600'>
-                Para equipes que precisam de sincronização avançada, o minPoker
-                oferece integração opcional com Firebase para persistência em
-                nuvem.
-              </p>
-              <div className='grid gap-4 md:grid-cols-2'>
-                <div className='rounded-lg bg-green-50 p-4'>
-                  <h4 className='mb-2 font-semibold text-green-800'>
-                    Modo Local (Padrão)
-                  </h4>
-                  <ul className='space-y-1 text-sm text-green-700'>
-                    <li>• Sem necessidade de configuração</li>
-                    <li>• Dados no navegador</li>
-                    <li>• Privacidade total</li>
-                    <li>• Funciona offline</li>
-                  </ul>
-                </div>
-                <div className='rounded-lg bg-blue-50 p-4'>
-                  <h4 className='mb-2 font-semibold text-blue-800'>
-                    Modo Firebase (Opcional)
-                  </h4>
-                  <ul className='space-y-1 text-sm text-blue-700'>
-                    <li>• Sincronização em nuvem</li>
-                    <li>• Acesso de múltiplos dispositivos</li>
-                    <li>• Backup automático</li>
-                    <li>• Colaboração avançada</li>
-                  </ul>
-                </div>
               </div>
             </section>
           </div>
