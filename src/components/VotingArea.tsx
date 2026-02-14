@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { RotateCcw, Eye } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Eye, RotateCcw } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Participant } from '@/components/Participant'
@@ -66,11 +66,29 @@ export function VotingArea({
       votes.reduce((sum, vote) => sum + vote.value!, 0) / votes.length
     const sortedVotes = [...votes].sort((a, b) => a.value! - b.value!)
 
+    const minValue = sortedVotes[0]?.value || 0
+    const maxValue = sortedVotes[sortedVotes.length - 1]?.value || 0
+
+    const minCount = votes.filter(v => v.value === minValue).length
+    const maxCount = votes.filter(v => v.value === maxValue).length
+
+    const closestToAvg = votes.reduce((closest, v) =>
+      Math.abs(v.value! - average) < Math.abs(closest.value! - average)
+        ? v
+        : closest
+    )
+    const avgValue = closestToAvg.value!
+    const avgCount = votes.filter(v => v.value === avgValue).length
+
     return {
       average: Math.round(average * 10) / 10,
-      min: sortedVotes[0]?.value || 0,
-      max: sortedVotes[sortedVotes.length - 1]?.value || 0,
-      votes: votes
+      min: minValue,
+      max: maxValue,
+      votes: votes,
+      minCount,
+      maxCount,
+      avgCount,
+      avgValue
     }
   }
 
@@ -168,16 +186,26 @@ export function VotingArea({
               <div className='rounded-lg bg-gray-100 p-4 text-center'>
                 <div className='text-2xl font-bold'>{results.min}</div>
                 <div className='text-sm font-light text-gray-600'>Mínimo</div>
+                <div className='mt-1 text-xs font-light text-gray-500'>
+                  {results.minCount} {results.minCount === 1 ? 'voto' : 'votos'}
+                </div>
               </div>
               <div className='rounded-lg bg-gray-100 p-4 text-center'>
                 <div className='text-2xl font-bold text-primary'>
                   {results.average}
                 </div>
                 <div className='text-sm font-light text-primary'>Média</div>
+                <div className='mt-1 text-xs font-light text-primary/70'>
+                  {results.avgCount} {results.avgCount === 1 ? 'voto' : 'votos'}{' '}
+                  em {results.avgValue}
+                </div>
               </div>
               <div className='rounded-lg bg-gray-100 p-4 text-center'>
                 <div className='text-2xl font-bold'>{results.max}</div>
                 <div className='text-sm font-light text-gray-600'>Máximo</div>
+                <div className='mt-1 text-xs font-light text-gray-500'>
+                  {results.maxCount} {results.maxCount === 1 ? 'voto' : 'votos'}
+                </div>
               </div>
             </div>
 
@@ -241,7 +269,6 @@ export function VotingArea({
                 size='lg'
                 onClick={() => handleVote(value)}
                 className='h-16 min-w-[60px] border-gray-200 text-xl font-bold'
-                disabled={!!userVote}
               >
                 {value}
               </Button>
@@ -249,7 +276,10 @@ export function VotingArea({
           </div>
           {userVote && (
             <div className='mt-4 text-center text-sm font-light text-gray-600'>
-              Você votou: <span className='font-bold'>{userVote.value}</span>
+              Seu voto: <span className='font-bold'>{userVote.value}</span>{' '}
+              <span className='text-xs text-gray-500'>
+                (clique para alterar)
+              </span>
             </div>
           )}
         </div>

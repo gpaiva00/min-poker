@@ -1,19 +1,17 @@
-import { useState } from 'react'
 import {
-  Edit2,
-  Settings,
-  Copy,
   Check,
-  Trash2,
+  Copy,
+  Edit2,
+  Eye,
   LogOut,
-  X,
   MoreVertical,
-  Eye
+  Settings,
+  Trash2,
+  X
 } from 'lucide-react'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
 import {
   Dialog,
   DialogContent,
@@ -21,6 +19,8 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import { Room } from '@/types'
 import { Toggle } from './ui/toggle'
 
@@ -423,6 +423,7 @@ export function RoomHeader({
       <div className='flex flex-wrap gap-2'>
         {room.participants.map(participant => {
           const isParticipantInViewMode = participant.viewMode || false
+          const isCurrentParticipant = participant.name === currentUser
           return (
             <div
               key={participant.id}
@@ -444,6 +445,11 @@ export function RoomHeader({
               >
                 {participant.name}
               </span>
+              {isCurrentParticipant && (
+                <div className='ml-2 rounded bg-blue-100 px-[3px] py-[2px] text-[10px] font-medium text-blue-700'>
+                  Você
+                </div>
+              )}
               {participant.isOwner && (
                 <div
                   className={`ml-2 rounded px-[3px] py-[2px] text-[10px] font-medium ${
