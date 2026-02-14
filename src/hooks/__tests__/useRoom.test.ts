@@ -210,11 +210,15 @@ describe('useRoom', () => {
 
       const { result } = renderHook(() => useRoom())
 
-      const joinResult = await result.current.joinExistingRoom(
-        'invalid-room',
-        'user-1',
-        'Test User'
-      )
+      let joinResult: boolean = true
+
+      await act(async () => {
+        joinResult = await result.current.joinExistingRoom(
+          'invalid-room',
+          'user-1',
+          'Test User'
+        )
+      })
 
       expect(joinResult).toBe(false)
       expect(result.current.error).toBe('Sala não encontrada')
