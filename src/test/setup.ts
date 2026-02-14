@@ -89,7 +89,7 @@ vi.mock('firebase/database', () => ({
   getDatabase: vi.fn(),
   ref: mockRef.mockReturnValue({ toString: () => 'ref', copy: vi.fn() }),
   query: mockQuery.mockReturnValue({ toString: () => 'query', copy: vi.fn() }),
-  onValue: mockOnValue.mockImplementation((ref, callback) => {
+  onValue: mockOnValue.mockImplementation((_ref, callback) => {
     callback({ val: () => null, exists: () => false })
     return vi.fn()
   }),

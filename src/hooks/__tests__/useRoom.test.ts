@@ -106,7 +106,7 @@ describe('useRoom', () => {
 
       let listenCallback: (room: Room | null) => void
       mockFirebase.listenToRoom.mockImplementation(
-        (id: string, callback: (room: Room | null) => void) => {
+        (_id: string, callback: (room: Room | null) => void) => {
           listenCallback = callback
           return vi.fn()
         }
@@ -171,7 +171,7 @@ describe('useRoom', () => {
 
       let listenCallback: (room: Room | null) => void
       mockFirebase.listenToRoom.mockImplementation(
-        (id: string, callback: (room: Room | null) => void) => {
+        (_id: string, callback: (room: Room | null) => void) => {
           listenCallback = callback
           return vi.fn()
         }
@@ -210,15 +210,11 @@ describe('useRoom', () => {
 
       const { result } = renderHook(() => useRoom())
 
-      let joinResult: boolean = true
-
-      await act(async () => {
-        joinResult = await result.current.joinExistingRoom(
-          'invalid-room',
-          'user-1',
-          'Test User'
-        )
-      })
+      const joinResult = await result.current.joinExistingRoom(
+        'invalid-room',
+        'user-1',
+        'Test User'
+      )
 
       expect(joinResult).toBe(false)
       expect(result.current.error).toBe('Sala não encontrada')

@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import * as firebase from '../firebase'
-import { Room, User } from '@/types'
 
 vi.mock('firebase/app')
 vi.mock('firebase/database')
