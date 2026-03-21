@@ -2,6 +2,7 @@ export interface User {
   id: string
   name: string
   isOwner: boolean
+  viewMode?: boolean
 }
 
 export interface Vote {

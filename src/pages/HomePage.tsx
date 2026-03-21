@@ -3,15 +3,32 @@ import { RoomHeader } from '@/components/RoomHeader'
 import { VotingArea } from '@/components/VotingArea'
 import { JoinRoomDialog } from '@/components/JoinRoomDialog'
 import { useHome } from '@/hooks/useHome'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
+import { InfoIcon, Menu, User, HomeIcon, Shuffle } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { detectInputType, generateFunnyName } from '@/lib/utils'
+import { Alert, AlertTitle } from '@/components/ui/alert'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import {
-  BlocksIcon,
-  HeartIcon,
-  InfoIcon,
-  MessageCircleQuestionIcon
-} from 'lucide-react'
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { RoomListItem } from '@/components/RoomListItem'
+import { Footer } from '@/components/Footer'
+import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import React from 'react'
 
 export function HomePage({ start }: { start?: boolean }) {
+  const isMobile = useIsMobile()
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false)
+  const [userName, setUserName] = useState('')
+
   const {
     selectedRoom,
     currentUser,
@@ -26,6 +43,7 @@ export function HomePage({ start }: { start?: boolean }) {
     participatedRooms,
     userData,
     setUserData,
+    countdown,
     handleCreateRoom,
     handleJoinRoom,
     handleJoinRoomByCode,
@@ -39,65 +57,262 @@ export function HomePage({ start }: { start?: boolean }) {
     handleUpdateRoom,
     handleWasRemovedAction,
     updateUserName,
-    handleCloseJoinDialog
+    handleCloseJoinDialog,
+    toggleViewMode,
+    setRoom,
+    onEnterOrCreateRoom,
+    inputValue,
+    setInputValue,
+    ownedRoomsCount
   } = useHome({ start })
+
+  // Initialize userName with userData.name
+  React.useEffect(() => {
+    setUserName(userData.name)
+  }, [userData.name])
+
+  function handleSubmit() {
+    if (userName.trim() && userName !== userData.name) {
+      // Atualizar dados locais
+      setUserData({
+        ...userData,
+        name: userName.trim()
+      })
+
+      // Atualizar nome na sala se estiver conectado
+      if (updateUserName) {
+        updateUserName(userName.trim()).catch(error => {
+          console.error('Erro ao atualizar nome na sala:', error)
+        })
+      }
+
+      setIsSettingsDialogOpen(false)
+    }
+  }
+
+  function handleGenerateRandomName() {
+    setUserName(generateFunnyName())
+  }
+
+  const ownedIds = new Set(userRooms.map(r => r.id))
+  const filteredParticipated = participatedRooms.filter(
+    r => !ownedIds.has(r.id) && r.ownerId !== userData.userId
+  )
+
+  // Mobile Sheet Content (replicates Sidebar functionality)
+  const MobileSheetContent = () => (
+    <div className='flex h-full flex-col'>
+      {/* Header */}
+      <div className='flex items-center justify-between pb-6'>
+        <Link to='/' className='flex items-center space-x-2'>
+          <img
+            src='/logo.png'
+            alt='Logo minPoker - Planning Poker para equipes ágeis'
+            className='h-8 w-8'
+            loading='lazy'
+            width='32'
+            height='32'
+          />
+          <h1 className='text-xl font-bold text-primary'>minPoker</h1>
+        </Link>
+        <div className='flex items-center space-x-2'>
+          <Button
+            variant='ghost'
+            size='icon'
+            onClick={() => {
+              setRoom(null)
+              setIsSheetOpen(false)
+            }}
+            className='h-12 w-12' // Minimum 48x48px touch area
+          >
+            <HomeIcon className='h-5 w-5' />
+          </Button>
+
+          <Dialog
+            open={isSettingsDialogOpen}
+            onOpenChange={setIsSettingsDialogOpen}
+          >
+            <DialogTrigger asChild>
+              <Button
+                variant='ghost'
+                size='icon'
+                title='Configurações'
+                className='h-12 w-12 hover:bg-gray-100' // Minimum 48x48px touch area
+              >
+                <User className='h-5 w-5' />
+              </Button>
+            </DialogTrigger>
+            <DialogContent aria-describedby='configurações do usuário'>
+              <DialogHeader>
+                <DialogTitle>Você</DialogTitle>
+              </DialogHeader>
+              <div className='space-y-4'>
+                <div>
+                  <label className='text-sm font-medium'>Seu nome</label>
+                  <div className='flex space-x-2'>
+                    <Input
+                      value={userName}
+                      onChange={e => setUserName(e.target.value)}
+                      onBlur={handleSubmit}
+                      onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+                      placeholder='Digite seu nome'
+                      className='min-h-[48px]' // Minimum touch area height
+                    />
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      onClick={handleGenerateRandomName}
+                      title='Gerar nome aleatório'
+                      className='h-12 w-12' // Minimum 48x48px touch area
+                    >
+                      <Shuffle className='h-4 w-4' />
+                    </Button>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleSubmit}
+                  className='min-h-[48px] w-full' // Minimum touch area height
+                  disabled={!userName.trim() || userName === userData.name}
+                >
+                  Salvar Nome
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      {/* Rooms List */}
+      <div className='flex-1 space-y-4 overflow-y-auto'>
+        {!userRooms.length && !filteredParticipated.length ? (
+          <div className='p-4 text-center font-light text-gray-500'>
+            <p>As salas aparecerão aqui</p>
+          </div>
+        ) : (
+          <>
+            {userRooms.map(room => (
+              <div key={room.id} onClick={() => setIsSheetOpen(false)}>
+                <RoomListItem
+                  room={room}
+                  selectedRoomId={selectedRoom?.id || null}
+                  userData={userData}
+                  onRoomSelect={handleRoomSelect}
+                />
+              </div>
+            ))}
+            {filteredParticipated.map(room => (
+              <div key={room.id} onClick={() => setIsSheetOpen(false)}>
+                <RoomListItem
+                  room={room}
+                  selectedRoomId={selectedRoom?.id || null}
+                  userData={userData}
+                  onRoomSelect={handleRoomSelect}
+                />
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+
+      <Footer />
+    </div>
+  )
 
   return (
     <div className='flex h-screen bg-[#fcfcff]'>
-      <Sidebar
-        ownedRooms={userRooms}
-        participatedRooms={participatedRooms}
-        selectedRoomId={selectedRoom?.id || null}
-        onRoomSelect={handleRoomSelect}
-        onCreateRoom={handleCreateRoom}
-        onJoinRoomByCode={handleJoinRoomByCode}
-        userData={userData}
-        onUpdateUserData={setUserData}
-        onUpdateUserName={
-          selectedRoom && currentUser ? updateUserName : undefined
-        }
-      />
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <Sidebar
+          ownedRooms={userRooms}
+          participatedRooms={participatedRooms}
+          selectedRoomId={selectedRoom?.id || null}
+          onRoomSelect={handleRoomSelect}
+          onCreateRoom={handleCreateRoom}
+          onJoinRoomByCode={handleJoinRoomByCode}
+          userData={userData}
+          onUpdateUserData={setUserData}
+          setRoom={setRoom}
+          onUpdateUserName={
+            selectedRoom && currentUser ? updateUserName : undefined
+          }
+        />
+      )}
 
-      <div className='flex-1 flex flex-col'>
+      {/* Mobile Sheet */}
+      {isMobile && (
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <SheetTrigger asChild>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='fixed left-4 top-4 z-40 h-12 w-12 bg-white shadow-md hover:bg-gray-50 sm:hidden' // Minimum 48x48px touch area
+            >
+              <Menu className='h-6 w-6' />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side='left' className='w-[300px] p-6'>
+            <MobileSheetContent />
+          </SheetContent>
+        </Sheet>
+      )}
+
+      <div className='flex flex-1 flex-col'>
         {loading && (
-          <div className='flex-1 flex items-center justify-center'>
+          <div className='flex flex-1 items-center justify-center px-4'>
             <div className='text-center text-gray-500'>
-              <div className='text-2xl mb-2'>Carregando...</div>
+              <div className='mb-2 text-xl sm:text-2xl'>Carregando...</div>
             </div>
           </div>
         )}
 
         {wasDeleted && (
-          <div className='flex-1 flex items-center justify-center'>
-            <div className='text-center bg-[#FEECDC] p-8 rounded-lg '>
-              <div className='text-6xl mb-4'>⚠️</div>
-              <h2 className='text-2xl font-semibold mb-2'>Sala excluída</h2>
-              <p className='mb-4'>A sala foi excluída pelo administrador.</p>
-              <Button onClick={handleWasRemovedAction}>Voltar ao início</Button>
+          <div className='flex flex-1 items-center justify-center px-4'>
+            <div className='rounded-lg bg-[#FEECDC] p-6 text-center sm:p-8'>
+              <div className='mb-4 text-4xl sm:text-6xl'>⚠️</div>
+              <h2 className='mb-2 text-xl font-semibold sm:text-2xl'>
+                Sala excluída
+              </h2>
+              <p className='mb-4 text-sm sm:text-base'>
+                A sala foi excluída pelo administrador.
+              </p>
+              <Button
+                onClick={handleWasRemovedAction}
+                className='min-h-[48px] w-full sm:w-auto' // Minimum touch area
+              >
+                Voltar ao início
+              </Button>
             </div>
           </div>
         )}
 
         {wasRemoved && (
-          <div className='flex-1 flex items-center justify-center'>
-            <div className='text-center bg-[#FEECDC] p-8 rounded-lg '>
-              <div className='text-6xl mb-4'>⚠️</div>
-              <h2 className='text-2xl font-semibold mb-2'>Removido da Sala</h2>
-              <p className='mb-4'>
+          <div className='flex flex-1 items-center justify-center px-4'>
+            <div className='rounded-lg bg-[#FEECDC] p-6 text-center sm:p-8'>
+              <div className='mb-4 text-4xl sm:text-6xl'>⚠️</div>
+              <h2 className='mb-2 text-xl font-semibold sm:text-2xl'>
+                Removido da Sala
+              </h2>
+              <p className='mb-4 text-sm sm:text-base'>
                 Você foi removido da sala pelo administrador.
               </p>
-              <Button onClick={handleWasRemovedAction}>Voltar ao início</Button>
+              <Button
+                onClick={handleWasRemovedAction}
+                className='min-h-[48px] w-full sm:w-auto' // Minimum touch area
+              >
+                Voltar ao início
+              </Button>
             </div>
           </div>
         )}
 
         {error && (
-          <div className='flex-1 flex items-center justify-center'>
+          <div className='flex flex-1 items-center justify-center px-4'>
             <div className='text-center text-red-500'>
-              <div className='text-2xl mb-2'>Erro: {error}</div>
+              <div className='mb-2 text-xl sm:text-2xl'>Erro: {error}</div>
               <button
                 onClick={() => window.location.reload()}
-                className='px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600'
+                className='min-h-[48px] rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600'
               >
                 Recarregar
               </button>
@@ -110,14 +325,17 @@ export function HomePage({ start }: { start?: boolean }) {
             <RoomHeader
               room={selectedRoom}
               currentUser={userData.name}
+              countdown={countdown}
               onUpdateRoom={handleUpdateRoom}
               onRemoveParticipant={handleRemoveParticipant}
               onLeaveRoom={handleLeaveRoom}
               onDeleteRoom={handleDeleteRoom}
+              onToggleViewMode={toggleViewMode}
             />
             <VotingArea
               room={selectedRoom}
               currentUser={currentUser.name}
+              countdown={countdown}
               onVote={handleVote}
               onStartNewRound={handleStartNewRound}
               onRevealVotes={handleRevealVotes}
@@ -128,174 +346,108 @@ export function HomePage({ start }: { start?: boolean }) {
           !error &&
           !wasRemoved && (
             <div className='flex-1 overflow-y-auto'>
-              <div className='max-w-4xl mx-auto px-6 py-8'>
+              <div
+                className={`mx-auto flex h-full max-w-xl flex-col items-center justify-center space-y-6 px-4 sm:space-y-10 ${isMobile ? 'pt-16' : ''}`}
+              >
                 {/* Hero Section */}
-                <div className='text-center mb-12'>
+                <section className='w-full text-center'>
                   <img
                     src='/logo.png'
                     alt='Logo do minPoker - Ferramenta de Planning Poker online gratuita para equipes ágeis realizarem estimativas colaborativas'
-                    className='h-24 w-24 mx-auto'
+                    className='mx-auto mb-4 h-16 w-16 sm:mb-6 sm:h-24 sm:w-24'
                     loading='lazy'
                     width='96'
                     height='96'
                   />
-                  <h1 className='text-4xl font-bold mb-4 text-primary'>
-                    minPoker | Planning Poker Online
+
+                  <h1 className='mb-4 text-xl font-bold sm:mb-6 sm:text-2xl'>
+                    Crie ou entre em uma sala
                   </h1>
-                  <h2 className='text-gray-500 font-light max-w-2xl mx-auto text-lg'>
-                    Crie uma nova sala ou entre em uma existente para começar
-                    suas sessões de Planning Poker com sua equipe.
-                  </h2>
-                </div>
 
-                {/* What is Planning Poker Section */}
-                {/* <section className='mb-12'>
-                  <h2 className='text-2xl font-semibold mb-6 text-center '>
-                    O que é Planning Poker?
-                  </h2>
-                  <div className='bg-white rounded-lg shadow-sm p-6 border'>
-                    <p className='text-gray-700 mb-4 leading-relaxed'>
-                      O <strong>Planning Poker</strong> é uma técnica de
-                      estimativa ágil baseada em consenso, amplamente utilizada
-                      em metodologias como Scrum e outras frameworks ágeis. Esta
-                      ferramenta gamificada permite que equipes de
-                      desenvolvimento estimem o esforço necessário para
-                      completar user stories, tarefas ou funcionalidades de
-                      forma colaborativa e precisa.
-                    </p>
-                    <p className='text-gray-700 leading-relaxed'>
-                      Utilizando cartas numeradas (geralmente seguindo a
-                      sequência de Fibonacci: 1, 2, 3, 5, 8, 13, 21), cada
-                      membro da equipe vota simultaneamente, evitando
-                      influências e garantindo estimativas mais objetivas e
-                      democráticas.
-                    </p>
+                  <div className='relative mb-4 sm:mb-6'>
+                    <Input
+                      placeholder='Digite um nome ou cole o link de uma sala'
+                      value={inputValue}
+                      onChange={e => setInputValue(e.target.value)}
+                      className='min-h-[48px] w-full text-base' // Minimum touch area and readable text
+                      autoFocus={!isMobile} // Avoid auto-focus on mobile to prevent keyboard popup
+                      disabled={loading || ownedRoomsCount === 3}
+                    />
                   </div>
-                </section> */}
 
-                {/* Benefits Section */}
-                {/* <section className='mb-12'>
-                  <h2 className='text-2xl font-semibold mb-6 text-center '>
-                    Benefícios do Planning Poker
-                  </h2>
-                  <div className='grid md:grid-cols-2 gap-6'>
-                    <div className='bg-blue-50 rounded-lg p-6 border border-blue-100'>
-                      <h3 className='text-lg font-semibold mb-3 text-blue-800'>
-                        🎯 Estimativas Mais Precisas
-                      </h3>
-                      <p className='text-gray-700'>
-                        A combinação de diferentes perspectivas da equipe
-                        resulta em estimativas mais realistas e confiáveis para
-                        o planejamento de sprints.
-                      </p>
-                    </div>
-                    <div className='bg-green-50 rounded-lg p-6 border border-green-100'>
-                      <h3 className='text-lg font-semibold mb-3 text-green-800'>
-                        🤝 Colaboração da Equipe
-                      </h3>
-                      <p className='text-gray-700'>
-                        Promove discussões saudáveis e alinhamento entre
-                        desenvolvedores, testadores, analistas e outros membros
-                        da equipe ágil.
-                      </p>
-                    </div>
-                    <div className='bg-purple-50 rounded-lg p-6 border border-purple-100'>
-                      <h3 className='text-lg font-semibold mb-3 text-purple-800'>
-                        ⚡ Processo Eficiente
-                      </h3>
-                      <p className='text-gray-700'>
-                        Reduz o tempo gasto em reuniões de estimativa, tornando
-                        o processo mais dinâmico e focado nos resultados.
-                      </p>
-                    </div>
-                    <div className='bg-orange-50 rounded-lg p-6 border border-orange-100'>
-                      <h3 className='text-lg font-semibold mb-3 text-orange-800'>
-                        📊 Transparência Total
-                      </h3>
-                      <p className='text-gray-700'>
-                        Todos os votos são revelados simultaneamente, eliminando
-                        vieses e influências externas nas estimativas.
-                      </p>
-                    </div>
-                  </div>
-                </section> */}
+                  <Button
+                    className='min-h-[48px] w-full text-base' // Minimum touch area and readable text
+                    onClick={onEnterOrCreateRoom}
+                    disabled={
+                      loading || !inputValue.trim() || ownedRoomsCount === 3
+                    }
+                  >
+                    {inputValue.trim() ? (
+                      (() => {
+                        const { type } = detectInputType(inputValue)
+
+                        if (type === 'existing_room') {
+                          return <span>Entrar nesta sala</span>
+                        } else {
+                          return <span>Criar nova sala</span>
+                        }
+                      })()
+                    ) : (
+                      <span>Continuar</span>
+                    )}
+                  </Button>
+
+                  {ownedRoomsCount === 3 && (
+                    <Alert className='mt-4 place-items-start border border-[#efcaa9] bg-[#FEECDC] sm:mt-6'>
+                      <InfoIcon className='h-4 w-4' />
+                      <AlertTitle className='text-xs font-medium'>
+                        Ops! Você atingiu o limite de 3 salas criadas.
+                      </AlertTitle>
+                    </Alert>
+                  )}
+                </section>
 
                 {/* Navigation Links Section */}
-                <section className='mb-12'>
-                  <div className='grid md:grid-cols-2 gap-6 max-w-3xl mx-auto'>
+                <section className='w-full'>
+                  <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4'>
                     <a
                       href='/how-it-works'
-                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                      className='group block space-y-1 rounded-lg border border-gray-100 bg-gray-100 p-3 transition-colors hover:border-primary/10 hover:bg-primary/10 sm:p-2'
+                      style={{ minHeight: '48px' }} // Minimum touch area
                     >
-                      <div className='flex items-center mb-3'>
-                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
-                          <InfoIcon />
-                        </div>
-                        <h3 className='text-lg font-semibold'>
-                          Como Funciona o minPoker
-                        </h3>
-                      </div>
-                      <p className='text-gray-500 text-sm'>
-                        Descubra o passo a passo para usar nossa ferramenta de
-                        Planning Poker e como ela pode melhorar suas estimativas
-                        ágeis.
-                      </p>
+                      <h3 className='text-sm font-normal sm:text-xs'>
+                        Como Funciona o minPoker
+                      </h3>
                     </a>
 
                     <a
                       href='/features'
-                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                      className='group block space-y-1 rounded-lg border border-gray-100 bg-gray-100 p-3 transition-colors hover:border-primary/10 hover:bg-primary/10 sm:p-2'
+                      style={{ minHeight: '48px' }} // Minimum touch area
                     >
-                      <div className='flex items-center mb-3'>
-                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
-                          <BlocksIcon />
-                        </div>
-                        <h3 className='text-lg font-semibold'>
-                          Recursos do minPoker
-                        </h3>
-                      </div>
-                      <p className='text-gray-600 text-sm'>
-                        Explore todas as funcionalidades disponíveis: votação
-                        anônima, salas privadas, sincronização em tempo real e
-                        muito mais.
-                      </p>
+                      <h3 className='text-sm font-normal sm:text-xs'>
+                        Recursos do minPoker
+                      </h3>
                     </a>
 
                     <a
                       href='/benefits'
-                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                      className='group block space-y-1 rounded-lg border border-gray-100 bg-gray-100 p-3 transition-colors hover:border-primary/10 hover:bg-primary/10 sm:p-2'
+                      style={{ minHeight: '48px' }} // Minimum touch area
                     >
-                      <div className='flex items-center mb-3'>
-                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
-                          <HeartIcon />
-                        </div>
-                        <h3 className='text-lg font-semibold'>
-                          Benefícios do Planning Poker
-                        </h3>
-                      </div>
-                      <p className='text-gray-600 text-sm'>
-                        Entenda como o Planning Poker melhora a precisão das
-                        estimativas, promove colaboração e otimiza o processo
-                        ágil.
-                      </p>
+                      <h3 className='text-sm font-normal sm:text-xs'>
+                        Benefícios do Planning Poker
+                      </h3>
                     </a>
 
                     <a
                       href='/faq'
-                      className='bg-gray-100 hover:bg-primary/10 transition-colors rounded-lg p-6 border border-gray-100 block group'
+                      className='group block space-y-1 rounded-lg border border-gray-100 bg-gray-100 p-3 transition-colors hover:border-primary/10 hover:bg-primary/10 sm:p-2'
+                      style={{ minHeight: '48px' }} // Minimum touch area
                     >
-                      <div className='flex items-center mb-3'>
-                        <div className='bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 text-lg font-bold transition-transform'>
-                          <MessageCircleQuestionIcon />
-                        </div>
-                        <h3 className='text-lg font-semibold'>
-                          Perguntas Frequentes
-                        </h3>
-                      </div>
-                      <p className='text-gray-600 text-sm'>
-                        Encontre respostas para as dúvidas mais comuns sobre o
-                        uso do minPoker e suas funcionalidades.
-                      </p>
+                      <h3 className='text-sm font-normal sm:text-xs'>
+                        Perguntas Frequentes
+                      </h3>
                     </a>
                   </div>
                 </section>

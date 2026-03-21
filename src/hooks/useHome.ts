@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { useRoom } from '@/hooks/useRoom'
 import { LocalUserData, Room } from '@/types'
-import { generateFunnyName } from '@/lib/utils'
+import { generateFunnyName, detectInputType } from '@/lib/utils'
 import {
   listenToRoom,
   getRoomsByOwnerId,
@@ -23,6 +23,7 @@ import {
   orderByChild,
   query
 } from 'firebase/database'
+
 // @ts-expect-error - Implementar o start
 export function useHome({ start }: { start?: boolean }) {
   const {
@@ -41,7 +42,9 @@ export function useHome({ start }: { start?: boolean }) {
     updateSettings,
     updateUserName,
     deleteCurrentRoom,
-    clearRemovedState
+    clearRemovedState,
+    toggleViewMode,
+    setRoom
   } = useRoom()
 
   const { roomId } = useParams()
@@ -50,6 +53,7 @@ export function useHome({ start }: { start?: boolean }) {
   const [pendingRoomName, setPendingRoomName] = useState<string>('')
   const [userRooms, setUserRooms] = useState<Room[]>([])
   const [participatedRooms, setParticipatedRooms] = useState<Room[]>([])
+  const [inputValue, setInputValue] = useState<string>('')
 
   const [userData, setUserData] = useLocalStorage<LocalUserData>(
     'minPoker_userData',
@@ -59,10 +63,27 @@ export function useHome({ start }: { start?: boolean }) {
     }
   )
 
+  const [countdown, setCountdown] = useState<number | null>(null)
+
   // IDs de salas em que o usuário participou (histórico)
   const [participatedRoomIds, setParticipatedRoomIds] = useLocalStorage<
     string[]
   >('minPoker_participatedRooms', [])
+
+  const allVoted =
+    selectedRoom?.currentRound &&
+    selectedRoom?.participants &&
+    selectedRoom?.currentRound.votes
+      ? (() => {
+          const requiredVoters = selectedRoom?.participants.filter(
+            p => !p.viewMode
+          )
+          const validVotes = selectedRoom?.currentRound?.votes.filter(
+            v => v.value !== null
+          )
+          return validVotes.length === requiredVoters.length
+        })()
+      : false
 
   // Garantir que userData sempre tenha um userId válido
   useEffect(() => {
@@ -121,17 +142,17 @@ export function useHome({ start }: { start?: boolean }) {
         const { rooms, notFoundIds } = await getRoomsByIds(participatedRoomIds)
         if (!isMounted) return
 
-        // Remover duplicatas e ordenar por lastActivity (mais recente primeiro), se disponível
-        const uniqueMap = new Map<string, Room>()
+        // Remover duplicatas e ordenar por createdAt (ordem de criação)
+        const uniqueRooms = new Map<string, Room>()
         rooms.forEach(r => {
-          uniqueMap.set(r.id, r)
+          uniqueRooms.set(r.id, r)
         })
-        const uniqueRooms = Array.from(uniqueMap.values()).sort((a, b) => {
-          const aTs = (a as any).lastActivity ?? 0
-          const bTs = (b as any).lastActivity ?? 0
-          return bTs - aTs
-        })
-        setParticipatedRooms(uniqueRooms)
+        // const uniqueRooms = Array.from(uniqueMap.values()).sort((a, b) => {
+        //   const aTs = (a as any).createdAt ?? 0
+        //   const bTs = (b as any).createdAt ?? 0
+        //   return aTs - bTs
+        // })
+        setParticipatedRooms(Array.from(uniqueRooms.values()))
 
         // Limpar IDs que não existem mais
         if (notFoundIds.length > 0) {
@@ -183,17 +204,25 @@ export function useHome({ start }: { start?: boolean }) {
     return unsubscribe
   }, [userData.userId, selectedRoom])
 
+  // Redirecionar automaticamente se for removido da sala
+  useEffect(() => {
+    if (wasRemoved) {
+      window.location.href = '/'
+    }
+  }, [wasRemoved])
+
   // Handle room URL parameter
   useEffect(() => {
     if (roomId && !selectedRoom) {
-      setPendingRoomId(roomId)
+      const rid = roomId as string
+      setPendingRoomId(rid)
 
       // Buscar o nome real da sala
-      const unsubscribe = listenToRoom(roomId, roomData => {
+      const unsubscribe = listenToRoom(rid, roomData => {
         if (roomData) {
           setPendingRoomName(roomData.name)
         } else {
-          setPendingRoomName(`Sala ${roomId.slice(0, 6)}`)
+          setPendingRoomName(`Sala ${rid.slice(0, 6)}`)
         }
         unsubscribe()
       })
@@ -201,25 +230,84 @@ export function useHome({ start }: { start?: boolean }) {
       if (!userData.name) {
         setShowJoinDialog(true)
       } else {
-        joinExistingRoom(roomId, userData.name, userData.userId)
+        // Tentar ingressar; se falhar (sala inexistente), redirecionar para home
+        async function tryJoin() {
+          const success = await joinExistingRoom(
+            rid,
+            userData.userId,
+            userData.name
+          )
+          if (success) {
+            // Persistir histórico de salas participadas ao acessar via link direto
+            setParticipatedRoomIds(prev => {
+              const next = new Set([...(prev ?? []), rid])
+              return Array.from(next)
+            })
+          } else {
+            window.location.href = '/'
+          }
+        }
+        tryJoin()
       }
     }
   }, [roomId, selectedRoom, userData.name, userData.userId, joinExistingRoom])
 
-  // Handle para criar uma sala automaticamente
-  // useEffect(() => {
-  //   const roomName = `Sala de ${userData.name}`
-  //   const roomAlreadyExists = userRooms.some(room => room.name === roomName)
+  // Inicia o countdown quando todas as pessoas votaram e se a sala está configurada para o autoReveal
+  useEffect(() => {
+    if (
+      allVoted &&
+      selectedRoom?.settings?.autoReveal &&
+      selectedRoom?.currentRound &&
+      !selectedRoom?.currentRound.isRevealed
+    ) {
+      const timer = setTimeout(() => {
+        handleRevealVotes()
+      }, selectedRoom?.settings?.revealDelay || 3000)
 
-  //   async function createAutomaticRoom() {
-  //     console.log({ roomAlreadyExists })
-  //     if (start && !roomAlreadyExists) {
-  //       await handleCreateRoom(roomName)
-  //     }
-  //   }
+      // Countdown visual
+      let countdownValue = Math.ceil(
+        (selectedRoom?.settings?.revealDelay || 3000) / 1000
+      )
+      setCountdown(countdownValue)
 
-  //   createAutomaticRoom()
-  // }, [start, userData.name, userRooms])
+      const countdownTimer = setInterval(() => {
+        countdownValue -= 1
+        setCountdown(countdownValue)
+        if (countdownValue <= 0) {
+          clearInterval(countdownTimer)
+          setCountdown(null)
+        }
+      }, 1000)
+
+      return () => {
+        clearTimeout(timer)
+        clearInterval(countdownTimer)
+        setCountdown(null)
+      }
+    }
+  }, [
+    allVoted,
+    selectedRoom?.settings?.autoReveal,
+    selectedRoom?.settings?.revealDelay,
+    selectedRoom?.currentRound
+  ])
+
+  function onEnterOrCreateRoom() {
+    if (!inputValue.trim()) {
+      alert(
+        'Por favor, digite um nome para a sala ou cole um código/link de sala existente'
+      )
+      return
+    }
+
+    const { type, value } = detectInputType(inputValue)
+
+    if (type === 'existing_room') {
+      handleJoinRoomByCode(value)
+    } else {
+      handleCreateRoom(value)
+    }
+  }
 
   async function handleCreateRoom(roomName: string) {
     // Validar dados antes de criar a sala
@@ -245,6 +333,7 @@ export function useHome({ start }: { start?: boolean }) {
         try {
           const rooms = await getRoomsByOwnerId(userData.userId)
           setUserRooms(rooms)
+          setInputValue('')
         } catch (error) {
           console.error('Erro ao recarregar lista de salas:', error)
           // Mesmo com erro, a sala foi criada, então vamos tentar novamente em breve
@@ -296,13 +385,26 @@ export function useHome({ start }: { start?: boolean }) {
     setPendingRoomName('')
   }
 
-  function handleRoomSelect(roomId: string) {
+  async function handleRoomSelect(roomId: string | null) {
+    if (!roomId) return
+
     // Encontrar a sala e conectar a ela
     const room =
       userRooms.find(r => r.id === roomId) ||
       participatedRooms.find(r => r.id === roomId)
     if (room) {
-      joinExistingRoom(roomId, userData.userId, userData.name)
+      const success = await joinExistingRoom(
+        roomId,
+        userData.userId,
+        userData.name
+      )
+      if (success) {
+        // Persistir histórico de salas participadas
+        setParticipatedRoomIds(prev => {
+          const next = new Set([...(prev ?? []), roomId])
+          return Array.from(next)
+        })
+      }
     }
   }
 
@@ -325,7 +427,7 @@ export function useHome({ start }: { start?: boolean }) {
   const handleJoinRoomByCode = useCallback(
     async (roomId: string) => {
       // Navegar para a URL da sala, que irá acionar o fluxo de ingresso
-      window.history.pushState({}, '', `/${roomId}`)
+      window.history.pushState({}, '', `/room/${roomId}`)
 
       // Definir o roomId pendente e mostrar o diálogo
       setPendingRoomId(roomId)
@@ -339,11 +441,22 @@ export function useHome({ start }: { start?: boolean }) {
         }
         unsubscribe()
       })
-      console.log('handleJoinRoomByCode', userData)
       if (!userData.name) {
         setShowJoinDialog(true)
       } else {
-        await joinExistingRoom(roomId, userData.userId, userData.name)
+        const success = await joinExistingRoom(
+          roomId,
+          userData.userId,
+          userData.name
+        )
+        if (success) {
+          // Persistir histórico de salas participadas
+          setParticipatedRoomIds(prev => {
+            const next = new Set([...(prev ?? []), roomId])
+            return Array.from(next)
+          })
+          setInputValue('')
+        }
       }
     },
     [userData.name, userData.userId]
@@ -407,6 +520,7 @@ export function useHome({ start }: { start?: boolean }) {
       console.error('Erro ao excluir sala:', error)
     }
   }
+  console.log({ userRooms })
 
   return {
     // Estados
@@ -422,9 +536,14 @@ export function useHome({ start }: { start?: boolean }) {
     wasDeleted,
     loading,
     error,
+    countdown,
+    inputValue,
+    ownedRoomsCount: userRooms.length,
 
     // Setters
     setUserData,
+    setRoom,
+    setInputValue,
 
     // Handlers
     handleCreateRoom,
@@ -440,6 +559,8 @@ export function useHome({ start }: { start?: boolean }) {
     handleUpdateRoom,
     handleCloseJoinDialog,
     handleRoomSelect,
-    updateUserName
+    updateUserName,
+    toggleViewMode,
+    onEnterOrCreateRoom
   }
 }

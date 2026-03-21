@@ -7,11 +7,13 @@ import {
   Trash2,
   LogOut,
   X,
-  MoreVertical
+  MoreVertical,
+  Eye
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import {
   Dialog,
   DialogContent,
@@ -20,23 +22,28 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 import { Room } from '@/types'
+import { Toggle } from './ui/toggle'
 
 interface RoomHeaderProps {
   room: Room
   currentUser: string
+  countdown: number | null
   onUpdateRoom: (room: Room) => void
   onRemoveParticipant: (userId: string) => void
   onDeleteRoom?: () => void
   onLeaveRoom?: () => void
+  onToggleViewMode?: (enabled: boolean) => Promise<void>
 }
 
 export function RoomHeader({
   room,
   currentUser,
+  countdown,
   onUpdateRoom,
   onRemoveParticipant,
   onDeleteRoom,
-  onLeaveRoom
+  onLeaveRoom,
+  onToggleViewMode
 }: RoomHeaderProps) {
   const [isEditingName, setIsEditingName] = useState(false)
   const [newName, setNewName] = useState(room.name)
@@ -49,6 +56,7 @@ export function RoomHeader({
   const isOwner =
     room.participants.find(p => p.name === currentUser)?.isOwner || false
   const roomUrl = `${window.location.origin}/room/${room.id}`
+  const currentRound = room?.currentRound
 
   function handleSaveName() {
     if (newName.trim() && newName !== room.name) {
@@ -88,8 +96,8 @@ export function RoomHeader({
   }
 
   return (
-    <div className='bg-white border-b border-gray-100 p-6'>
-      <div className='flex items-center justify-between mb-4'>
+    <div className='border-b border-gray-100 bg-white p-6'>
+      <div className='mb-4 flex items-center justify-between'>
         <div className='flex items-center space-x-3'>
           {isEditingName && isOwner ? (
             <div className='flex items-center space-x-2'>
@@ -118,7 +126,7 @@ export function RoomHeader({
                   variant='ghost'
                   size='icon'
                   onClick={() => setIsEditingName(true)}
-                  className='h-6 w-6 hover:bg-gray-100 hidden sm:inline-flex'
+                  className='hidden h-6 w-6 hover:bg-gray-100 sm:inline-flex'
                 >
                   <Edit2 className='h-4 w-4' />
                 </Button>
@@ -129,7 +137,7 @@ export function RoomHeader({
 
         <div className='flex items-center space-x-2'>
           {/* Desktop buttons */}
-          <div className='hidden sm:flex items-center space-x-2'>
+          <div className='hidden items-center space-x-2 sm:flex'>
             <Button
               variant='outline'
               onClick={handleCopyLink}
@@ -142,6 +150,23 @@ export function RoomHeader({
               )}
               <span>{copied ? 'Copiado!' : 'Copiar Link'}</span>
             </Button>
+            {/* Modo Visualização */}
+            <Toggle
+              variant='outline'
+              disabled={currentRound?.isRevealed || countdown !== null}
+              pressed={
+                room.participants.find(p => p.name === currentUser)?.viewMode ||
+                false
+              }
+              onPressedChange={async checked => {
+                if (onToggleViewMode) {
+                  await onToggleViewMode(checked)
+                }
+              }}
+            >
+              <Eye className='h-4 w-4' />
+              <span className='text-sm font-medium'>Modo Visualização</span>
+            </Toggle>
           </div>
 
           {/* Mobile menu */}
@@ -163,7 +188,7 @@ export function RoomHeader({
                       handleCopyLink()
                       setShowMobileMenu(false)
                     }}
-                    className='w-full flex items-center space-x-2'
+                    className='flex w-full items-center space-x-2'
                   >
                     {copied ? (
                       <Check className='h-4 w-4' />
@@ -180,7 +205,7 @@ export function RoomHeader({
                           setIsSettingsOpen(true)
                           setShowMobileMenu(false)
                         }}
-                        className='w-full flex items-center space-x-2'
+                        className='flex w-full items-center space-x-2'
                       >
                         <Settings className='h-4 w-4' />
                         <span>Configurações</span>
@@ -191,7 +216,7 @@ export function RoomHeader({
                           setShowDeleteConfirm(true)
                           setShowMobileMenu(false)
                         }}
-                        className='w-full flex items-center space-x-2 text-red-600 hover:text-red-700'
+                        className='flex w-full items-center space-x-2 text-red-600 hover:text-red-700'
                       >
                         <Trash2 className='h-4 w-4' />
                         <span>Deletar Sala</span>
@@ -205,12 +230,38 @@ export function RoomHeader({
                         setShowLeaveConfirm(true)
                         setShowMobileMenu(false)
                       }}
-                      className='w-full flex items-center space-x-2 text-red-600 hover:text-red-700'
+                      className='flex w-full items-center space-x-2 text-red-600 hover:text-red-700'
                     >
                       <LogOut className='h-4 w-4' />
                       <span>Sair da Sala</span>
                     </Button>
                   )}
+
+                  {/* Modo Visualização
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center space-x-2'>
+                      <Eye className='h-4 w-4 text-gray-500' />
+                      <div>
+                        <label className='text-sm font-medium'>
+                          Modo Visualização
+                        </label>
+                        <p className='text-xs text-gray-500'>
+                          Você não precisa votar
+                        </p>
+                      </div>
+                    </div>
+                    <Switch
+                      checked={
+                        room.participants.find(p => p.name === currentUser)
+                          ?.viewMode || false
+                      }
+                      onCheckedChange={checked => {
+                        if (onToggleViewMode) {
+                          onToggleViewMode(checked)
+                        }
+                      }}
+                    />
+                  </div> */}
                 </div>
               </DialogContent>
             </Dialog>
@@ -271,15 +322,13 @@ export function RoomHeader({
                         <label className='text-sm font-medium'>
                           Revelação automática
                         </label>
-                        <input
-                          type='checkbox'
+                        <Switch
                           checked={room.settings.autoReveal}
-                          onChange={e =>
+                          onCheckedChange={checked =>
                             handleSettingsChange({
-                              autoReveal: e.target.checked
+                              autoReveal: checked
                             })
                           }
-                          className='rounded'
                         />
                       </div>
                       {room.settings.autoReveal && (
@@ -300,6 +349,18 @@ export function RoomHeader({
                           />
                         </div>
                       )}
+
+                      {/* <Switch
+                          checked={
+                            room.participants.find(p => p.name === currentUser)
+                              ?.viewMode || false
+                          }
+                          onCheckedChange={checked => {
+                            if (onToggleViewMode) {
+                              onToggleViewMode(checked)
+                            }
+                          }}
+                        /> */}
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -325,7 +386,7 @@ export function RoomHeader({
                         pode ser desfeita.
                       </p>
                       {room.participants.length > 1 && (
-                        <p className='text-sm bg-[#FEECDC] p-3 rounded'>
+                        <p className='rounded bg-[#FEECDC] p-3 text-sm'>
                           Existe{room.participants.length > 2 && 'm'}{' '}
                           {room.participants.length - 1} participante
                           {room.participants.length > 2 && 's'} na sala. Ele
@@ -360,30 +421,68 @@ export function RoomHeader({
 
       {/* Participants */}
       <div className='flex flex-wrap gap-2'>
-        {room.participants.map(participant => (
-          <div
-            key={participant.id}
-            className='flex items-center space-x-2 bg-gray-100 rounded-full px-3 py-1'
-          >
-            <div className='w-2 h-2 bg-primary rounded-full'></div>
-            <span className='text-sm font-medium'>{participant.name}</span>
-            {participant.isOwner && (
-              <div className='ml-2 px-[3px] py-[2px] bg-primary/20 text-primary text-[10px] rounded font-medium'>
-                Dono
-              </div>
-            )}
-            {isOwner && !participant.isOwner && (
-              <Button
-                variant='ghost'
-                size='icon'
-                onClick={() => onRemoveParticipant(participant.id)}
-                className='h-4 w-4 ml-1'
+        {room.participants.map(participant => {
+          const isParticipantInViewMode = participant.viewMode || false
+          return (
+            <div
+              key={participant.id}
+              className={`flex items-center space-x-2 rounded-full px-3 py-1 ${
+                isParticipantInViewMode
+                  ? 'border border-blue-200 bg-blue-50'
+                  : 'bg-gray-100'
+              }`}
+            >
+              <div
+                className={`h-2 w-2 rounded-full ${
+                  isParticipantInViewMode ? 'bg-blue-500' : 'bg-primary'
+                }`}
+              ></div>
+              <span
+                className={`text-sm font-medium ${
+                  isParticipantInViewMode ? 'text-blue-700' : ''
+                }`}
               >
-                <X className='h-3 w-3 hover:text-primary' strokeWidth={3} />
-              </Button>
-            )}
-          </div>
-        ))}
+                {participant.name}
+              </span>
+              {participant.isOwner && (
+                <div
+                  className={`ml-2 rounded px-[3px] py-[2px] text-[10px] font-medium ${
+                    isParticipantInViewMode
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-primary/20 text-primary'
+                  }`}
+                >
+                  {isParticipantInViewMode ? (
+                    <div className='flex items-center gap-1'>
+                      <Eye className='h-2 w-2' />
+                      <span>Observando</span>
+                    </div>
+                  ) : (
+                    'Dono'
+                  )}
+                </div>
+              )}
+              {isParticipantInViewMode && !participant.isOwner && (
+                <div className='ml-2 rounded bg-blue-100 px-[3px] py-[2px] text-[10px] font-medium text-blue-700'>
+                  <div className='flex items-center gap-1'>
+                    <Eye className='h-2 w-2' />
+                    <span>Observando</span>
+                  </div>
+                </div>
+              )}
+              {isOwner && !participant.isOwner && (
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={() => onRemoveParticipant(participant.id)}
+                  className='ml-1 h-4 w-4'
+                >
+                  <X className='h-3 w-3 hover:text-primary' strokeWidth={3} />
+                </Button>
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

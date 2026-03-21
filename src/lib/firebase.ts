@@ -152,9 +152,22 @@ export async function leaveRoom(roomId: string, userId: string): Promise<void> {
       const currentParticipants = Array.isArray(room.participants)
         ? room.participants
         : []
+
       const updatedParticipants = currentParticipants.filter(
         p => p.id !== userId
       )
+
+      // Remove o voto de currentRound do usuário que saiu
+      if (room.currentRound) {
+        const currentVotes = Array.isArray(room.currentRound.votes)
+          ? room.currentRound.votes
+          : []
+        const updatedVotes = currentVotes.filter(v => v.userId !== userId)
+        room.currentRound.votes = updatedVotes
+        await update(roomRef, {
+          currentRound: room.currentRound
+        })
+      }
 
       // Se a sala ficar vazia após o usuário sair, criar notificação de remoção
       if (updatedParticipants.length === 0) {
@@ -213,8 +226,14 @@ export async function submitVote(
       const updatedVotes = [...currentVotes]
 
       if (existingVoteIndex >= 0) {
-        updatedVotes[existingVoteIndex] = vote
-      } else {
+        if (value === null) {
+          // Remove o voto em si
+          updatedVotes.splice(existingVoteIndex, 1)
+        } else {
+          // Atualiza o voto existente
+          updatedVotes[existingVoteIndex] = vote
+        }
+      } else if (value !== null) {
         updatedVotes.push(vote)
       }
 
@@ -406,6 +425,35 @@ export async function updateParticipantName(
   )
 }
 
+export async function updateParticipantViewMode(
+  roomId: string,
+  userId: string,
+  viewMode: boolean
+): Promise<void> {
+  const roomRef = ref(db, `rooms/${roomId}`)
+
+  onValue(
+    roomRef,
+    async snapshot => {
+      const room = snapshot.val() as Room
+      if (!room) return
+
+      const currentParticipants = Array.isArray(room.participants)
+        ? room.participants
+        : []
+      const updatedParticipants = currentParticipants.map(participant =>
+        participant.id === userId ? { ...participant, viewMode } : participant
+      )
+
+      await update(roomRef, {
+        participants: updatedParticipants,
+        lastActivity: Date.now()
+      })
+    },
+    { onlyOnce: true }
+  )
+}
+
 export async function deleteRoom(roomId: string): Promise<void> {
   try {
     const roomRef = ref(db, `rooms/${roomId}`)
@@ -439,29 +487,18 @@ export async function getRoomsByOwnerId(ownerId: string): Promise<Room[]> {
   const _query = query(roomsRef, orderByChild('ownerId'), equalTo(ownerId))
   const rooms: Room[] = []
   try {
-    onValue(
-      _query,
-      snapshot => {
-        if (snapshot.exists()) {
-          // snapshot.val() retorna todos os dados como um objeto JavaScript.
-          // Você pode iterar sobre eles para acessar cada room.
-          snapshot.val()
-          // Para iterar sobre cada room individualmente:
-          snapshot.forEach(childSnapshot => {
-            // const roomKey = childSnapshot.key; // O ID da room (ex: roomId1)
-            const roomData = childSnapshot.val() // Os dados da room
-            rooms.push(roomData)
-          })
-        }
-      },
-      error => {
-        console.error('Erro ao buscar rooms:', error)
-      }
-    )
+    const snapshot = await get(_query)
+    if (snapshot.exists()) {
+      // Para iterar sobre cada room individualmente:
+      snapshot.forEach(childSnapshot => {
+        const roomKey = childSnapshot.key // O ID da room
+        const roomData = childSnapshot.val() // Os dados da room
+        rooms.push({ ...roomData, id: roomKey })
+      })
+    }
     return rooms
   } catch (error) {
-    console.warn('Erro geral ao sincronizar com Firebase:', error)
-
+    console.error('Erro ao buscar rooms:', error)
     return []
   }
 }
@@ -478,10 +515,10 @@ export async function getRoomsByIds(
     try {
       const roomRef = ref(db, `rooms/${roomId}`)
       const snapshot = await get(roomRef)
-      const room = snapshot.val() as Room
+      const roomData = snapshot.val()
 
-      if (room) {
-        rooms.push(room)
+      if (roomData) {
+        rooms.push({ ...roomData, id: roomId })
       } else {
         notFoundIds.push(roomId)
       }
